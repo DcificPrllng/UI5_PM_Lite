@@ -19,7 +19,7 @@ div#uiArea {
 	height: 236px;
 }
 .notificationBox{
-	margin-top: 164px;
+	/*margin-top: 164px;*/
 }
 
 .cisUiTinyMargin {
@@ -30,4 +30,35 @@ div#uiArea {
 
 .cisTopMargin{
 	margin-top: 10px;
+}
+
+.cisMBtnReject>span.sapMBtnInner.sapMBtnReject>.sapMBtnIcon {
+    color: #e01919
+}
+
+.cisMBtnReject>span.sapMBtnInner.sapMBtnReject {
+    border-color: #b51616;
+    color: #b51616;
+    text-shadow: none;
+}
+
+.cisMBtnReject>span.sapMBtnInner.sapMBtnReject {
+    background-color: transparent;
+}
+
+.sapMBtnInner.cisMBtnReject>.sapMBtnIcon {
+    color: #b51616;
+}
+
+.cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept {
+	background-color: transparent;
+    border-color: #005f28;
+    color: #005f28;
+    text-shadow: none;
+}
+.cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept:hover{
+	background-color: transparent;
+}
+.cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept>.sapMBtnIcon {
+    color: #005f28;
 }
