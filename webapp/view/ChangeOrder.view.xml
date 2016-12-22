@@ -1,0 +1,223 @@
+<mvc:View class="sapUiSizeCompact" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" xmlns:f="sap.ui.layout.form" busyIndicatorDelay="0"
+	controllerName="pd.pm.lite.controller.ChangeOrder">
+	<App>
+		<pages>
+			<Page title="Title" showHeader="false">
+				<content>
+					<HBox width="100%">
+						<items>
+							<VBox width="100%" direction="Column">
+								<FlexBox wrap="Wrap" class="FlexWrap sapUiTinyMargin">
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Button id="save" icon="sap-icon://save" width="100px" text="Save" press=".SaveOrder"/>
+									</FlexBox>
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="100px" class="cisTopMargin" textAlign="Right" text="Order:" design="Bold"/>
+										<Text width="150px" class="sapUiTinyMarginBegin cisTopMargin"
+											text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+										<Input width="300px" value="{jsonModel>/WorkOrderDetail/ShortDescription}"/>
+									</FlexBox>
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="104px" textAlign="Right" text="System Status:" design="Bold"/>
+										<Text class="sapUiTinyMarginBegin" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center" design="Bold">
+										<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
+										<Label width="96px" text="{jsonModel>MainWorkCenter}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center" design="Bold">
+										<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
+										<Label width="100px" text="{jsonModel>/WorkOrderDetail/PmActivityType} {jsonModel>HouseNumber}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
+										<Label width="100px" text="{jsonModel>/WorkOrderDetail/FunctionalLocation} {jsonModel>City}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
+										<Label width="100px" text="{path:'jsonModel>/WorkOrderDetail/Equipment', formatter: '.formatter.removeLeadingZerosFromString'}"
+											class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
+										<Label width="96px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold"/>
+										<Label width="100px" text="{path:'jsonModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold"/>
+										<Label width="100px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+									<FlexBox width="200px" class="cisUiTinyMargin" justifyContent="Center">
+										<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold"/>
+										<Label width="100px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+									</FlexBox>
+								</FlexBox>
+								<table:Table id="OperationsTable" rows="{path:'jsonModel>/Operations', templateShareable:false}" selectionMode="MultiToggle"
+									visibleRowCount="9" class="sapUiTinyMarginBegin">
+									<table:toolbar>
+										<Toolbar>
+											<content>
+												<Title text="Operations"/>
+												<ToolbarSpacer/>
+												<Button icon="sap-icon://delete" tooltip="Delete selected Components" press=".deleteSelectedOperations"/>
+												<Button icon="sap-icon://add-process" tooltip="New Operation" press=".createNewRowOperations"/>
+											</content>
+										</Toolbar>
+									</table:toolbar>
+									<table:columns>
+										<table:Column width="4rem">
+											<Label text="{i18n>OpAc}"/>
+											<table:template>
+												<Input editable="{jsonModel>New}" value="{path:'jsonModel>OperationID'}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="6rem">
+											<Label text="{i18n>WorkCenter}"/>
+											<table:template>
+												<Input showValueHelp="true" valueHelpRequest="showWorkCenterValueHelp" value="{jsonModel>WorkCenter}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="15rem" hAlign="End">
+											<Label text="{i18n>OpShortText}"/>
+											<table:template>
+												<Input value="{jsonModel>ShortText}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="5rem">
+											<Label text="{i18n>Work}"/>
+											<table:template>
+												<Input value="{jsonModel>WorkQuantity}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="9rem">
+											<Label text="{i18n>Unit}"/>
+											<table:template>
+												<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>WorkUnit}" items="{path:'Units', templateShareable:false}">
+													<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
+												</ComboBox>
+											</table:template>
+										</table:Column>
+										<table:Column width="12rem">
+											<Label text="{i18n>ActualWork}"/>
+											<table:template>
+												<Label text="{jsonModel>ActualWork}"/>
+											</table:template>
+										</table:Column>
+									</table:columns>
+								</table:Table>
+								<table:Table id="ComponentsTable" rows="{path: 'jsonModel>/Components', templateShareable:false}" visibleRowCount="9"
+									class="sapUiTinyMarginBegin">
+									<table:toolbar>
+										<Toolbar>
+											<content>
+												<Title text="Components"/>
+												<ToolbarSpacer/>
+												<Button icon="sap-icon://delete" tooltip="Delete selected Components" press=".deleteSelectedComponents"/>
+												<Button icon="sap-icon://add-equipment" tooltip="New Component" press=".createNewRowComponents"/>
+											</content>
+										</Toolbar>
+									</table:toolbar>
+									<table:columns>
+										<table:Column width="5rem">
+											<Label text="{i18n>Item}"/>
+											<table:template>
+												<Input editable="{jsonModel>New}" value="{path:'jsonModel>ItemID'}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="9rem">
+											<Label text="{i18n>Component}"/>
+											<table:template>
+												<Input showValueHelp="true" valueHelpRequest="showComponentValueHelp" value="{path: 'jsonModel>ComponentNumber'}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="20rem" hAlign="End">
+											<Label text="{i18n>Description}"/>
+											<table:template>
+												<Label text="{jsonModel>Description}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="5rem">
+											<Label text="{i18n>ReqQuantity}"/>
+											<table:template>
+												<Input value="{jsonModel>RequirementQuantity}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="9rem">
+											<Label text="{i18n>Unit}"/>
+											<table:template>
+												<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>Unit}" items="{path:'Units', templateShareable:false}">
+													<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
+												</ComboBox>
+											</table:template>
+										</table:Column>
+										<table:Column width="7rem">
+											<Label text="{i18n>IC}"/>
+											<table:template>
+												<Label text="{jsonModel>ItemCategory}"/>
+											</table:template>
+										</table:Column>
+										<table:Column width="5rem">
+											<Label text="{i18n>OperationReference}"/>
+											<table:template>
+												<Input value="{jsonModel>OperationReference}"/>
+											</table:template>
+										</table:Column>
+									</table:columns>
+								</table:Table>
+							</VBox>
+							<VBox width="100%" direction="Column" class="sapUiTinyMarginBegin">
+								<f:SimpleForm class="notificationBox" minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout"
+									title="Notification" labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1">
+									<f:content>
+										<Label text="Code"/>
+										<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+											<core:Item key="{Code}" text="{Name}"/>
+										</ComboBox>
+										<Label text="Note"/>
+										<Input value="{jsonModel>/WorkOrderDetail/NewNote}"/>
+										<Label text=""/>
+										<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
+									</f:content>
+								</f:SimpleForm>
+								<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data" labelSpanL="3"
+									labelSpanM="3" emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1">
+									<f:content>
+										<Label text="Damage"/>
+										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCodeGroup}" items="{DamageCodeGroups}"
+											selectionChange=".getValidDamageCodes">
+											<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
+										</ComboBox>
+										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
+											<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
+										</ComboBox>
+										<Label text="Text"/>
+										<Input value="{jsonModel>/WorkOrderDetail/Damage/DamageText}"/>
+										<Label text="Cause Code"/>
+										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCodeGroup}" items="{CauseCodeGroups}"
+											selectionChange=".getValidCauseCodes">
+											<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
+										</ComboBox>
+										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
+											<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
+										</ComboBox>
+										<Label text="Text"/>
+										<Input value="{jsonModel>/WorkOrderDetail/Cause/CauseText}"/>
+									</f:content>
+								</f:SimpleForm>
+							</VBox>
+						</items>
+					</HBox>
+				</content>
+				<dependents>
+					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.ComponentDialog" type="XML"/>
+				</dependents>
+			</Page>
+		</pages>
+	</App>
+	<BusyDialog id="ChangeBusyDialog"/>
+</mvc:View>

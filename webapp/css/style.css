@@ -1,0 +1,33 @@
+.rightMargin{
+	    margin-right: 20px;
+}
+
+html, body {
+  height: 100%
+}
+
+div#uiArea {
+  height: 100%
+}
+
+.FlexWrap{
+	flex-wrap: wrap;
+}
+
+.oldNotes{
+	border: 1px solid #bfbfbf;
+	height: 236px;
+}
+.notificationBox{
+	margin-top: 164px;
+}
+
+.cisUiTinyMargin {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.cisTopMargin{
+	margin-top: 10px;
+}

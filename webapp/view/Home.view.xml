@@ -1,0 +1,192 @@
+<mvc:View class="sapUiSizeCompact" controllerName="pd.pm.lite.controller.Home" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:l="sap.ui.layout" xmlns:layout="sap.ui.commons.layout" xmlns:mobile="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:table="sap.ui.table"
+	xmlns:ux3="sap.ui.ux3" xmlns="sap.ui.commons" height="100%">
+		<table:Table enableColumnFreeze="true" fixedColumnCount="3" id="ordersTable" selectionBehavior="RowSelector"
+			selectionMode="MultiToggle" visibleRowCountMode="Auto">
+			<table:extension>
+				<Toolbar id="toolBar">
+					<Label text="Plant / Main Work Center"/>
+					<DropdownBox id="plantId" items="{/Plants}" value="{Plant}" width="60px">
+						<items>
+							<core:ListItem text="{Id}"/>
+						</items>
+					</DropdownBox>
+					<DropdownBox id="workCenterId" items="{/WorkCenters}" value="{WorkCenter}" width="65px">
+						<items>
+							<core:ListItem text="{Id}"/>
+						</items>
+					</DropdownBox>
+					<DropdownBox id="viewTypeId" value="{ViewType}" width="100px">
+						<items>
+							<core:ListItem text="Headers"/>
+							<core:ListItem text="Operations"/>
+						</items>
+					</DropdownBox>
+					<Button icon="sap-icon://refresh" press="getFilteredOrders" text="{i18n>Go}"/>
+					<ToolbarSeparator/>
+					<SearchField enableClear="true" enableFilterMode="true" enableListSuggest="false" maxHistoryItems="10" placeholder="Enter Search term here"
+						search="searchTable" width="400px"/>
+					<ToolbarSeparator/>
+					<rightItems>
+						<TextView id="countId" text="Total Records: {localModel>/results/length}"/>
+					</rightItems>
+				</Toolbar>
+			</table:extension>
+			<table:toolbar>
+				<Toolbar>
+					<Button icon="sap-icon://add" press="openHierarchyPopup" text="New Order" tooltip="Create"/>
+					<ToolbarSeparator/>
+					<Button icon="sap-icon://print" press="triggerPrint" text="Print" tooltip="Print"/>
+					<ToolbarSeparator/>
+					<Button icon="sap-icon://activity-items" press="showOrders" text="List Orders" tooltip="IW38 - Work Order List"/>
+					<ToolbarSeparator/>
+					<Button icon="sap-icon://activity-items" press="showOperations" text="List Operations" tooltip="IW37N - Work Order Operations List"/>
+					<ToolbarSeparator/>
+					<Button icon="sap-icon://sys-find" press="triggerMM03" text="View Materials" tooltip="MM03 - Material Search"/>
+					<ToolbarSeparator/>
+					<Button icon="sap-icon://temperature" press="triggerMeasurement" text="Measurement" tooltip="IK34 - Enter Measurement Document Readings"/>
+				</Toolbar>
+			</table:toolbar>
+			<table:columns>
+				<table:Column width="62px">
+					<Label text="Actions" tooltip="Choose any action"/>
+					<table:template>
+						<layout:HorizontalLayout>
+							<core:Icon press="triggerChange" src="sap-icon://edit" tooltip="{i18n>change}" class="rightMargin"/>
+							<core:Icon press="triggerConfirm" src="sap-icon://complete" tooltip="{i18n>confirm}" class="rightMargin"/>
+						</layout:HorizontalLayout>
+					</table:template>
+				</table:Column>
+				<table:Column visible="false" width="60px">
+					<Label text="Confirm" tooltip="Label Tooltip"/>
+					<table:template>
+						<core:Icon press="triggerConfirm" src="sap-icon://complete" tooltip="{i18n>confirm}"/>
+					</table:template>
+				</table:Column>
+				<table:Column filterProperty="OrderNumber" sortProperty="OrderNumber" width="100px" tooltip="{i18n>ttOrderNumber}">
+					<Label text="Order Number"/>
+					<table:template>
+						<TextView text="{path: 'localModel>OrderNumber', formatter: '.formatter.orderNumber'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column filterProperty="OrderType" sortProperty="OrderType" width="65px" tooltip="{i18n>ttOrderType}">
+					<Label text="Type"/>
+					<table:template>
+						<TextView text="{localModel>OrderType}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="StartDate" width="90px" tooltip="{i18n>ttStartDate}">
+					<Label text="Start Date"/>
+					<table:template>
+						<TextView text="{path:'localModel>StartDate', formatter:'.formatter.date'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="40px">
+					<Label text="Sch"/>
+					<table:template>
+						<core:Icon color="{path:'localModel>Status', formatter: '.formatter.statusIconColor'}"
+							src="{path:'localModel>Status', formatter: '.formatter.statusIcon'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="FinishDate" width="60px">
+					<Label text="Days"/>
+					<table:template>
+						<TextView text="{path:'localModel>FinishDate', formatter:'.formatter.days'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="FinishDate" width="90px" tooltip="{i18n>ttSchfinish}">
+					<Label text="Sch. Finish"/>
+					<table:template>
+						<TextView text="{path:'localModel>FinishDate', formatter:'.formatter.date'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column filterProperty="Description" width="300px" tooltip="{i18n>ttOrderDescription}">
+					<Label text="Description"/>
+					<table:template>
+						<TextView text="{localModel>Description}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="FunctionalLocation" width="300px" tooltip="{i18n>ttFunctionalLocation}">
+					<Label text="Functional Location"/>
+					<table:template>
+						<TextView text="{parts: [{path: 'localModel>FunctionalLocation'}, {path: 'localModel>FLDescription'}], formatter:'.formatter.equipment'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="Equipment" width="300px" tooltip="{i18n>ttEquipmentNumber}">
+					<Label text="Equipment"/>
+					<table:template>
+						<TextView text="{parts: [{path: 'localModel>Equipment'}, {path: 'localModel>EquipmentName'}], formatter:'.formatter.equipment'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column id="Operations1" sortProperty="" width="70px">
+					<Label text="OpAc"/>
+					<table:template>
+						<TextView text="{localModel>OperationNumber}"/>
+					</table:template>
+				</table:Column>
+				<table:Column id="Operations2" sortProperty="" width="90px">
+					<Label text="OpWCtr"/>
+					<table:template>
+						<TextView text="{localModel>OperationWorkCenter}"/>
+					</table:template>
+				</table:Column>
+				<table:Column id="Operations3" sortProperty="" width="200px">
+					<Label text="{i18n>operationShortText}"/>
+					<table:template>
+						<TextView text="{localModel>OperationText}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttBreakdownIndicator}">
+					<Label text="B"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/B}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttWOSS}">
+					<Label text="SS"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/SS}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAM}">
+					<Label text="AM"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/AM}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAO}">
+					<Label text="AO"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/AO}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAL}">
+					<Label text="AL"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/AL}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAE}">
+					<Label text="AE"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/AE}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAB}">
+					<Label text="AB"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/AB}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="" width="130px" tooltip="{i18n>ttAOS}">
+					<Label text="Other Statuses"/>
+					<table:template>
+						<TextView text="{localModel>Statuses/OtherStatuses}"/>
+					</table:template>
+				</table:Column>
+			</table:columns>
+		</table:Table>
+		<!--		<core:HTML content="&lt;iframe id='webguiFrame1' style='width: 100%; height: 30%;'&gt;&lt;/iframe&gt;">
+		</core:HTML>-->
+		<mobile:BusyDialog id="BusyDialog"/>
+</mvc:View>

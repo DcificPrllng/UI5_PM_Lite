@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta charset="utf-8">
+		<title>PM Lite</title>
+		<script
+				id="sap-ui-bootstrap"
+				src="https://openui5.hana.ondemand.com/resources/sap-ui-cachebuster/sap-ui-core.js"
+				data-sap-ui-libs="sap.m,sap.ui.layout"
+				data-sap-ui-bindingSyntax="complex"
+				data-sap-ui-compatVersion="edge"
+				data-sap-ui-theme="sap_bluecrystal"
+				data-sap-ui-language="en"
+				data-sap-ui-preload="async"
+				data-sap-ui-appCacheBuster="./"
+				data-sap-ui-resourceroots='{
+					"pd.pm.lite": "./"
+				}'>
+		</script>
+		
+		<script>
+			sap.ui.getCore().attachInit(function () {
+				sap.ui.require([
+					"sap/ui/unified/Shell",
+					"sap/ui/core/ComponentContainer",
+					"sap/m/Button",
+					"sap/ui/core/UIComponent"
+				], function (oShell, ComponentContainer, Button, Component) {
+			        new oShell({
+			            headItems: [ new sap.ui.unified.ShellHeadItem({
+								            	visible: false,
+			                					tooltip:"Home",
+					                            icon:"sap-icon://home",
+					                            press:function(){
+					                                window.location.hash = "#";
+					                            }
+			            })],
+			            headEndItems: [new sap.ui.unified.ShellHeadItem({
+			                					tooltip:"Logoff",
+					                            icon:"sap-icon://log",
+					                            press: "performLogout"
+					    })],
+			            content: [new ComponentContainer({
+	                                 height : "100%",
+	                                 	name : "pd.pm.lite",
+	                                 	manifestFirst: true,
+	                                 	async: true
+    				    })]
+			        }).addStyleClass("sapUiSizeCompact").placeAt("content");
+				});
+			});
+
+		</script>
+	</head>
+	<body class="sapUiBody" id="content">
+	</body>
+</html>
