@@ -31,8 +31,8 @@ sap.ui.define([
 		},
 		onBeforeRendering: function() {
 			//Make shell header items invisible
-			var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
-			headItems[0].setVisible(false); //Home Button
+			// var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
+			// headItems[0].setVisible(false); //Home Button
 		},
 		onAfterRendering: function() {
 			var that = this;

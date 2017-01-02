@@ -17,14 +17,21 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
-			
-			var standardListItem = new StandardListItem({title:"{Id}", description:"{Name}"});
-			
+
+			var standardListItem = new StandardListItem({
+				title: "{Id}",
+				description: "{Name}"
+			});
+
 			//Bind components and work centers value help
 			var userPlant = model.getData("/UserSettings('dummy')").Plant;
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, "'" + userPlant + "'");
-			this._WorkCenterDialog.bindAggregation("items", { path: "/WorkCenters", template: standardListItem, filters: [oFilter1]} );
-			this._ComponentDialog.bindAggregation("items", "/ComponentValues", standardListItem );
+			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+			this._WorkCenterDialog.bindAggregation("items", {
+				path: "/WorkCenters",
+				template: standardListItem,
+				filters: [oFilter1]
+			});
+			this._ComponentDialog.bindAggregation("items", "/ComponentValues", standardListItem);
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -32,9 +39,9 @@ sap.ui.define([
 				return;
 			}
 
-			//Make shell header items visible
-			var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
-			headItems[0].setVisible(true); //Home Button
+			// //Make shell header items visible
+			// var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
+			// headItems[0].setVisible(true); //Home Button
 
 			//Make data call
 			var oView = this.getView();
@@ -66,9 +73,17 @@ sap.ui.define([
 		},
 		createNewRowOperations: function() {
 			var currentOperations = this.getView().getModel("jsonModel").getProperty("/Operations");
+
+			//Find the larget OperationID
+			var maxOperationId = this.getMax(currentOperations, "OperationID");
+			maxOperationId = maxOperationId + 10;
+
+			//Four digit id
+			var newOperationId = this.pad(maxOperationId, 4);
+
 			currentOperations.push({
 				"ActualWork": "",
-				"OperationID": "0",
+				"OperationID": newOperationId,
 				"OrderNumber": "",
 				"ShortText": "",
 				"WorkCenter": "",
@@ -80,9 +95,15 @@ sap.ui.define([
 		},
 		createNewRowComponents: function() {
 			var currentComponents = this.getView().getModel("jsonModel").getProperty("/Components");
+			//Find the larget ItemId
+			var maxItemId = this.getMax(currentComponents, "ItemID");
+			maxItemId = maxItemId + 10;
+
+			//Four digit id
+			var newItemId = this.pad(maxItemId, 4);
 			currentComponents.push({
 				"ComponentNumber": "",
-				"ItemID": "0",
+				"ItemID": newItemId,
 				"OrderNumber": "",
 				"Description": "",
 				"RequirementQuantity": "",
@@ -92,6 +113,19 @@ sap.ui.define([
 				"New": true
 			});
 			this.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
+		},
+		getMax: function(arr, prop) {
+			var max;
+			for (var i = 0; i < arr.length; i++) {
+				if (!max || parseInt(arr[i][prop]) > parseInt(max[prop])) {
+					max = arr[i];
+				}
+			}
+			return parseInt(max[prop]);
+		},
+		pad: function(num, size) {
+			var s = "000000000" + num;
+			return s.substr(s.length - size);
 		},
 		getValidDamageCodes: function(oEvent) {
 			// var selectedKey = oEvent.getParameter("selectedItem").getKey();
@@ -154,6 +188,9 @@ sap.ui.define([
 					array.splice(index, 1);
 				}
 			});
+		},
+		GoHome: function() {
+			window.location.hash = "#";
 		},
 		SaveOrder: function() {
 			//Get Operations and components.
@@ -278,10 +315,10 @@ sap.ui.define([
 			});
 		},
 		showWorkCenterValueHelp: function(oEvent) {
-				this.getView().getController()._WorkCenterDialog.open();
+			this.getView().getController()._WorkCenterDialog.open();
 		},
 		showComponentValueHelp: function(oEvent) {
-				this.getView().getController()._ComponentDialog.open();
+			this.getView().getController()._ComponentDialog.open();
 		}
 	});
 

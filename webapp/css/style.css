@@ -17,6 +17,7 @@ div#uiArea {
 .oldNotes{
 	border: 1px solid #bfbfbf;
 	height: 236px;
+	font-size: 9pt;
 }
 .notificationBox{
 	/*margin-top: 164px;*/
@@ -61,4 +62,15 @@ div#uiArea {
 }
 .cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept>.sapMBtnIcon {
     color: #005f28;
+}
+.cisMBtnAccept.sapMBtn:hover>.sapMBtnHoverable.sapMBtnAccept:not(.sapMBtnActive) {
+    background-color: transparent;
+    border-color: #b51616;
+    transform: scale(1.1);
+}
+.cisMBtnReject.sapMBtn:hover>.sapMBtnHoverable.sapMBtnReject:not(.sapMBtnActive) {
+    background-color: transparent;
+    border-color: #b51616;
+    
+    transform: scale(1.1);
 }

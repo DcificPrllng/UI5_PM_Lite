@@ -9,7 +9,7 @@
 						<FlexBox direction="Column" class="FlexWrap sapUiTinyMargin">
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 								<Button type="Accept" id="save" icon="sap-icon://save" width="100px" text="Save" press=".SaveOrder"/>
-								<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="100px" text="Cancel" press=".SaveOrder"/>
+								<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="100px" text="Cancel" press=".GoHome"/>
 								<Label width="268px" class="cisTopMargin" textAlign="Right" text="Order:" design="Bold"/>
 								<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
 									text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
@@ -18,18 +18,12 @@
 								<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>								
 							</FlexBox>
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-								<!--<Label width="104px" class="cisTopMargin" textAlign="Right" text="Order:" design="Bold"/>-->
-								<!--<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"-->
-								<!--	text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>-->
-								<!--<Input width="176px" value="{jsonModel>/WorkOrderDetail/ShortDescription}"/>-->
-								<!--<Label class="sapUiTinyMarginBegin cisTopMargin" width="104px" textAlign="Right" text="System Status:" design="Bold"/>-->
-								<!--<Text class="sapUiTinyMarginBegin cisTopMargin" width="208px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>-->
 							</FlexBox>
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 								<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
-								<Label width="258px" text="{jsonModel>MainWorkCenter}" class="sapUiTinyMarginBegin"/>
+								<Label width="258px" text="{jsonModel>/WorkOrderDetail/MainWorkCenter}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
-								<Label width="350px" text="{jsonModel>/WorkOrderDetail/FunctionalLocation} {jsonModel>City}" class="sapUiTinyMarginBegin"/>
+								<Label width="350px" text="{jsonModel>/WorkOrderDetail/FunctionalLocation}-{jsonModel>/WorkOrderDetail/FunctionalLocationName}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold"/>
@@ -39,7 +33,7 @@
 								<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
 								<Label width="258px" text="{jsonModel>/WorkOrderDetail/PmActivityType} {jsonModel>HouseNumber}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
-								<Label width="350px" text="{path:'jsonModel>/WorkOrderDetail/Equipment', formatter: '.formatter.removeLeadingZerosFromString'}"
+								<Label width="350px" text="{path:'jsonModel>/WorkOrderDetail/Equipment', formatter: '.formatter.removeLeadingZerosFromString'}-{jsonModel>/WorkOrderDetail/EquipmentName}"
 									class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
