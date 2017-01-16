@@ -2,8 +2,11 @@ sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
 	"pd/pm/lite/util/formatter",
 	"sap/m/MessageToast",
-	"sap/m/StandardListItem"
-], function(Controller, formatter, MessageToast, StandardListItem) {
+	"sap/m/StandardListItem",
+	"sap/m/Dialog",
+	"sap/m/Button",
+	"sap/m/Text"
+], function(Controller, formatter, MessageToast, StandardListItem, Dialog, Button, Text) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.ChangeOrder", {
@@ -196,7 +199,29 @@ sap.ui.define([
 			});
 		},
 		GoHome: function() {
-			window.location.hash = "#";
+			//Confirm from the user
+			var dialog = new Dialog({
+				title: "Cancel",
+				type: "Message",
+				content: new Text({ text: "You will lose unsaved changes. Continue?"}),
+				beginButton: new Button({
+					text: "Yes",
+					press: function () {
+						window.location.hash = "#";
+						dialog.close();
+					}
+				}),
+				endButton: new Button({
+					text: "No",
+					press: function () {
+						dialog.close();
+					}
+				}),
+				afterClose: function() {
+					dialog.destroy();
+				}
+			});
+			dialog.open();			
 		},
 		ReleaseOrder: function(){
 			

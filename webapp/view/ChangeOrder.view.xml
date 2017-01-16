@@ -6,17 +6,17 @@
 			<Page title="{jsonModel>/WorkOrderDetail/OrderNumber}: {jsonModel>/WorkOrderDetail/ShortDescription}" showHeader="false" class="cisLabels">
 				<content>
 					<VBox width="100%" height="97%" direction="Column" alignContent="Center" alignItems="Center">
-						<FlexBox width="1750px"  direction="Column" class="FlexWrap sapUiTinyMargin">
+						<FlexBox width="1750px"  direction="Column" class="PDHeader sapUiTinyMargin">
 							<FlexBox class="cisUiTinyMargin" justifyContent="Start">
 								<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
 								<Button  class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
 								<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
 								<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
 								<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
-									text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+									text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}" />
 								<Input width="300px" value="{jsonModel>/WorkOrderDetail/ShortDescription}" maxLength="40"/>
 								<Label class="sapUiTinyMarginBegin cisTopMargin" width="237px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
-								<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
+								<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}" />
 							</FlexBox>
 							<!--<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start"></FlexBox>-->
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">

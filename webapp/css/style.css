@@ -13,11 +13,14 @@ div#uiArea {
 
 .FlexWrap {
     flex-wrap: wrap;
+}
+
+.PDHeader {
     flex: 1;
     justify-content: space-between;
 }
 
-.PDLabel{
+.PDLabel {
     padding-top: 7px;
 }
 
@@ -28,11 +31,9 @@ div#uiArea {
     font-size: 9pt;
 }
 
-.notificationBox
-{
-	max-width: 650px; 
+.notificationBox {
+    max-width: 650px;
 }
-
 
 .notificationBox>.sapUiForm .sapUiFormTitle {
     height: 2rem;
@@ -48,15 +49,19 @@ div#uiArea {
 .cisLabels .sapMLabel {
     font-size: 0.775rem;
 }
+
 .cisLabels .sapMText {
     font-size: .775rem;
 }
+
 .cisTopMargin {
     margin-top: 10px;
 }
+
 .cisLabels .sapMInputBaseInner {
     font-size: .775rem;
 }
+
 .cisLabels .sapMBtnInner {
     font-size: .775rem;
 }
