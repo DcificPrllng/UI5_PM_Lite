@@ -18,6 +18,9 @@ sap.ui.define([
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
 
+			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
+			//var componentDialogList = this.getView().byId("idComponentDialogList");
+
 			var standardListItem = new StandardListItem({
 				title: "{Id}",
 				description: "{Name}"
@@ -26,12 +29,12 @@ sap.ui.define([
 			//Bind components and work centers value help
 			var userPlant = model.getData("/UserSettings('dummy')").Plant;
 			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-			this._WorkCenterDialog.bindAggregation("items", {
+			this._workCenterDialogList.bindAggregation("items", {
 				path: "/WorkCenters",
 				template: standardListItem,
 				filters: [oFilter1]
 			});
-			this._ComponentDialog.bindAggregation("items", "/ComponentValues", standardListItem);
+			//	componentDialogList.bindAggregation("items", "/ComponentValues", standardListItem);
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -116,6 +119,9 @@ sap.ui.define([
 		},
 		getMax: function(arr, prop) {
 			var max;
+			if (arr.length === 0){
+				return 0;
+			}
 			for (var i = 0; i < arr.length; i++) {
 				if (!max || parseInt(arr[i][prop]) > parseInt(max[prop])) {
 					max = arr[i];
@@ -191,6 +197,9 @@ sap.ui.define([
 		},
 		GoHome: function() {
 			window.location.hash = "#";
+		},
+		ReleaseOrder: function(){
+			
 		},
 		SaveOrder: function() {
 			//Get Operations and components.
@@ -314,8 +323,18 @@ sap.ui.define([
 				}
 			});
 		},
+		OnWorkCenterSelected: function(evt) {
+			var selectedWorkCenter = evt.getSource().getSelectedItem().getTitle();
+			var workCenterDialog = evt.getSource().getParent();
+			//Set the value to the right column item
+			workCenterDialog.data("source").setValue(selectedWorkCenter);
+			workCenterDialog.close();
+		},
 		showWorkCenterValueHelp: function(oEvent) {
-			this.getView().getController()._WorkCenterDialog.open();
+			var WorkCenterDialog = this.getView().getController()._WorkCenterDialog;
+			this.getView().getController()._workCenterDialogList.removeSelections();
+			WorkCenterDialog.data("source", oEvent.getSource());
+			WorkCenterDialog.open();
 		},
 		showComponentValueHelp: function(oEvent) {
 			this.getView().getController()._ComponentDialog.open();

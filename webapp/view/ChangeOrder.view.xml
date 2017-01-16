@@ -3,57 +3,63 @@
 	controllerName="pd.pm.lite.controller.ChangeOrder">
 	<App>
 		<pages>
-			<Page title="Title" showHeader="false">
+			<Page title="{jsonModel>/WorkOrderDetail/OrderNumber}: {jsonModel>/WorkOrderDetail/ShortDescription}" showHeader="false" class="cisLabels">
 				<content>
-					<VBox width="100%" direction="Column">
-						<FlexBox direction="Column" class="FlexWrap sapUiTinyMargin">
-							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-								<Button type="Accept" id="save" icon="sap-icon://save" width="100px" text="Save" press=".SaveOrder"/>
-								<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="100px" text="Cancel" press=".GoHome"/>
-								<Label width="268px" class="cisTopMargin" textAlign="Right" text="Order:" design="Bold"/>
+					<VBox width="100%" height="97%" direction="Column" alignContent="Center" alignItems="Center">
+						<FlexBox width="1750px"  direction="Column" class="FlexWrap sapUiTinyMargin">
+							<FlexBox class="cisUiTinyMargin" justifyContent="Start">
+								<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
+								<Button  class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
+								<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
+								<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
 								<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
 									text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
-								<Input width="266px" value="{jsonModel>/WorkOrderDetail/ShortDescription}"/>
-								<Label class="sapUiTinyMarginBegin cisTopMargin" width="104px" textAlign="Right" text="System Status:" design="Bold"/>
-								<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>								
+								<Input width="300px" value="{jsonModel>/WorkOrderDetail/ShortDescription}" maxLength="40"/>
+								<Label class="sapUiTinyMarginBegin cisTopMargin" width="237px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
+								<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
 							</FlexBox>
-							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-							</FlexBox>
+							<!--<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start"></FlexBox>-->
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 								<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
-								<Label width="258px" text="{jsonModel>/WorkOrderDetail/MainWorkCenter}" class="sapUiTinyMarginBegin"/>
+								<Label width="200px" text="{parts: [{path: 'jsonModel>/WorkOrderDetail/MainWorkCenter'}, {path:'jsonModel>/WorkOrderDetail/MainWorkCenterName'}], formatter:'.formatter.idAndName'}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
-								<Label width="350px" text="{jsonModel>/WorkOrderDetail/FunctionalLocation}-{jsonModel>/WorkOrderDetail/FunctionalLocationName}" class="sapUiTinyMarginBegin"/>
+								<Label width="300px" text="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.idAndName'}"
+									class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+								<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold"/>
+								<Label width="104px" text="{jsonModel>/WorkOrderDetail/ReportedBy}" class="sapUiTinyMarginBegin"/>								
 							</FlexBox>
 							<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 								<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
-								<Label width="258px" text="{jsonModel>/WorkOrderDetail/PmActivityType} {jsonModel>HouseNumber}" class="sapUiTinyMarginBegin"/>
+								<Label width="200px" text="{parts: [{path: 'jsonModel>/WorkOrderDetail/PmActivityType'}, {path: 'jsonModel>/WorkOrderDetail/PmActivityTypeName'}], formatter:'.formatter.idAndName'}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
-								<Label width="350px" text="{path:'jsonModel>/WorkOrderDetail/Equipment', formatter: '.formatter.removeLeadingZerosFromString'}-{jsonModel>/WorkOrderDetail/EquipmentName}"
+								<Label width="300px"
+									text="{parts:[{path:'jsonModel>/WorkOrderDetail/Equipment'}, {path: 'jsonModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"
 									class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
 								<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold"/>
 								<Label width="104px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+								<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold"/>
+								<Label width="104px" text="{jsonModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>								
 							</FlexBox>
 						</FlexBox>
-						<HBox width="100%">
-							<VBox width="100%" direction="Column">
+						<HBox justifyContent="Center">
+							<VBox width="1000px" direction="Column">
 								<table:Table id="OperationsTable" rows="{path:'jsonModel>/Operations', templateShareable:false}" selectionMode="MultiToggle"
-									visibleRowCount="9" class="sapUiTinyMarginBegin">
+									visibleRowCount="10" class="sapUiTinyMarginBegin">
 									<table:toolbar>
 										<Toolbar>
 											<content>
-												<Title text="Operations"/>
+												<Title text="{i18n>Operations}"/>
 												<ToolbarSpacer/>
-												<Button type="Reject" class="cisMBtnReject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="Delete selected Components"
-													press=".deleteSelectedOperations"/>
-												<Button type="Accept" class="cisMBtnAccept" width="80px" text="Add" icon="sap-icon://add-process" tooltip="New Operation"
+												<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-process" tooltip="{i18n>NewOperation}"
 													press=".createNewRowOperations"/>
+												<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedOperations}"
+													press=".deleteSelectedOperations"/>
 											</content>
 										</Toolbar>
 									</table:toolbar>
@@ -70,10 +76,10 @@
 												<Input showValueHelp="true" valueHelpRequest="showWorkCenterValueHelp" value="{jsonModel>WorkCenter}"/>
 											</table:template>
 										</table:Column>
-										<table:Column width="15rem" hAlign="End">
+										<table:Column width="22rem" hAlign="End">
 											<Label text="{i18n>OpShortText}"/>
 											<table:template>
-												<Input value="{jsonModel>ShortText}"/>
+												<Input value="{jsonModel>ShortText}" maxLength="40"/>
 											</table:template>
 										</table:Column>
 										<table:Column width="5rem">
@@ -82,7 +88,7 @@
 												<Input value="{jsonModel>WorkQuantity}"/>
 											</table:template>
 										</table:Column>
-										<table:Column width="9rem">
+										<table:Column width="5rem">
 											<Label text="{i18n>Unit}"/>
 											<table:template>
 												<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>WorkUnit}" items="{path:'Units', templateShareable:false}">
@@ -90,7 +96,7 @@
 												</ComboBox>
 											</table:template>
 										</table:Column>
-										<table:Column width="12rem">
+										<table:Column width="9rem">
 											<Label text="{i18n>ActualWork}"/>
 											<table:template>
 												<Label text="{jsonModel>ActualWork}"/>
@@ -98,17 +104,17 @@
 										</table:Column>
 									</table:columns>
 								</table:Table>
-								<table:Table id="ComponentsTable" rows="{path: 'jsonModel>/Components', templateShareable:false}" visibleRowCount="9"
+								<table:Table id="ComponentsTable" rows="{path: 'jsonModel>/Components', templateShareable:false}" visibleRowCount="10"
 									class="sapUiTinyMarginBegin">
 									<table:toolbar>
 										<Toolbar>
 											<content>
 												<Title text="Components"/>
 												<ToolbarSpacer/>
-												<Button type="Reject" class="cisMBtnReject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="Delete selected Components"
-													press=".deleteSelectedComponents"/>
-												<Button type="Accept" class="cisMBtnAccept" width="80px" text="Add" icon="sap-icon://add-equipment" tooltip="New Component"
+												<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-equipment" tooltip="{i18n>NewComponent}"
 													press=".createNewRowComponents"/>
+												<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
+													press=".deleteSelectedComponents"/>
 											</content>
 										</Toolbar>
 									</table:toolbar>
@@ -125,7 +131,7 @@
 												<Input showValueHelp="true" valueHelpRequest="showComponentValueHelp" value="{path: 'jsonModel>ComponentNumber'}"/>
 											</table:template>
 										</table:Column>
-										<table:Column width="20rem" hAlign="End">
+										<table:Column width="24rem" hAlign="End">
 											<Label text="{i18n>Description}"/>
 											<table:template>
 												<Label text="{jsonModel>Description}"/>
@@ -137,7 +143,7 @@
 												<Input value="{jsonModel>RequirementQuantity}"/>
 											</table:template>
 										</table:Column>
-										<table:Column width="9rem">
+										<table:Column width="6rem">
 											<Label text="{i18n>Unit}"/>
 											<table:template>
 												<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>Unit}" items="{path:'Units', templateShareable:false}">
@@ -145,7 +151,7 @@
 												</ComboBox>
 											</table:template>
 										</table:Column>
-										<table:Column width="7rem">
+										<table:Column width="5rem">
 											<Label text="{i18n>IC}"/>
 											<table:template>
 												<Label text="{jsonModel>ItemCategory}"/>
@@ -160,24 +166,26 @@
 									</table:columns>
 								</table:Table>
 							</VBox>
-							<VBox width="100%" direction="Column" class="sapUiTinyMarginBegin">
-								<f:SimpleForm class="notificationBox" minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout"
-									title="Notification" labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1">
+							<VBox width="750px" direction="Column" class="sapUiTinyMarginBegin pdForm">
+								<!--<f:SimpleForm  class="notificationBox" minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout"-->
+								<!--	title="Notification" labelSpanL="1" labelSpanM="1" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">-->
+									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout"
+									title="Notification" labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 									<f:content>
-										<Label text="Code"/>
+										<Label text="{i18n>Code}" class="PDLabel"/>
 										<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
 											<core:Item key="{Code}" text="{Name}"/>
 										</ComboBox>
-										<Label text="Note"/>
+										<Label text="{i18n>Note}"  class="PDLabel"/>
 										<Input value="{jsonModel>/WorkOrderDetail/NewNote}"/>
 										<Label text=""/>
 										<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
 									</f:content>
 								</f:SimpleForm>
-								<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data" labelSpanL="3"
-									labelSpanM="3" emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1">
+								<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data" labelSpanL="2"
+									labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 									<f:content>
-										<Label text="Damage"/>
+										<Label text="{i18n>Damage}"  class="PDLabel"/>
 										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCodeGroup}" items="{DamageCodeGroups}"
 											selectionChange=".getValidDamageCodes">
 											<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
@@ -185,9 +193,9 @@
 										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
 											<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
 										</ComboBox>
-										<Label text="Text"/>
-										<Input value="{jsonModel>/WorkOrderDetail/Damage/DamageText}"/>
-										<Label text="Cause Code"/>
+										<Label text="{i18n>Text}"  class="PDLabel"/>
+										<Input value="{jsonModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
+										<Label text="{i18n>CauseCode}" class="PDLabel"/>
 										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCodeGroup}" items="{CauseCodeGroups}"
 											selectionChange=".getValidCauseCodes">
 											<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
@@ -195,8 +203,8 @@
 										<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
 											<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
 										</ComboBox>
-										<Label text="Text"/>
-										<Input value="{jsonModel>/WorkOrderDetail/Cause/CauseText}"/>
+										<Label text="{i18n>Text}" class="PDLabel"/>
+										<Input value="{jsonModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 									</f:content>
 								</f:SimpleForm>
 							</VBox>

@@ -1,36 +1,64 @@
-.rightMargin{
-	    margin-right: 20px;
+.rightMargin {
+    margin-right: 20px;
 }
 
-html, body {
-  height: 100%
+html,
+body {
+    height: 100%
 }
 
 div#uiArea {
-  height: 100%
+    height: 100%
 }
 
-.FlexWrap{
-	flex-wrap: wrap;
+.FlexWrap {
+    flex-wrap: wrap;
+    flex: 1;
+    justify-content: space-between;
 }
 
-.oldNotes{
-	border: 1px solid #bfbfbf;
-	height: 236px;
-	font-size: 9pt;
+.PDLabel{
+    padding-top: 7px;
 }
-.notificationBox{
-	/*margin-top: 164px;*/
+
+.oldNotes {
+    border: 1px solid #bfbfbf;
+    min-height: 120px;
+    ;
+    font-size: 9pt;
+}
+
+.notificationBox
+{
+	max-width: 650px; 
+}
+
+
+.notificationBox>.sapUiForm .sapUiFormTitle {
+    height: 2rem;
+    line-height: 2rem;
 }
 
 .cisUiTinyMargin {
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-    margin-left: 0.5rem;
+    /*margin-right: 0.5rem;*/
+    /*margin-bottom: 0.5rem;*/
+    /*margin-left: 0.5rem;*/
 }
 
-.cisTopMargin{
-	margin-top: 10px;
+.cisLabels .sapMLabel {
+    font-size: 0.775rem;
+}
+.cisLabels .sapMText {
+    font-size: .775rem;
+}
+.cisTopMargin {
+    margin-top: 10px;
+}
+.cisLabels .sapMInputBaseInner {
+    font-size: .775rem;
+}
+.cisLabels .sapMBtnInner {
+    font-size: .775rem;
 }
 
 .cisMBtnReject>span.sapMBtnInner.sapMBtnReject>.sapMBtnIcon {
@@ -52,25 +80,28 @@ div#uiArea {
 }
 
 .cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept {
-	background-color: transparent;
+    background-color: transparent;
     border-color: #005f28;
     color: #005f28;
     text-shadow: none;
 }
-.cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept:hover{
-	background-color: transparent;
+
+.cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept:hover {
+    background-color: transparent;
 }
+
 .cisMBtnAccept>span.sapMBtnInner.sapMBtnAccept>.sapMBtnIcon {
     color: #005f28;
 }
+
 .cisMBtnAccept.sapMBtn:hover>.sapMBtnHoverable.sapMBtnAccept:not(.sapMBtnActive) {
     background-color: transparent;
     border-color: #b51616;
     transform: scale(1.1);
 }
+
 .cisMBtnReject.sapMBtn:hover>.sapMBtnHoverable.sapMBtnReject:not(.sapMBtnActive) {
     background-color: transparent;
     border-color: #b51616;
-    
     transform: scale(1.1);
 }

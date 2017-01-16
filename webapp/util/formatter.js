@@ -2,16 +2,16 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 	"use strict";
 	return {
 		removeLeadingZerosFromString: function(numberString) {
-			if (numberString === "" || numberString === "0"){
+			if (numberString === "" || numberString === "0") {
 				return "";
 			}
 			return parseInt(numberString, 10);
-		},		
+		},
 		orderNumber: function(orderNumber) {
 			return parseInt(orderNumber, 10);
 		},
 		equipment: function(number, desc) {
-			if (!number) {
+			if (!desc) {
 				return "";
 			}
 			return parseInt(number, 10) + " (" + desc + ")";
@@ -56,12 +56,18 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 					return "#f0ab00";
 			}
 		},
-		editableId: function(newItem){
-			if(newItem === "undefined"){
+		editableId: function(newItem) {
+			if (newItem === "undefined") {
 				return false;
-			} 
-			else{ 
+			} else {
 				return true;
+			}
+		},
+		idAndName: function(id, name) {
+			if (name !== "") {
+				return id + " (" + name + ")";
+			} else {
+				return id;
 			}
 		}
 	};

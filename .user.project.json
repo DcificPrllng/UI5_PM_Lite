@@ -14,9 +14,29 @@
       "urlParametersNotNeeded": false,
       "_metadata": {
         "runnerId": "webapprunner",
+        "id": 135407,
+        "displayName": "Run index.html 1",
+        "lastRunTimeStamp": 1484559397339
+      }
+    },
+    {
+      "filePath": "/webapp/index.html",
+      "previewMode": 1,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "hashParameter": "",
+      "backendSystem": [],
+      "urlParametersNotNeeded": false,
+      "_metadata": {
+        "runnerId": "webapprunner",
         "id": 5563116,
         "displayName": "Run index.html",
-        "lastRunTimeStamp": 1483367196564
+        "lastRunTimeStamp": 1483377412576,
+        "hasIssues": true
       }
     },
     {

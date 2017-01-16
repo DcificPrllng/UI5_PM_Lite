@@ -1,12 +1,6 @@
-<core:FragmentDefinition
-	xmlns="sap.m"
-	xmlns:core="sap.ui.core">
-	<SelectDialog
-		id="idWorkCenterDialog"
-		title="Work Centers"
-		class="sapUiPopupWithPadding"
-		search="_handleWCValueHelpSearch"
-		confirm="_handleWCValueHelpClose"
-		cancel="_handleWCValueHelpClose">
-	</SelectDialog>
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="idWorkCenterDialog" title="{i18n>WorkCenters}">
+		<List id="idWorkCenterDialogList" title="Work Centers" class="sapUiPopupWithPadding" search="_handleWCValueHelpSearch" 
+			confirm="_handleWCValueHelpClose" cancel="_handleWCValueHelpClose" mode="SingleSelectMaster" selectionChange=".OnWorkCenterSelected"></List>
+	</Dialog>
 </core:FragmentDefinition>
