@@ -1,12 +1,6 @@
-<core:FragmentDefinition
-	xmlns="sap.m"
-	xmlns:core="sap.ui.core">
-	<SelectDialog
-		id="idComponentDialog"
-		title="Components"
-		class="sapUiPopupWithPadding"
-		search="_handleCValueHelpSearch"
-		confirm="_handleCValueHelpClose"
-		cancel="_handleCValueHelpClose">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="idComponentDialog" title="Components" class="sapUiPopupWithPadding" search="_handleCValueHelpSearch"
+		confirm="_handleCValueHelpClose" cancel="_handleCValueHelpClose">
+		<StandardListItem title="{Name}" description="{MPN}-{Manufacturer}"  iconDensityAware="false" iconInset="false" type="Active"/>
 	</SelectDialog>
 </core:FragmentDefinition>

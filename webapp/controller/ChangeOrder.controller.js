@@ -363,6 +363,8 @@ sap.ui.define([
 		},
 		showComponentValueHelp: function(oEvent) {
 			this.getView().getController()._ComponentDialog.open();
+			//Bind items
+			
 		}
 	});
 
