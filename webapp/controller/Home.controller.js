@@ -17,7 +17,9 @@ sap.ui.define([
 		formatter: formatter,
 		onInit: function() {
 			this._toolBar = this.getView().byId("toolBar");
-			this._toolBar.bindElement("/UserSettings('dummy')");
+			this._toolBar.bindElement({path: "/UserSettings('dummy')"
+			// , parameters: {groupId:"initialRead"}
+			});
 			this._oTable = this.getView().byId("ordersTable");
 			this._oCount = this.getView().byId("countId");
 			this._busyDialog = this.getView().byId("BusyDialog");
@@ -27,7 +29,6 @@ sap.ui.define([
 			var chartModel = new JSONModel();
 
 			this.getView().setModel(chartModel, "chartdata");
-
 		},
 		onBeforeRendering: function() {
 			//Make shell header items invisible

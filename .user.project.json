@@ -5,18 +5,33 @@
       "previewMode": 1,
       "dataMode": 1,
       "workspace": "withoutWorkspace",
-      "ui5ActiveVersion": null,
-      "ui5VerSource": null,
-      "isDefaultVersion": 0,
-      "urlParameters": [],
+      "ui5ActiveVersion": "1.44.7",
+      "isDefaultVersion": 1,
+      "urlParameters": [
+        {
+          "paramName": "",
+          "paramValue": ""
+        }
+      ],
       "hashParameter": "",
-      "backendSystem": [],
+      "backendSystem": [
+        {
+          "source": "GWD",
+          "destinations": "GWD"
+        }
+      ],
       "urlParametersNotNeeded": false,
       "_metadata": {
+        "id": 5563116,
         "runnerId": "webapprunner",
+<<<<<<< Upstream, based on a7af41add4e7be77cf22cebdd9a2d2b7fd68f081
         "id": 135407,
         "displayName": "Run index.html 1",
         "lastRunTimeStamp": 1484889571224
+=======
+        "displayName": "Run index.html",
+        "lastRunTimeStamp": 1489155570389
+>>>>>>> ef527fd Good UI
       }
     },
     {
@@ -32,10 +47,10 @@
       "backendSystem": [],
       "urlParametersNotNeeded": false,
       "_metadata": {
+        "id": 135407,
         "runnerId": "webapprunner",
-        "id": 5563116,
-        "displayName": "Run index.html",
-        "lastRunTimeStamp": 1483377412576,
+        "displayName": "Run index.html 1",
+        "lastRunTimeStamp": 1487054521673,
         "hasIssues": true
       }
     },
@@ -51,8 +66,8 @@
       "hashParameter": "",
       "backendSystem": [],
       "_metadata": {
-        "runnerId": "fiorirunner",
         "id": 8402923,
+        "runnerId": "fiorirunner",
         "displayName": "Run Component.js",
         "lastRunTimeStamp": 1476270709691
       }

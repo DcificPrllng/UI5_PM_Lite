@@ -2,17 +2,27 @@ sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
 	"pd/pm/lite/util/formatter",
 	"sap/m/MessageToast",
-	"sap/m/StandardListItem",
+	"sap/m/DisplayListItem",
 	"sap/m/Dialog",
 	"sap/m/Button",
-	"sap/m/Text"
-], function(Controller, formatter, MessageToast, StandardListItem, Dialog, Button, Text) {
+	"sap/m/Text",
+	"sap/ui/core/message/Message",
+	"sap/ui/core/MessageType",
+	"sap/ui/core/ValueState",
+	"pd/pm/lite/controller/Validator",
+	"pd/pm/lite/customTypes/Operation",
+	"pd/pm/lite/customTypes/Number",
+	"pd/pm/lite/customTypes/Mandatory",
+	"pd/pm/lite/customTypes/ItemNumber",
+	"pd/pm/lite/customTypes/ComponentId"
+], function(Controller, formatter, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState, Validator) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.ChangeOrder", {
 
 		formatter: formatter,
 		onInit: function() {
+			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
 			var model = this.getOwnerComponent().getModel();
@@ -20,24 +30,26 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
-
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
-			//var componentDialogList = this.getView().byId("idComponentDialogList");
+			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
+			this.oMessageManager = sap.ui.getCore().getMessageManager();
 
-			var standardListItem = new StandardListItem({
-				title: "{Id}",
-				description: "{Name}"
+			var standardListItem = new DisplayListItem({
+				label: "{Id}",
+				value: "{Name}"
 			});
 
 			//Bind components and work centers value help
 			var userPlant = model.getData("/UserSettings('dummy')").Plant;
 			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+			
+			//Get work centers from browsers' local db
+			
 			this._workCenterDialogList.bindAggregation("items", {
 				path: "/WorkCenters",
 				template: standardListItem,
 				filters: [oFilter1]
 			});
-			//	componentDialogList.bindAggregation("items", "/ComponentValues", standardListItem);
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -45,16 +57,13 @@ sap.ui.define([
 				return;
 			}
 
-			// //Make shell header items visible
-			// var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
-			// headItems[0].setVisible(true); //Home Button
-
 			//Make data call
 			var oView = this.getView();
 			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
 			var parameters = {
 				urlParameters: {
-					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
+					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
+					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
@@ -70,12 +79,53 @@ sap.ui.define([
 					});
 					oView.setModel(jsonModel, "jsonModel");
 				},
-				failure: function() {
+				error: function() {
 					oView.setBusy(false);
+					window.location.hash = "#";  //Error. Go back to home screen
 				}
 			};
 			oView.setBusy(true);
 			oView.getModel().read("/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')", parameters);
+		},
+		getComponentDetail: function(evt) {
+			var enteredComponent = evt.getParameter("newValue");
+			var oView = this.getView();
+			var that = this;
+			var row = evt.getSource().getParent();
+			var control = evt.getSource();
+			//Call the function import to get component detail
+			var model = this.getOwnerComponent().getModel();
+			oView.setBusy(true);
+
+			model.callFunction("/GetComponentDetail", {
+				method: "GET",
+				urlParameters: {
+					"ComponentNumber": enteredComponent
+				},
+				success: function(oData) {
+					//Set the value to the right column item
+					oView.setBusy(false);
+					sap.ui.getCore().getMessageManager().removeAllMessages();
+					row.getCells()[1].setValue(that.formatter.removeLeadingZerosFromString(oData.Id));
+					row.getCells()[2].setText(oData.Name); //Component's description
+					row.getCells()[4].setSelectedKey(oData.UoM); //Component's UoM				
+				},
+				error: function() {
+					oView.setBusy(false);
+					that.oMessageManager.addMessages(
+						new Message({
+							message: that.oMessageManager.getMessageModel().getData()[0].message,
+							type: MessageType.Error,
+							target: control.getId(),
+							processor: that.oMessageProcessor,
+							validation: true
+						})
+					);
+					row.getCells()[1].setValue("");
+					row.getCells()[2].setText(""); //Component's description
+					row.getCells()[4].setSelectedKey(""); //Component's UoM						
+				}
+			});
 		},
 		createNewRowOperations: function() {
 			var currentOperations = this.getView().getModel("jsonModel").getProperty("/Operations");
@@ -122,7 +172,7 @@ sap.ui.define([
 		},
 		getMax: function(arr, prop) {
 			var max;
-			if (arr.length === 0){
+			if (arr.length === 0) {
 				return 0;
 			}
 			for (var i = 0; i < arr.length; i++) {
@@ -203,17 +253,19 @@ sap.ui.define([
 			var dialog = new Dialog({
 				title: "Cancel",
 				type: "Message",
-				content: new Text({ text: "You will lose unsaved changes. Continue?"}),
+				content: new Text({
+					text: "You will lose unsaved changes. Continue?"
+				}),
 				beginButton: new Button({
 					text: "Yes",
-					press: function () {
+					press: function() {
 						window.location.hash = "#";
 						dialog.close();
 					}
 				}),
 				endButton: new Button({
 					text: "No",
-					press: function () {
+					press: function() {
 						dialog.close();
 					}
 				}),
@@ -221,12 +273,57 @@ sap.ui.define([
 					dialog.destroy();
 				}
 			});
-			dialog.open();			
+			dialog.open();
 		},
-		ReleaseOrder: function(){
-			
+		ReleaseOrder: function() {
+			//Call function to release the order
+			var workOrderDetails = this.getView().getModel("jsonModel").oData;
+			var oModel = this.getView().getModel();
+
+			this._busyDialog.open();
+			var that = this;
+			oModel.callFunction("/ReleaseOrder", {
+				method: "POST",
+				urlParameters: {
+					"OrderNumber": workOrderDetails.WorkOrderDetail.OrderNumber
+				},
+				success: function() {
+					that._busyDialog.close();
+					var msg = "Successfully released the order";
+					MessageToast.show(msg);
+					window.location.hash = "#";
+				},
+				error: function(oError) {
+					that._busyDialog.close();
+					var popUp = new Dialog({
+						title: "Error",
+						type: "Message",
+						state: "Error",
+						content: new sap.m.Text({
+							text: JSON.parse(oError.responseText).error.message.value
+						}),
+						beginButton: new sap.m.Button({
+							text: "OK",
+							press: function() {
+								popUp.close();
+							}
+						}),
+						afterClose: function() {
+							popUp.destroy();
+						}
+					});
+					popUp.open();
+				}
+			});
 		},
 		SaveOrder: function() {
+
+			var validator = new Validator();
+
+			if (!validator.validate(this.getView())) {
+				return;
+			}
+
 			//Get Operations and components.
 			var workOrderDetails = this.getView().getModel("jsonModel").oData;
 			var operations = workOrderDetails.Operations;
@@ -349,7 +446,7 @@ sap.ui.define([
 			});
 		},
 		OnWorkCenterSelected: function(evt) {
-			var selectedWorkCenter = evt.getSource().getSelectedItem().getTitle();
+			var selectedWorkCenter = evt.getSource().getSelectedItem().getLabel();
 			var workCenterDialog = evt.getSource().getParent();
 			//Set the value to the right column item
 			workCenterDialog.data("source").setValue(selectedWorkCenter);
@@ -361,10 +458,69 @@ sap.ui.define([
 			WorkCenterDialog.data("source", oEvent.getSource());
 			WorkCenterDialog.open();
 		},
+		OnComponentSelected: function(evt) {
+			var selectedComponent = evt.getParameter("selectedItem").getBindingContext().getObject();
+			//Set the value to the right column item
+			this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
+				selectedComponent.Id));
+			var row = this.getView().getController()._ComponentDialog.data("source").getParent();
+			row.getCells()[2].setText(selectedComponent.Name); //Component's description
+			row.getCells()[4].setSelectedKey(selectedComponent.UoM); //Component's UoM
+		},
 		showComponentValueHelp: function(oEvent) {
+			var ComponentDialog = this.getView().getController()._ComponentDialog;
+			ComponentDialog.data("source", oEvent.getSource());
+
+			//Clear current entries
+			ComponentDialog.removeAllItems();
+
 			this.getView().getController()._ComponentDialog.open();
+<<<<<<< Upstream, based on a7af41add4e7be77cf22cebdd9a2d2b7fd68f081
 			//Bind items
 			
+=======
+		},
+		OnComponentSearch: function(oEvent) {
+			//Get the search item
+			var searchTerm = oEvent.getParameter("value");
+
+			var model = this.getOwnerComponent().getModel();
+
+			//Bind components and work centers value help
+			var userPlant = model.getData("/UserSettings('dummy')").Plant;
+			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+
+			//Bind items
+			var oTemplate = new sap.m.ColumnListItem({
+				cells: [
+					new sap.m.Text().bindText({
+						path: "Id",
+						formatter: this.formatter.removeLeadingZerosFromString
+					}),
+					new sap.m.Text({
+						text: "{Name}"
+					}),
+					new sap.m.Text({
+						text: "{MPN}"
+					}),
+					new sap.m.Text({
+						text: "{Manufacturer}"
+					})
+				]
+			});
+
+			this._ComponentDialog.bindAggregation("items", {
+				path: "/NewComponents",
+				template: oTemplate,
+				filters: [oFilter1],
+				parameters: {
+					custom: {
+						search: searchTerm
+					}
+				}
+			});
+
+>>>>>>> ef527fd Good UI
 		}
 	});
 

@@ -94,6 +94,7 @@
 				},
 				"changeOrder": {
 					"viewName": "ChangeOrder",
+					"viewId": "changeView",
 					"viewLevel": 2
 				}
 			}

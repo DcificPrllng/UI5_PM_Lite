@@ -5,15 +5,16 @@
   },
   "projectType": [
     "sap.watt.uitools.ide.fiori",
-    "sap.watt.uitools.ide.web"
+    "sap.watt.uitools.ide.web",
+    "com.watt.common.builder.sapui5clientbuild"
   ],
   "build": {
-    "buildRequired": true,
+    "buildRequired": false,
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
     "excludedFiles": [],
-    "lastBuildDateTime": "Mon, 05 Sep 2016 10:39:52 GMT"
+    "lastBuildDateTime": "Mon, 13 Mar 2017 04:33:17 GMT"
   },
   "generation": [
     {

@@ -6,14 +6,14 @@
 			<table:extension>
 				<Toolbar id="toolBar">
 					<Label text="Plant / Main Work Center"/>
-					<DropdownBox id="plantId" items="{/Plants}" value="{Plant}" width="60px">
+					<DropdownBox id="plantId" items="{localStorageModel>/Plants}" value="{Plant}" width="60px">
 						<items>
-							<core:ListItem text="{Id}"/>
+							<core:ListItem text="{localStorageModel>Id}"/>
 						</items>
 					</DropdownBox>
-					<DropdownBox id="workCenterId" items="{/WorkCenters}" value="{WorkCenter}" width="65px">
+					<DropdownBox id="workCenterId" items="{localStorageModel>/WorkCenters}" value="{WorkCenter}" width="65px">
 						<items>
-							<core:ListItem text="{Id}"/>
+							<core:ListItem text="{localStorageModel>Id}"/>
 						</items>
 					</DropdownBox>
 					<DropdownBox id="viewTypeId" value="{ViewType}" width="100px">
