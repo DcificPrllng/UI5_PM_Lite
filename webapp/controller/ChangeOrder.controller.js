@@ -475,10 +475,6 @@ sap.ui.define([
 			ComponentDialog.removeAllItems();
 
 			this.getView().getController()._ComponentDialog.open();
-<<<<<<< Upstream, based on a7af41add4e7be77cf22cebdd9a2d2b7fd68f081
-			//Bind items
-			
-=======
 		},
 		OnComponentSearch: function(oEvent) {
 			//Get the search item
@@ -519,8 +515,6 @@ sap.ui.define([
 					}
 				}
 			});
-
->>>>>>> ef527fd Good UI
 		}
 	});
 

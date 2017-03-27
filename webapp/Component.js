@@ -26,10 +26,11 @@ sap.ui.define([
 				defaultCountMode: sap.ui.model.odata.CountMode.Inline
 			});
 
-			oModel.setDeferredBatchGroups(["saveAll"]);
+			oModel.setDeferredBatchGroups(["saveAll", "initialRead"]);
 
 			//json Model
 			var jsonModel = new sap.ui.model.json.JSONModel();
+			jsonModel.setSizeLimit(300); //Units dropdown has 262 entries.
 			this.setModel(jsonModel, "localModel");
 			this.setModel(oModel); //We are doing explicit binding here as we need extra serviceUrlParameters
 			oModel.setSizeLimit(500); //Units have 250+ entries
@@ -56,7 +57,6 @@ sap.ui.define([
 			var plantHash = this._oJQueryStorage.get("plantHash");
 			var wcHash = this._oJQueryStorage.get("wcHash");
 			var unitHash = this._oJQueryStorage.get("unitHash");
-			oModel.setDeferredGroups(["initialRead"]);
 			oModel.setHeaders({
 				"plantHash": plantHash,
 				"wcHash": wcHash,
