@@ -30,7 +30,6 @@ sap.ui.define([
 
 			//json Model
 			var jsonModel = new sap.ui.model.json.JSONModel();
-			jsonModel.setSizeLimit(300); //Units dropdown has 262 entries.
 			this.setModel(jsonModel, "localModel");
 			this.setModel(oModel); //We are doing explicit binding here as we need extra serviceUrlParameters
 			oModel.setSizeLimit(500); //Units have 250+ entries
@@ -41,6 +40,7 @@ sap.ui.define([
 			//Get Plants, WorkCenters and Units
 			//Update from local storage
 			var localStorageModel = new sap.ui.model.json.JSONModel();
+			localStorageModel.setSizeLimit(300);
 			this.setModel(localStorageModel, "localStorageModel");
 			
 			var plants = this._oJQueryStorage.get("_plants");
