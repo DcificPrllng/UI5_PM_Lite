@@ -193,8 +193,8 @@
 											<Label text="{i18n>Note}" class="PDLabel"/>
 											<Input value="{jsonModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
-											<!--<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>-->
-											<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>
+											<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
+											<!--<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>-->
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data"

@@ -13,6 +13,8 @@ sap.ui.define([
 		},
 
 		init: function() {
+			// src="/sap/public/bc/ui5_ui5/resources/sap-ui-core.js"
+							
 			// call the init function of the parent
 			UIComponent.prototype.init.apply(this, arguments);
 
