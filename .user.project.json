@@ -24,14 +24,8 @@
       "_metadata": {
         "id": 5563116,
         "runnerId": "webapprunner",
-<<<<<<< Upstream, based on a7af41add4e7be77cf22cebdd9a2d2b7fd68f081
-        "id": 135407,
-        "displayName": "Run index.html 1",
-        "lastRunTimeStamp": 1484889571224
-=======
         "displayName": "Run index.html",
-        "lastRunTimeStamp": 1489155570389
->>>>>>> ef527fd Good UI
+        "lastRunTimeStamp": 1490864735275
       }
     },
     {
