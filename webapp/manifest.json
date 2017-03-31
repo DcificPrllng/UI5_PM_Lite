@@ -77,7 +77,12 @@
 					"pattern": "ChangeOrder/{order}",
 					"name": "changeOrder",
 					"target": "changeOrder"
-				}
+				},
+				{
+					"pattern": "NewOrder/{functionalLocation}/{functionalLocationName}/{equipment}/{equipmentName}",
+					"name": "newOrder",
+					"target": "newOrder"
+				}				
 			],
 			"targets": {
 				"home": {
@@ -96,7 +101,12 @@
 					"viewName": "ChangeOrder",
 					"viewId": "changeView",
 					"viewLevel": 2
-				}
+				},
+				"newOrder": {
+					"viewName": "NewOrder",
+					"viewId": "newView",
+					"viewLevel": 2
+				}				
 			}
 		},
 		"contentDensities": {

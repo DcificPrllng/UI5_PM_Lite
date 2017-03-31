@@ -23,10 +23,8 @@
 			sap.ui.getCore().attachInit(function () {
 				sap.ui.require([
 					"sap/ui/unified/Shell",
-					"sap/ui/core/ComponentContainer",
-					"sap/m/Button",
-					"sap/ui/core/UIComponent"
-				], function (oShell, ComponentContainer, Button, Component) {
+					"sap/ui/core/ComponentContainer"
+				], function (oShell, ComponentContainer) {
 			        new oShell({
 			            headEndItems: [new sap.ui.unified.ShellHeadItem({
 			                					tooltip:"Logoff",

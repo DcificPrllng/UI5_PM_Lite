@@ -13,12 +13,12 @@ sap.ui.define([
 				fromTarget: "home"
 			});
 		},
-
 		formatter: formatter,
 		onInit: function() {
 			this._toolBar = this.getView().byId("toolBar");
-			this._toolBar.bindElement({path: "/UserSettings('dummy')"
-			// , parameters: {groupId:"initialRead"}
+			this._toolBar.bindElement({
+				path: "/UserSettings('dummy')"
+					// , parameters: {groupId:"initialRead"}
 			});
 			this._oTable = this.getView().byId("ordersTable");
 			this._oCount = this.getView().byId("countId");
@@ -29,11 +29,6 @@ sap.ui.define([
 			var chartModel = new JSONModel();
 
 			this.getView().setModel(chartModel, "chartdata");
-		},
-		onBeforeRendering: function() {
-			//Make shell header items invisible
-			// var headItems = this.getOwnerComponent().oContainer.getParent().getParent().getHeadItems();
-			// headItems[0].setVisible(false); //Home Button
 		},
 		onAfterRendering: function() {
 			var that = this;
@@ -178,7 +173,7 @@ sap.ui.define([
 			this.gotoPersonas("MM03", data);
 		},
 		gotoIW31: function(evt) {
-
+			//Get Selected Data
 			var hierarchyTable = evt.getSource().getParent().getParent();
 			var selectedObject = hierarchyTable.getContextByIndex(hierarchyTable.getSelectedIndex()).getObject();
 
@@ -187,11 +182,24 @@ sap.ui.define([
 			var data = {};
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
 				data.FunctionalLocation = selectedObject.Id;
+				data.FunctionalLocationName = selectedObject.Name;
 			} else { //This is an equipment
 				data.Equipment = selectedObject.Id;
+				data.EquipmentName = selectedObject.Name;
 			}
 
-			this.gotoPersonas("IW31", data);
+			//Close the popup
+			hierarchyTable.getParent().close();
+
+			//Navigate
+			this.getRouter().navTo("newOrder", {
+				data: {
+					functionalLocation: data.FunctionalLocation,
+					functionalLocationName: data.FunctionalLocationName,
+					equipment: data.Equipment,
+					equipmentName: data.EquipmentName
+				}
+			});
 
 			//Close the popup
 			hierarchyTable.getParent().close();
@@ -201,7 +209,6 @@ sap.ui.define([
 			var data = {};
 			data.OrderNumber = context.getProperty("OrderNumber");
 			this.gotoPersonas("IW41", data);
-
 		},
 		triggerChange: function(evt) {
 			var context = evt.getSource().getParent().getBindingContext("localModel");
@@ -209,7 +216,6 @@ sap.ui.define([
 			data.OrderNumber = context.getProperty("OrderNumber");
 			this.getRouter().navTo("changeOrder", {
 				order: data.OrderNumber
-
 			});
 		},
 		performLogout: function() {

@@ -81,7 +81,7 @@
 						<TextView text="{path:'localModel>StartDate', formatter:'.formatter.date'}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="40px">
+				<table:Column sortProperty="" width="45px">
 					<Label text="Sch"/>
 					<table:template>
 						<core:Icon color="{path:'localModel>Status', formatter: '.formatter.statusIconColor'}"
@@ -136,50 +136,50 @@
 						<TextView text="{localModel>OperationText}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttBreakdownIndicator}">
-					<Label text="B"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttBreakdownIndicator}">
+					<Label text="{i18n>BreakdownIndicator}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/B}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttWOSS}">
-					<Label text="SS"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttWOSS}">
+					<Label text="{i18n>WOSS}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/SS}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAM}">
-					<Label text="AM"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttAM}">
+					<Label text="{i18n>AM}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/AM}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAO}">
-					<Label text="AO"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttAO}">
+					<Label text="{i18n>AO}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/AO}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAL}">
-					<Label text="AL"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttAL}">
+					<Label text="{i18n>AL}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/AL}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAE}">
-					<Label text="AE"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttAE}">
+					<Label text="{i18n>AE}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/AE}"/>
 					</table:template>
 				</table:Column>
-				<table:Column sortProperty="" width="35px" tooltip="{i18n>ttAB}">
-					<Label text="AB"/>
+				<table:Column sortProperty="" width="40px" tooltip="{i18n>ttAB}">
+					<Label text="{i18n>AB}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/AB}"/>
 					</table:template>
 				</table:Column>
 				<table:Column sortProperty="" width="130px" tooltip="{i18n>ttAOS}">
-					<Label text="Other Statuses"/>
+					<Label text="{i18n>AOS}"/>
 					<table:template>
 						<TextView text="{localModel>Statuses/OtherStatuses}"/>
 					</table:template>
