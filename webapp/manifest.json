@@ -82,7 +82,7 @@
 					"pattern": "NewOrder/{functionalLocation}/{functionalLocationName}/{equipment}/{equipmentName}",
 					"name": "newOrder",
 					"target": "newOrder"
-				}				
+				}
 			],
 			"targets": {
 				"home": {
@@ -106,7 +106,7 @@
 					"viewName": "NewOrder",
 					"viewId": "newView",
 					"viewLevel": 2
-				}				
+				}
 			}
 		},
 		"contentDensities": {

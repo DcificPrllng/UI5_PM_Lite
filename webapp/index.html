@@ -25,20 +25,28 @@
 					"sap/ui/unified/Shell",
 					"sap/ui/core/ComponentContainer"
 				], function (oShell, ComponentContainer) {
-			        new oShell({
+			        
+			    		var ComponentContainer = new ComponentContainer({
+	                                	height : "100%"
+    				    });		        
+			        
+			    		new oShell({
 			            headEndItems: [new sap.ui.unified.ShellHeadItem({
 			                					tooltip:"Logoff",
 					                            icon:"sap-icon://log",
 					                            press: "performLogout"
 					    })],
-			            content: [new ComponentContainer({
-	                                	height : "100%",
+			            content: ComponentContainer
+			        }).addStyleClass("sapUiSizeCompact").placeAt("content");
+			        
+						var component = sap.ui.component({
 	                                 	name : "pd.pm.lite",
 	                                 	manifestFirst: true,
 	                                 	handleValidation: true,
 	                                 	async: true
-    				    })]
-			        }).addStyleClass("sapUiSizeCompact").placeAt("content");
+    				    		}).then(function(component){
+		 									ComponentContainer.setComponent(component);
+										});
 				});
 			});
 		</script>
