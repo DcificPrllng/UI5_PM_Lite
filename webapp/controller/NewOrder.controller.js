@@ -63,7 +63,7 @@ sap.ui.define([
 				return;
 			}
 			//Parameters
-			var parameters = oEvent.getParameter("arguments").data;
+			var parameters = oEvent.getParameter("arguments");
 
 			this.createModel.setData({
 				FunctionalLocation: parameters.functionalLocation,

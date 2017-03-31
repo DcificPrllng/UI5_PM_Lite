@@ -183,6 +183,8 @@ sap.ui.define([
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
 				data.FunctionalLocation = selectedObject.Id;
 				data.FunctionalLocationName = selectedObject.Name;
+				data.Equipment = "XX";
+				data.EquipmentName = "XX";
 			} else { //This is an equipment
 				data.Equipment = selectedObject.Id;
 				data.EquipmentName = selectedObject.Name;
@@ -193,12 +195,10 @@ sap.ui.define([
 
 			//Navigate
 			this.getRouter().navTo("newOrder", {
-				data: {
-					functionalLocation: data.FunctionalLocation,
-					functionalLocationName: data.FunctionalLocationName,
-					equipment: data.Equipment,
-					equipmentName: data.EquipmentName
-				}
+				functionalLocation: data.FunctionalLocation,
+				functionalLocationName: data.FunctionalLocationName,
+				equipment: data.Equipment,
+				equipmentName: data.EquipmentName
 			});
 
 			//Close the popup
