@@ -1,11 +1,12 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/routing/History"
-], function(Controller, History) {
+	"sap/ui/core/routing/History",
+	"pd/pm/lite/util/formatter"	
+], function(Controller, History, formatter) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
-
+	formatter: formatter,
 		getRouter: function() {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
@@ -22,7 +23,6 @@ sap.ui.define([
 			} else {
 				this.getRouter().navTo("appHome", {}, true /*no history*/ );
 			}
-
 		}
 	});
 

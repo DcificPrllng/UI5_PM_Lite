@@ -1,6 +1,22 @@
 sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 	"use strict";
 	return {
+		// ID and Description Formatting
+		commonIDFormatter: function(sDescription, sID) {
+			if (sID) {
+				if (sDescription) {
+					var resourceBundle = this.getView().getModel("i18n").getResourceBundle();
+					return resourceBundle.getText("Formatting.DescriptionAndId", [
+						sDescription, sID
+					]);
+				}
+				return sID;
+			}
+			if (sDescription) {
+				return sDescription;
+			}
+			return "";
+		},
 		removeLeadingZerosFromString: function(numberString) {
 			if (numberString === "" || numberString === "0") {
 				return "";
@@ -62,13 +78,14 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			} else {
 				return true;
 			}
-		},
-		idAndName: function(id, name) {
-			if (name !== "") {
-				return id + " (" + name + ")";
-			} else {
-				return id;
-			}
 		}
+		// ,
+		// idAndName: function(id, name) {
+		// 	if (name !== "") {
+		// 		return id + " (" + name + ")";
+		// 	} else {
+		// 		return id;
+		// 	}
+		// }
 	};
 });

@@ -22,11 +22,11 @@
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
 									<Label width="200px"
-										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/MainWorkCenter'}, {path:'jsonModel>/WorkOrderDetail/MainWorkCenterName'}], formatter:'.formatter.idAndName'}"
+										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/MainWorkCenter'}, {path:'jsonModel>/WorkOrderDetail/MainWorkCenterName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
 									<Label width="300px"
-										text="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.idAndName'}"
+										text="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
 									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
@@ -38,7 +38,7 @@
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
 									<Label width="200px"
-										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/PmActivityType'}, {path: 'jsonModel>/WorkOrderDetail/PmActivityTypeName'}], formatter:'.formatter.idAndName'}"
+										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/PmActivityType'}, {path: 'jsonModel>/WorkOrderDetail/PmActivityTypeName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
 									<Label width="300px"

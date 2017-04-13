@@ -1,7 +1,6 @@
 sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
-	"pd/pm/lite/util/formatter",
 	"sap/m/MessageToast",
 	"sap/m/DisplayListItem",
 	"sap/m/Dialog",
@@ -16,13 +15,11 @@ sap.ui.define([
 	"pd/pm/lite/customTypes/Mandatory",
 	"pd/pm/lite/customTypes/ItemNumber",
 	"pd/pm/lite/customTypes/ComponentId"
-], function(Controller, JSONModel, formatter, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
+], function(Controller, JSONModel, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
 	Validator) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.NewOrder", {
-
-		formatter: formatter,
 		onInit: function() {
 			//Router
 			var oRouter = this.getRouter();
@@ -55,7 +52,7 @@ sap.ui.define([
 
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
-			this.getView().setModel("createModel", this.createModel);
+			this.getView().setModel(this.createModel, "createModel");
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -64,12 +61,47 @@ sap.ui.define([
 			}
 			//Parameters
 			var parameters = oEvent.getParameter("arguments");
+			
+			//<<<<<<<<<<<<<<<<<<<<<<<<<Below code to be edited>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>			
+			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
+			//Make data call
+			var oView = this.getView();
+			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
+			var parameters = {
+				urlParameters: {
+					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
+					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+				},
+				success: function(odata) {
+					oView.setBusy(false);
+					oView.bindElement({
+						path: sPath
+					});
+
+					var jsonModel = new sap.ui.model.json.JSONModel();
+					jsonModel.setData({
+						Components: odata.Components.results,
+						Operations: odata.Operations.results,
+						WorkOrderDetail: odata
+					});
+					oView.setModel(jsonModel, "jsonModel");
+				},
+				error: function() {
+					oView.setBusy(false);
+					window.location.hash = "#"; //Error. Go back to home screen
+				}
+			};
+			oView.setBusy(true);
+			oView.getModel().read("/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')", parameters);
+			//<<<<<<<<<<<<<<<<<<<<<<<<<Above code to be edited>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 			this.createModel.setData({
-				FunctionalLocation: parameters.functionalLocation,
-				FunctionalLocationName: parameters.functionalLocationName,
-				Equipment: parameters.equipment,
-				EquipmentName: parameters.equipmentName
+				"WorkOrderDetail": {
+					FunctionalLocation: parameters.functionalLocation,
+					FunctionalLocationName: parameters.functionalLocationName,
+					Equipment: parameters.equipment,
+					EquipmentName: parameters.equipmentName
+				}
 			});
 		},
 		getComponentDetail: function(evt) {

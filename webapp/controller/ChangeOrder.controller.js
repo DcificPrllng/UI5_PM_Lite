@@ -1,6 +1,5 @@
 sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
-	"pd/pm/lite/util/formatter",
 	"sap/m/MessageToast",
 	"sap/m/DisplayListItem",
 	"sap/m/Dialog",
@@ -15,12 +14,10 @@ sap.ui.define([
 	"pd/pm/lite/customTypes/Mandatory",
 	"pd/pm/lite/customTypes/ItemNumber",
 	"pd/pm/lite/customTypes/ComponentId"
-], function(Controller, formatter, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState, Validator) {
+], function(Controller, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState, Validator) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.ChangeOrder", {
-
-		formatter: formatter,
 		onInit: function() {
 			//Router
 			var oRouter = this.getRouter();
@@ -42,9 +39,9 @@ sap.ui.define([
 			//Bind components and work centers value help
 			var userPlant = model.getData("/UserSettings('dummy')").Plant;
 			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-			
+
 			//Get work centers from browsers' local db
-			
+
 			this._workCenterDialogList.bindAggregation("items", {
 				path: "/WorkCenters",
 				template: standardListItem,
@@ -81,7 +78,7 @@ sap.ui.define([
 				},
 				error: function() {
 					oView.setBusy(false);
-					window.location.hash = "#";  //Error. Go back to home screen
+					window.location.hash = "#"; //Error. Go back to home screen
 				}
 			};
 			oView.setBusy(true);
