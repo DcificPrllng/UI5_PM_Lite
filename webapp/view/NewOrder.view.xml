@@ -11,14 +11,11 @@
 							<FlexBox width="100%" height="14%" direction="Column" class="PDHeader sapUiTinyMargin">
 								<!--First Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
 									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
 									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
 									<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Description}" design="Bold"/>
 									<Input width="300px" class="sapUiTinyMarginBegin"
 										value="{path: 'createModel>/WorkOrderDetails/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
-									<Label class="sapUiTinyMarginBegin cisTopMargin" width="96px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
-									<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{SystemStatus}"/>
 								</FlexBox>
 								<!--Second Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
@@ -52,9 +49,9 @@
 										text="{parts:[{path:'createModel>/WorkOrderDetail/Equipment'}, {path: 'createModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{BasicFinish}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetail/BasicFinish}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabel cisTopMargins cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{ScheduledFinish}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetail/ScheduledFinish}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin"/>
 									<ComboBox width="164px" selectedKey="{createModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>
 								</FlexBox>
@@ -64,7 +61,7 @@
 								<VBox width="60%">
 									<!--Operations Table-->
 									<VBox height="50%">
-										<table:Table id="OperationsTable" rows="{path:'Operations', templateShareable:false}" selectionMode="MultiToggle" visibleRowCountMode="Auto"
+										<table:Table id="OperationsTable" rows="{path:'createModel>/WorkOrderDetail/Operations', templateShareable:false}" selectionMode="MultiToggle" visibleRowCountMode="Auto"
 											minAutoRowCount="9" class="sapUiTinyMarginBegin">
 											<table:toolbar>
 												<Toolbar>
@@ -81,13 +78,13 @@
 												<table:Column width="4rem">
 													<Label text="{i18n>OpAc}"/>
 													<table:template>
-														<Input editable="{New}" value="{path:'OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
+														<Input editable="{createModel>New}" value="{path:'createModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="6rem">
+												<table:Column width="8rem">
 													<Label text="{i18n>WorkCenter}"/>
 													<table:template>
-														<ComboBox showSecondaryValues="true" value="{path: 'WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
+														<ComboBox showSecondaryValues="true" value="{path: 'createModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
 															items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
 															<core:ListItem text="{localStorageModel>Id}" key="{localStorageModel>Id}" additionalText="{localStorageModel>Name}"></core:ListItem>
 														</ComboBox>
@@ -96,19 +93,19 @@
 												<table:Column hAlign="End">
 													<Label text="{i18n>OpShortText}"/>
 													<table:template>
-														<Input value="{path: 'ShortText', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+														<Input value="{path: 'createModel>ShortText', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">
 													<Label text="{i18n>Work}"/>
 													<table:template>
-														<Input value="{path: 'WorkQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
+														<Input value="{path: 'createModel>WorkQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="8rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox selectedKey="{path: 'WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}">
+														<ComboBox selectedKey="{path: 'createModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}">
 															<core:ListItem text="Minutes" key="MIN"></core:ListItem>
 															<core:ListItem text="Hours" key="H"></core:ListItem>
 															<core:ListItem text="Days" key="DAY"></core:ListItem>
@@ -126,7 +123,7 @@
 									</VBox>
 									<!--Components Table-->
 									<VBox height="50%">
-										<table:Table id="ComponentsTable" rows="{path: 'jsonModel>/Components', templateShareable:false}" minAutoRowCount="9"
+										<table:Table id="ComponentsTable" rows="{path: 'createModel>/WorkOrderDetail/Components', templateShareable:false}" minAutoRowCount="9"
 											visibleRowCountMode="Auto" class="sapUiTinyMarginBegin">
 											<table:toolbar>
 												<Toolbar>
@@ -143,32 +140,32 @@
 												<table:Column width="5rem">
 													<Label text="{i18n>Item}"/>
 													<table:template>
-														<Input editable="{jsonModel>New}" value="{path:'jsonModel>ItemID', type : 'pd.pm.lite.customTypes.Number'}"/>
+														<Input editable="{createModel>New}" value="{path:'createModel>ItemID', type : 'pd.pm.lite.customTypes.Number'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="9rem">
 													<Label text="{i18n>Component}"/>
 													<table:template>
 														<Input showValueHelp="true" valueHelpRequest="showComponentValueHelp"
-															value="{path: 'jsonModel>ComponentNumber', type : 'pd.pm.lite.customTypes.ComponentId'}" change=".getComponentDetail"/>
+															value="{path: 'createModel>>ComponentNumber', type : 'pd.pm.lite.customTypes.ComponentId'}" change=".getComponentDetail"/>
 													</table:template>
 												</table:Column>
 												<table:Column hAlign="End">
 													<Label text="{i18n>Description}"/>
 													<table:template>
-														<Label text="{jsonModel>Description}"/>
+														<Label text="{createModel>>Description}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">
 													<Label text="{i18n>ReqQuantity}"/>
 													<table:template>
-														<Input value="{ path: 'jsonModel>RequirementQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
+														<Input value="{ path: 'createModel>>RequirementQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="6rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox editable="false" showSecondaryValues="true" value="{path: 'jsonModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}"
+														<ComboBox editable="false" showSecondaryValues="true" value="{path: 'createModel>>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}"
 															items="{path:'Units', templateShareable:false}">
 															<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
 														</ComboBox>
@@ -177,13 +174,13 @@
 												<table:Column width="5rem">
 													<Label text="{i18n>IC}"/>
 													<table:template>
-														<Label text="{jsonModel>ItemCategory}"/>
+														<Label text="{createModel>>ItemCategory}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">
 													<Label text="{i18n>OperationReference}"/>
 													<table:template>
-														<Input value="{path: 'jsonModel>OperationReference', type : 'pd.pm.lite.customTypes.Operation'}"/>
+														<Input value="{path: 'createModel>>OperationReference', type : 'pd.pm.lite.customTypes.Operation'}"/>
 													</table:template>
 												</table:Column>
 											</table:columns>
@@ -197,13 +194,13 @@
 										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Code}" class="PDLabel"/>
-											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+											<ComboBox selectedKey="{createModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}" class="PDLabel"/>
-											<Input value="{jsonModel>/WorkOrderDetail/NewNote}"/>
+											<Input value="{createModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
-											<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
+											<FormattedText class="oldNotes" htmlText="{createModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
 											<!--<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>-->
 										</f:content>
 									</f:SimpleForm>
@@ -212,25 +209,25 @@
 										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Damage}" class="PDLabel"/>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCodeGroup}" items="{DamageCodeGroups}"
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Damage/DamageCodeGroup}" items="{DamageCodeGroups}"
 												selectionChange=".getValidDamageCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
 												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Text}" class="PDLabel"/>
-											<Input value="{jsonModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
+											<Input value="{createModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
 											<Label text="{i18n>CauseCode}" class="PDLabel"/>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCodeGroup}" items="{CauseCodeGroups}"
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Cause/CauseCodeGroup}" items="{CauseCodeGroups}"
 												selectionChange=".getValidCauseCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
 												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Text}" class="PDLabel"/>
-											<Input value="{jsonModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
+											<Input value="{createModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 										</f:content>
 									</f:SimpleForm>
 								</VBox>

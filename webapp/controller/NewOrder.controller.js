@@ -53,6 +53,24 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
+
+			this.createModel.setData({
+				"WorkOrderDetail": {
+					FunctionalLocation: "",
+					FunctionalLocationName: "",
+					Equipment: "",
+					EquipmentName: "",
+					Operations: [],
+					Components: []
+				}
+			});
+
+			var step;
+			for (step = 0; step < 9; step++) {
+				this.createNewRowComponents();
+				this.createNewRowOperations();
+			}
+
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -61,30 +79,20 @@ sap.ui.define([
 			}
 			//Parameters
 			var parameters = oEvent.getParameter("arguments");
-			
-			//<<<<<<<<<<<<<<<<<<<<<<<<<Below code to be edited>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>			
+
 			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
-			//Make data call
 			var oView = this.getView();
-			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
-			var parameters = {
+			var sPath = "/ValueHelpSet(FunctionalLocation='" + parameters.functionalLocation + "',Equipment='" + parameters.equipmentNumber +
+				"')";
+			var oParameters = {
 				urlParameters: {
-					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					"$expand": "DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
 				},
-				success: function(odata) {
+				success: function() {
 					oView.setBusy(false);
 					oView.bindElement({
 						path: sPath
 					});
-
-					var jsonModel = new sap.ui.model.json.JSONModel();
-					jsonModel.setData({
-						Components: odata.Components.results,
-						Operations: odata.Operations.results,
-						WorkOrderDetail: odata
-					});
-					oView.setModel(jsonModel, "jsonModel");
 				},
 				error: function() {
 					oView.setBusy(false);
@@ -92,17 +100,12 @@ sap.ui.define([
 				}
 			};
 			oView.setBusy(true);
-			oView.getModel().read("/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')", parameters);
-			//<<<<<<<<<<<<<<<<<<<<<<<<<Above code to be edited>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+			oView.getModel().read(sPath, oParameters);
 
-			this.createModel.setData({
-				"WorkOrderDetail": {
-					FunctionalLocation: parameters.functionalLocation,
-					FunctionalLocationName: parameters.functionalLocationName,
-					Equipment: parameters.equipment,
-					EquipmentName: parameters.equipmentName
-				}
-			});
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", parameters.functionalLocation);
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", parameters.functionalLocationName);
+			this.createModel.setProperty("/WorkOrderDetail/Equipment", parameters.equipmentNumber);
+			this.createModel.setProperty("/WorkOrderDetail/EquipmentName", parameters.equipmentName);
 		},
 		getComponentDetail: function(evt) {
 			var enteredComponent = evt.getParameter("newValue");
@@ -145,7 +148,7 @@ sap.ui.define([
 			});
 		},
 		createNewRowOperations: function() {
-			var currentOperations = this.getView().getModel("jsonModel").getProperty("/Operations");
+			var currentOperations = this.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
 
 			//Find the larget OperationID
 			var maxOperationId = this.getMax(currentOperations, "OperationID");
@@ -164,10 +167,10 @@ sap.ui.define([
 				"WorkUnit": "",
 				"New": true
 			});
-			this.getView().getModel("jsonModel").setProperty("/Operations", currentOperations);
+			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
 		},
 		createNewRowComponents: function() {
-			var currentComponents = this.getView().getModel("jsonModel").getProperty("/Components");
+			var currentComponents = this.getView().getModel("createModel").getProperty("/WorkOrderDetail/Components");
 			//Find the larget ItemId
 			var maxItemId = this.getMax(currentComponents, "ItemID");
 			maxItemId = maxItemId + 10;
@@ -185,7 +188,7 @@ sap.ui.define([
 				"OperationReference": "",
 				"New": true
 			});
-			this.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
+			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 		},
 		getMax: function(arr, prop) {
 			var max;
@@ -334,7 +337,6 @@ sap.ui.define([
 			});
 		},
 		SaveOrder: function() {
-
 			var validator = new Validator();
 
 			if (!validator.validate(this.getView())) {
@@ -342,125 +344,7 @@ sap.ui.define([
 			}
 
 			//Get Operations and components.
-			var workOrderDetails = this.getView().getModel("jsonModel").oData;
-			var operations = workOrderDetails.Operations;
-			var components = workOrderDetails.Components;
-
-			var currentWorkOrderDetail = {};
-			currentWorkOrderDetail.NotificationNumber = workOrderDetails.WorkOrderDetail.NotificationNumber;
-			currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
-			currentWorkOrderDetail.FunctionalLocation = workOrderDetails.WorkOrderDetail.FunctionalLocation;
-			currentWorkOrderDetail.MainWorkCenter = workOrderDetails.WorkOrderDetail.MainWorkCenter;
-			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
-			currentWorkOrderDetail.NotificationLongText = workOrderDetails.WorkOrderDetail.NotificationLongText;
-			currentWorkOrderDetail.OrderNumber = workOrderDetails.WorkOrderDetail.OrderNumber;
-			currentWorkOrderDetail.PmActivityType = workOrderDetails.WorkOrderDetail.PmActivityType;
-
-			currentWorkOrderDetail.ScheduledFinish = workOrderDetails.WorkOrderDetail.ScheduledFinish;
-			currentWorkOrderDetail.ShortDescription = workOrderDetails.WorkOrderDetail.ShortDescription;
-
-			currentWorkOrderDetail.SystemStatus = "";
-			currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
-			currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
-			currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.ScheduledFinish;
-			currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.ScheduledFinish;
-			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
-			currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
-
-			//Calculate changes and make approriate actions on Odata model
-			this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
-				currentWorkOrderDetail, {
-					groupId: "saveAll"
-				});
-
-			for (var i = 0; i < operations.length; i++) {
-				var operationEntry = {};
-				operationEntry.ActualWork = operations[i].ActualWork === "" ? "0" : operations[i].ActualWor;
-				operationEntry.OperationID = operations[i].OperationID;
-				operationEntry.OrderNumber = operations[i].OrderNumber;
-				operationEntry.ShortText = operations[i].ShortText;
-				operationEntry.WorkCenter = operations[i].WorkCenter;
-				operationEntry.WorkQuantity = operations[i].WorkQuantity;
-				operationEntry.WorkUnit = operations[i].WorkUnit;
-
-				if (operations[i].New) {
-					this.getView().getModel().create("/Operations", operationEntry, {
-						groupId: "saveAll"
-					});
-				} else {
-					this.getView().getModel().update("/Operations(OrderNumber='" + operations[i].OrderNumber + "',OperationID='" + operations[i].OperationID +
-						"')", operationEntry, {
-							groupId: "saveAll"
-						});
-				}
-			}
-
-			for (i = 0; i < components.length; i++) {
-				var componentEntry = {};
-				componentEntry.OrderNumber = components[i].OrderNumber;
-				componentEntry.ItemID = components[i].ItemID;
-				componentEntry.ComponentNumber = components[i].ComponentNumber;
-				componentEntry.Description = components[i].Description;
-				componentEntry.RequirementQuantity = components[i].RequirementQuantity;
-				componentEntry.Unit = components[i].Unit;
-				componentEntry.ItemCategory = components[i].ItemCategory;
-				componentEntry.OperationReference = components[i].OperationReference;
-
-				if (components[i].New) {
-					this.getView().getModel().create("/Components", componentEntry, {
-						groupId: "saveAll"
-					});
-				} else {
-					this.getView().getModel().update("/Components(OrderNumber='" + components[i].OrderNumber + "',ItemID='" + components[i].ItemID +
-						"')", componentEntry, {
-							groupId: "saveAll"
-						});
-				}
-			}
-			//Check if there is a new Notification
-			this._busyDialog.open();
-			var that = this;
-			this.getView().getModel().submitChanges({
-				groupId: "saveAll",
-				success: function(context) {
-					that._busyDialog.close();
-					//Batch  request will always endup here.
-					//Check for error again.
-					if (context.__batchResponses[0].hasOwnProperty("response")) {
-						if (context.__batchResponses[0].response.statusCode === "400") {
-							//oModel.resetChanges(); //Data is set back to original. 
-							var error = jQuery.parseJSON(context.__batchResponses[0].response.body).error.message.value;
-							var dialog = new sap.m.Dialog({
-								title: "Error",
-								type: "Message",
-								state: "Error",
-								content: new sap.m.Text({
-									text: error
-								}),
-								beginButton: new sap.m.Button({
-									text: "OK",
-									press: function() {
-										dialog.close();
-									}
-								}),
-								afterClose: function() {
-									dialog.destroy();
-								}
-							});
-							dialog.open();
-						}
-					} else {
-						var msg = "Successfully updated the order";
-						MessageToast.show(msg);
-						window.location.hash = "#";
-					}
-				},
-				error: function() {
-					that._busyDialog.close();
-					//Error Handling
-
-				}
-			});
+			var workOrderDetails = this.getView().getModel("createModel").oData;
 		},
 		OnWorkCenterSelected: function(evt) {
 			var selectedWorkCenter = evt.getSource().getSelectedItem().getLabel();
