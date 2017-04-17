@@ -13,6 +13,7 @@ sap.ui.define([
 	"pd/pm/lite/customTypes/Operation",
 	"pd/pm/lite/customTypes/Number",
 	"pd/pm/lite/customTypes/Mandatory",
+	"pd/pm/lite/customTypes/MandatoryDate",	
 	"pd/pm/lite/customTypes/ItemNumber",
 	"pd/pm/lite/customTypes/ComponentId"
 ], function(Controller, JSONModel, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
@@ -33,22 +34,21 @@ sap.ui.define([
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 
-			var standardListItem = new DisplayListItem({
-				label: "{Id}",
-				value: "{Name}"
-			});
+			// var standardListItem = new DisplayListItem({
+			// 	label: "{Id}",
+			// 	value: "{Name}"
+			// });
 
-			//Bind components and work centers value help
-			var userPlant = this.oModel.getData("/UserSettings('dummy')").Plant;
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+			// //Bind components and work centers value help
+			// var userPlant = this.oModel.getData("/UserSettings('dummy')").Plant;
+			// var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
 
-			//Get work centers from browsers' local db
-
-			this._workCenterDialogList.bindAggregation("items", {
-				path: "/WorkCenters",
-				template: standardListItem,
-				filters: [oFilter1]
-			});
+			// // //Get work centers from browsers' local db
+			// // this._workCenterDialogList.bindAggregation("items", {
+			// // 	path: "/WorkCenters",
+			// // 	template: standardListItem,
+			// // 	filters: [oFilter1]
+			// // });
 
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
@@ -64,13 +64,11 @@ sap.ui.define([
 					Components: []
 				}
 			});
-
 			var step;
-			for (step = 0; step < 9; step++) {
+			for (step = 0; step < 1; step++) {
 				this.createNewRowComponents();
 				this.createNewRowOperations();
 			}
-
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -104,8 +102,10 @@ sap.ui.define([
 
 			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", parameters.functionalLocation);
 			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", parameters.functionalLocationName);
-			this.createModel.setProperty("/WorkOrderDetail/Equipment", parameters.equipmentNumber);
-			this.createModel.setProperty("/WorkOrderDetail/EquipmentName", parameters.equipmentName);
+			if (parameters.equipmentName !== "XX") {  //It is a dummy number
+				this.createModel.setProperty("/WorkOrderDetail/Equipment", parameters.equipment);
+				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", parameters.equipmentName);
+			}
 		},
 		getComponentDetail: function(evt) {
 			var enteredComponent = evt.getParameter("newValue");

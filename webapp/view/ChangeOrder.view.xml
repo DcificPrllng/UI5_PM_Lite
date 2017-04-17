@@ -75,7 +75,7 @@
 														<Input editable="{jsonModel>New}" value="{path:'jsonModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="6rem">
+												<table:Column width="8rem">
 													<Label text="{i18n>WorkCenter}"/>
 													<table:template>
 														<ComboBox showSecondaryValues="true" value="{path: 'jsonModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
@@ -105,7 +105,7 @@
 														</ComboBox>													
 													</table:template>
 												</table:Column>
-												<table:Column width="9rem">
+												<table:Column width="7rem">
 													<Label text="{i18n>ActualWork}"/>
 													<table:template>
 														<Label text="{jsonModel>ActualWork}"/>
@@ -154,10 +154,10 @@
 														<Input value="{ path: 'jsonModel>RequirementQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="6rem">
+												<table:Column width="4rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox editable="false" showSecondaryValues="true" value ="{path: 'jsonModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}" items="{path:'Units', templateShareable:false}">
+														<ComboBox editable="false" showSecondaryValues="true" value ="{path: 'jsonModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}" >
 															<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
 														</ComboBox>
 													</table:template>
@@ -168,7 +168,7 @@
 														<Label text="{jsonModel>ItemCategory}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="5rem">
+												<table:Column width="7rem">
 													<Label text="{i18n>OperationReference}"/>
 													<table:template>
 														<Input value="{path: 'jsonModel>OperationReference',  type : 'pd.pm.lite.customTypes.Operation'}"/>

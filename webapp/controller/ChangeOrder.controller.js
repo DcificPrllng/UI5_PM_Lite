@@ -22,7 +22,7 @@ sap.ui.define([
 			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
-			var model = this.getOwnerComponent().getModel();
+			// var model = this.getOwnerComponent().getModel();
 			this.oView = this.getView();
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
@@ -31,22 +31,22 @@ sap.ui.define([
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 
-			var standardListItem = new DisplayListItem({
-				label: "{Id}",
-				value: "{Name}"
-			});
+			// var standardListItem = new DisplayListItem({
+			// 	label: "{Id}",
+			// 	value: "{Name}"
+			// });
 
-			//Bind components and work centers value help
-			var userPlant = model.getData("/UserSettings('dummy')").Plant;
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+			// //Bind components and work centers value help
+			// var userPlant = model.getData("/UserSettings('dummy')").Plant;
+			// var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
 
-			//Get work centers from browsers' local db
+			// //Get work centers from browsers' local db
 
-			this._workCenterDialogList.bindAggregation("items", {
-				path: "/WorkCenters",
-				template: standardListItem,
-				filters: [oFilter1]
-			});
+			// this._workCenterDialogList.bindAggregation("items", {
+			// 	path: "/WorkCenters",
+			// 	template: standardListItem,
+			// 	filters: [oFilter1]
+			// });
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -183,12 +183,12 @@ sap.ui.define([
 			var s = "000000000" + num;
 			return s.substr(s.length - size);
 		},
-		getValidDamageCodes: function(oEvent) {
-			// var selectedKey = oEvent.getParameter("selectedItem").getKey();
-		},
-		getValidCauseCodes: function(oEvent) {
-			// var selectedKey = oEvent.getParameter("selectedItem").getKey();
-		},
+		// getValidDamageCodes: function(oEvent) {
+		// 	// var selectedKey = oEvent.getParameter("selectedItem").getKey();
+		// },
+		// getValidCauseCodes: function(oEvent) {
+		// 	// var selectedKey = oEvent.getParameter("selectedItem").getKey();
+		// },
 		deleteSelectedComponents: function() {
 			var that = this;
 

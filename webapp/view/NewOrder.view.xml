@@ -21,7 +21,7 @@
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold"/>
 									<ComboBox class="sapUiTinyMarginBegin" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="true"
-										selectedKey="{createModel>/WorkOrderDetail/MainWorkCenter}" width="200px">
+										selectedKey="{path:'createModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" width="200px">
 										<items>
 											<core:ListItem text="{localStorageModel>Id}"/>
 										</items>
@@ -31,29 +31,36 @@
 										text="{parts:[{path: 'createModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'createModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetail/BasicStart}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/BasicStart', type : 'pd.pm.lite.customTypes.MandatoryDate', constraints : { minimum : '01-01-1900'}}"
+										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetails/ScheduledStart}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetails/ScheduledStart', type : 'pd.pm.lite.customTypes.MandatoryDate', constraints : { minimum : '01-01-1900'}}"
+										class="sapUiTinyMarginBegin"/>
 								</FlexBox>
 								<!--Third Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin"/>
-									<ComboBox width="200px" items="{/ActivityTypes}" selectedKey="{createModel>/WorkOrderDetail/PmActivityType}"
+									<ComboBox width="200px" items="{/ActivityTypes}"
+										selectedKey="{path:'createModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin">
 										<items>
 											<core:ListItem text="{Name}" key="{Code}"/>
-										</items>										
+										</items>
 									</ComboBox>
 									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>
 									<Label width="300px"
 										text="{parts:[{path:'createModel>/WorkOrderDetail/Equipment'}, {path: 'createModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetail/BasicFinish}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px"
+										dateValue="{path:'createModel>/WorkOrderDetail/BasicFinish', type : 'sap.ui.model.type.Date', constraints : { minimum : '01-01-1900'}}"
+										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabel cisTopMargins cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{createModel>/WorkOrderDetail/ScheduledFinish}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/ScheduledFinish', type : 'sap.ui.model.type.Date', constraints : { minimum : '01-01-1900'}}"
+										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin"/>
-									<ComboBox width="164px" selectedKey="{createModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>
+									<ComboBox width="164px" selectedKey="{path:'createModel>/WorkOrderDetail/Priority', type : 'pd.pm.lite.customTypes.Mandatory'}"
+										class="sapUiTinyMarginBegin"/>
 								</FlexBox>
 							</FlexBox>
 							<HBox height="86%" justifyContent="Center">
@@ -61,8 +68,8 @@
 								<VBox width="60%">
 									<!--Operations Table-->
 									<VBox height="50%">
-										<table:Table id="OperationsTable" rows="{path:'createModel>/WorkOrderDetail/Operations', templateShareable:false}" selectionMode="MultiToggle" visibleRowCountMode="Auto"
-											minAutoRowCount="9" class="sapUiTinyMarginBegin">
+										<table:Table id="OperationsTable" rows="{path:'createModel>/WorkOrderDetail/Operations', templateShareable:false}"
+											selectionMode="MultiToggle" visibleRowCountMode="Auto" minAutoRowCount="9" class="sapUiTinyMarginBegin">
 											<table:toolbar>
 												<Toolbar>
 													<content>
@@ -147,26 +154,25 @@
 													<Label text="{i18n>Component}"/>
 													<table:template>
 														<Input showValueHelp="true" valueHelpRequest="showComponentValueHelp"
-															value="{path: 'createModel>>ComponentNumber', type : 'pd.pm.lite.customTypes.ComponentId'}" change=".getComponentDetail"/>
+															value="{path: 'createModel>ComponentNumber', type : 'pd.pm.lite.customTypes.ComponentId'}" change=".getComponentDetail"/>
 													</table:template>
 												</table:Column>
 												<table:Column hAlign="End">
 													<Label text="{i18n>Description}"/>
 													<table:template>
-														<Label text="{createModel>>Description}"/>
+														<Label text="{createModel>Description}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">
 													<Label text="{i18n>ReqQuantity}"/>
 													<table:template>
-														<Input value="{ path: 'createModel>>RequirementQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
+														<Input value="{ path: 'createModel>RequirementQuantity', type : 'pd.pm.lite.customTypes.Number'}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="6rem">
+												<table:Column width="4rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox editable="false" showSecondaryValues="true" value="{path: 'createModel>>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}"
-															items="{path:'Units', templateShareable:false}">
+														<ComboBox editable="false" showSecondaryValues="true" value="{path: 'createModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}">
 															<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
 														</ComboBox>
 													</table:template>
@@ -174,13 +180,13 @@
 												<table:Column width="5rem">
 													<Label text="{i18n>IC}"/>
 													<table:template>
-														<Label text="{createModel>>ItemCategory}"/>
+														<Label text="{createModel>ItemCategory}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="5rem">
+												<table:Column width="6rem">
 													<Label text="{i18n>OperationReference}"/>
 													<table:template>
-														<Input value="{path: 'createModel>>OperationReference', type : 'pd.pm.lite.customTypes.Operation'}"/>
+														<Input value="{path: 'createModel>OperationReference', type : 'pd.pm.lite.customTypes.Operation'}"/>
 													</table:template>
 												</table:Column>
 											</table:columns>
@@ -198,10 +204,7 @@
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}" class="PDLabel"/>
-											<Input value="{createModel>/WorkOrderDetail/NewNote}"/>
-											<Label text=""/>
-											<FormattedText class="oldNotes" htmlText="{createModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
-											<!--<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>-->
+											<TextArea rows="10" value="{createModel>/WorkOrderDetail/NewNote}"/>
 										</f:content>
 									</f:SimpleForm>
 									<!--Failure Data-->

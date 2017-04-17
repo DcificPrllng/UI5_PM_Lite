@@ -78,14 +78,21 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			} else {
 				return true;
 			}
+		},
+		getObjects: function(obj, key, val) {
+			var objects = [];
+			for (var i in obj) {
+				if (!obj.hasOwnProperty(i)) {
+					continue;
+				}
+				if (typeof obj[i] === "object") {
+					objects = objects.concat(this.getObjects(obj[i], key, val));
+				} else if (i === key && obj[key] === val) {
+					objects.push(obj);
+					return objects;
+				}
+			}
+			return objects;
 		}
-		// ,
-		// idAndName: function(id, name) {
-		// 	if (name !== "") {
-		// 		return id + " (" + name + ")";
-		// 	} else {
-		// 		return id;
-		// 	}
-		// }
 	};
 });

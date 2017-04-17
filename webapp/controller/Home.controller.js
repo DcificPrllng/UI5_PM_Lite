@@ -188,6 +188,10 @@ sap.ui.define([
 			} else { //This is an equipment
 				data.Equipment = selectedObject.Id;
 				data.EquipmentName = selectedObject.Name;
+				data.FunctionalLocation = selectedObject.ParentId;
+				//Get FL Name
+				var fl = formatter.getObjects(hierarchyTable.getModel().getData().root, "Id", selectedObject.ParentId);
+				data.FunctionalLocationName = fl[0].Name;				
 			}
 
 			//Close the popup
@@ -196,9 +200,9 @@ sap.ui.define([
 			//Navigate
 			this.getRouter().navTo("newOrder", {
 				functionalLocation: data.FunctionalLocation,
-				functionalLocationName: data.FunctionalLocationName,
+				functionalLocationName:data.FunctionalLocationName.replace(/\//g, "-"),
 				equipment: data.Equipment,
-				equipmentName: data.EquipmentName
+				equipmentName: data.EquipmentName.replace(/\//g, "-")
 			});
 
 			//Close the popup

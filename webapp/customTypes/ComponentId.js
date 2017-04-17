@@ -6,6 +6,9 @@ sap.ui.define(["sap/ui/model/ValidateException",
 			if (oValue === "") {
 				return oValue;
 			}
+			else if (oValue === undefined){
+				return "";
+			}
 			return parseInt(oValue, 10);
 		},
 		parseValue: function(oValue) {
