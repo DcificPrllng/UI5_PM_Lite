@@ -13,9 +13,11 @@ sap.ui.define([
 	"pd/pm/lite/customTypes/Operation",
 	"pd/pm/lite/customTypes/Number",
 	"pd/pm/lite/customTypes/Mandatory",
-	"pd/pm/lite/customTypes/MandatoryDate",	
+	"pd/pm/lite/customTypes/MandatoryDate",
 	"pd/pm/lite/customTypes/ItemNumber",
-	"pd/pm/lite/customTypes/ComponentId"
+	"pd/pm/lite/customTypes/ComponentId",
+	"sap/m/DatePicker",
+	"sap/ui/model/type/Date"
 ], function(Controller, JSONModel, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
 	Validator) {
 	"use strict";
@@ -34,21 +36,8 @@ sap.ui.define([
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 
-			// var standardListItem = new DisplayListItem({
-			// 	label: "{Id}",
-			// 	value: "{Name}"
-			// });
-
-			// //Bind components and work centers value help
-			// var userPlant = this.oModel.getData("/UserSettings('dummy')").Plant;
-			// var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-
-			// // //Get work centers from browsers' local db
-			// // this._workCenterDialogList.bindAggregation("items", {
-			// // 	path: "/WorkCenters",
-			// // 	template: standardListItem,
-			// // 	filters: [oFilter1]
-			// // });
+			//Subscribe to data event
+			this.getOwnerComponent().getEventBus().subscribe("RoutingChannel", "NewOrderData", this.onDataReceived, this);
 
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
@@ -56,31 +45,47 @@ sap.ui.define([
 
 			this.createModel.setData({
 				"WorkOrderDetail": {
+					ShortDescription: "",
 					FunctionalLocation: "",
 					FunctionalLocationName: "",
 					Equipment: "",
 					EquipmentName: "",
+					// BasicStart: "",
+					// BasicFinish: "",
+					ScheduledStart: "00000000",
+					// ScheduledFinish: "",
+					Priority: "",
+					Damage: {
+						DamageCodeGroup: "",
+						DamageCode: ""
+					},
+					Cause: {
+						CauseCodeGroup: "",
+						CauseCode: ""
+					},
 					Operations: [],
 					Components: []
 				}
 			});
+
 			var step;
 			for (step = 0; step < 1; step++) {
 				this.createNewRowComponents();
 				this.createNewRowOperations();
 			}
 		},
-
-		_onObjectMatched: function(oEvent) {
-			if (oEvent.getParameter("name") !== "newOrder") {
-				return;
+		onDataReceived: function(channel, event, data) {
+			// do something with the data (bind to model)
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", data.FunctionalLocation);
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", data.FunctionalLocationName);
+			this.createModel.setProperty("/WorkOrderDetail/Plant", data.plant);
+			if (data.equipmentName !== undefined) { //It is a dummy number
+				this.createModel.setProperty("/WorkOrderDetail/Equipment", data.Equipment);
+				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
 			}
-			//Parameters
-			var parameters = oEvent.getParameter("arguments");
-
 			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
 			var oView = this.getView();
-			var sPath = "/ValueHelpSet(FunctionalLocation='" + parameters.functionalLocation + "',Equipment='" + parameters.equipmentNumber +
+			var sPath = "/ValueHelpSet(FunctionalLocation='" + data.FunctionalLocation + "',Equipment='" + data.Equipment +
 				"')";
 			var oParameters = {
 				urlParameters: {
@@ -98,13 +103,11 @@ sap.ui.define([
 				}
 			};
 			oView.setBusy(true);
-			oView.getModel().read(sPath, oParameters);
-
-			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", parameters.functionalLocation);
-			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", parameters.functionalLocationName);
-			if (parameters.equipmentName !== "XX") {  //It is a dummy number
-				this.createModel.setProperty("/WorkOrderDetail/Equipment", parameters.equipment);
-				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", parameters.equipmentName);
+			oView.getModel().read(sPath, oParameters);			
+		},
+		_onObjectMatched: function(oEvent) {
+			if (oEvent.getParameter("name") !== "newOrder") {
+				return;
 			}
 		},
 		getComponentDetail: function(evt) {
@@ -158,7 +161,6 @@ sap.ui.define([
 			var newOperationId = this.pad(maxOperationId, 4);
 
 			currentOperations.push({
-				"ActualWork": "",
 				"OperationID": newOperationId,
 				"OrderNumber": "",
 				"ShortText": "",
@@ -295,56 +297,25 @@ sap.ui.define([
 			});
 			dialog.open();
 		},
-		ReleaseOrder: function() {
-			//Call function to release the order
-			var workOrderDetails = this.getView().getModel("jsonModel").oData;
-			var oModel = this.getView().getModel();
-
-			this._busyDialog.open();
-			var that = this;
-			oModel.callFunction("/ReleaseOrder", {
-				method: "POST",
-				urlParameters: {
-					"OrderNumber": workOrderDetails.WorkOrderDetail.OrderNumber
-				},
-				success: function() {
-					that._busyDialog.close();
-					var msg = "Successfully released the order";
-					MessageToast.show(msg);
-					window.location.hash = "#";
-				},
-				error: function(oError) {
-					that._busyDialog.close();
-					var popUp = new Dialog({
-						title: "Error",
-						type: "Message",
-						state: "Error",
-						content: new sap.m.Text({
-							text: JSON.parse(oError.responseText).error.message.value
-						}),
-						beginButton: new sap.m.Button({
-							text: "OK",
-							press: function() {
-								popUp.close();
-							}
-						}),
-						afterClose: function() {
-							popUp.destroy();
-						}
-					});
-					popUp.open();
-				}
-			});
-		},
 		SaveOrder: function() {
 			var validator = new Validator();
 
-			if (!validator.validate(this.getView())) {
-				return;
-			}
+			//<<<<<<<<<Date validation not working>>>>>>>>>>>>>>>>>>
+			// if (!validator.validate(this.getView())) {
+			// 	return;
+			// }
+			//<<<<<<<<<Date validation not working>>>>>>>>>>>>>>>>>>
 
 			//Get Operations and components.
 			var workOrderDetails = this.getView().getModel("createModel").oData;
+
+			//Perform the creation
+			this.oModel.create("/WorkOrderDetailSet", workOrderDetails.WorkOrderDetail, function() {
+				console.log("success");
+			}, function() {
+				console.log("success");
+			});
+
 		},
 		OnWorkCenterSelected: function(evt) {
 			var selectedWorkCenter = evt.getSource().getSelectedItem().getLabel();

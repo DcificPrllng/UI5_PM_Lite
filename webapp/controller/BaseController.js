@@ -1,12 +1,15 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/routing/History",
-	"pd/pm/lite/util/formatter"	
+	"pd/pm/lite/util/formatter"
 ], function(Controller, History, formatter) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
-	formatter: formatter,
+		formatter: formatter,
+		// onInit: function(){
+		// 	this.getEventBus();	
+		// },
 		getRouter: function() {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
@@ -24,6 +27,10 @@ sap.ui.define([
 				this.getRouter().navTo("appHome", {}, true /*no history*/ );
 			}
 		}
+		// ,
+		// getEventBus: function(){
+		// 	this.eventBus = this.getOwnerComponent().getEventBus();
+		// }
 	});
 
 });

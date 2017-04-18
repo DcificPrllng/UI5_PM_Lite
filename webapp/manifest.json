@@ -79,7 +79,7 @@
 					"target": "changeOrder"
 				},
 				{
-					"pattern": "NewOrder/{functionalLocation}/{functionalLocationName}/{equipment}/{equipmentName}",
+					"pattern": "NewOrder",
 					"name": "newOrder",
 					"target": "newOrder"
 				}

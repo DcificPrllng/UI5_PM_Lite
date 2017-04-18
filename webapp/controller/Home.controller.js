@@ -180,11 +180,10 @@ sap.ui.define([
 			//Check if nothing was selected
 
 			var data = {};
+			data.plant = this.getView().byId("plantId").getValue();
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
 				data.FunctionalLocation = selectedObject.Id;
 				data.FunctionalLocationName = selectedObject.Name;
-				data.Equipment = "XX";
-				data.EquipmentName = "XX";
 			} else { //This is an equipment
 				data.Equipment = selectedObject.Id;
 				data.EquipmentName = selectedObject.Name;
@@ -198,13 +197,11 @@ sap.ui.define([
 			hierarchyTable.getParent().close();
 
 			//Navigate
-			this.getRouter().navTo("newOrder", {
-				functionalLocation: data.FunctionalLocation,
-				functionalLocationName:data.FunctionalLocationName.replace(/\//g, "-"),
-				equipment: data.Equipment,
-				equipmentName: data.EquipmentName.replace(/\//g, "-")
-			});
+			this.getRouter().navTo("newOrder");
 
+			//Pass Data
+			this.getOwnerComponent().getEventBus().publish("RoutingChannel", "NewOrderData", data);
+			
 			//Close the popup
 			hierarchyTable.getParent().close();
 		},
