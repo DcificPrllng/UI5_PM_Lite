@@ -190,7 +190,9 @@ sap.ui.define([
 				data.FunctionalLocation = selectedObject.ParentId;
 				//Get FL Name
 				var fl = formatter.getObjects(hierarchyTable.getModel().getData().root, "Id", selectedObject.ParentId);
-				data.FunctionalLocationName = fl[0].Name;				
+				if (fl.length > 0) {
+					data.FunctionalLocationName = fl[0].Name;
+				}
 			}
 
 			//Close the popup
@@ -201,7 +203,7 @@ sap.ui.define([
 
 			//Pass Data
 			this.getOwnerComponent().getEventBus().publish("RoutingChannel", "NewOrderData", data);
-			
+
 			//Close the popup
 			hierarchyTable.getParent().close();
 		},

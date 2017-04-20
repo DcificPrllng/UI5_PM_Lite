@@ -2,10 +2,14 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 	"use strict";
 	return {
 		// ID and Description Formatting
-		commonIDFormatter: function(sDescription, sID) {
+		commonIDFormatter: function(sID,sDescription) {
 			if (sID) {
 				if (sDescription) {
 					var resourceBundle = this.getView().getModel("i18n").getResourceBundle();
+					var isnum = /^\d+$/.test(sID);  //Only for numbers
+					if (isnum){
+						sID = parseInt(sID, 10); //Remove leading zeroes
+					}
 					return resourceBundle.getText("Formatting.DescriptionAndId", [
 						sDescription, sID
 					]);

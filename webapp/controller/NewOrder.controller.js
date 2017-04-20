@@ -43,17 +43,18 @@ sap.ui.define([
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
 
-			this.createModel.setData({
+			this.initialData = {
 				"WorkOrderDetail": {
 					ShortDescription: "",
 					FunctionalLocation: "",
 					FunctionalLocationName: "",
 					Equipment: "",
 					EquipmentName: "",
-					// BasicStart: "",
-					// BasicFinish: "",
-					ScheduledStart: "00000000",
-					// ScheduledFinish: "",
+					BasicStart: null,
+					BasicFinish: null,
+					ScheduledStart: null,
+					ScheduledFinish: null,
+					MainWorkCenter: null,
 					Priority: "",
 					Damage: {
 						DamageCodeGroup: "",
@@ -66,7 +67,9 @@ sap.ui.define([
 					Operations: [],
 					Components: []
 				}
-			});
+			};
+
+			this.createModel.setData(this.initialData);
 
 			var step;
 			for (step = 0; step < 1; step++) {
@@ -74,12 +77,16 @@ sap.ui.define([
 				this.createNewRowOperations();
 			}
 		},
+		onExit: function() {
+			//Initialize the model before getting out
+			this.createModel.setData(this.initialData);
+		},
 		onDataReceived: function(channel, event, data) {
 			// do something with the data (bind to model)
 			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", data.FunctionalLocation);
 			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", data.FunctionalLocationName);
 			this.createModel.setProperty("/WorkOrderDetail/Plant", data.plant);
-			if (data.equipmentName !== undefined) { //It is a dummy number
+			if (data.EquipmentName !== undefined) { //It is a dummy number
 				this.createModel.setProperty("/WorkOrderDetail/Equipment", data.Equipment);
 				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
 			}
@@ -103,7 +110,7 @@ sap.ui.define([
 				}
 			};
 			oView.setBusy(true);
-			oView.getModel().read(sPath, oParameters);			
+			oView.getModel().read(sPath, oParameters);
 		},
 		_onObjectMatched: function(oEvent) {
 			if (oEvent.getParameter("name") !== "newOrder") {
@@ -131,7 +138,7 @@ sap.ui.define([
 					sap.ui.getCore().getMessageManager().removeAllMessages();
 					row.getCells()[1].setValue(that.formatter.removeLeadingZerosFromString(oData.Id));
 					row.getCells()[2].setText(oData.Name); //Component's description
-					row.getCells()[4].setSelectedKey(oData.UoM); //Component's UoM				
+					row.getCells()[4].setText(oData.UoM); //Component's UoM				
 				},
 				error: function() {
 					oView.setBusy(false);
@@ -271,6 +278,7 @@ sap.ui.define([
 			});
 		},
 		GoHome: function() {
+			var oView = this.getView();
 			//Confirm from the user
 			var dialog = new Dialog({
 				title: "Cancel",
@@ -283,6 +291,7 @@ sap.ui.define([
 					press: function() {
 						window.location.hash = "#";
 						dialog.close();
+						oView.destroy();
 					}
 				}),
 				endButton: new Button({
@@ -300,14 +309,44 @@ sap.ui.define([
 		SaveOrder: function() {
 			var validator = new Validator();
 
-			//<<<<<<<<<Date validation not working>>>>>>>>>>>>>>>>>>
-			// if (!validator.validate(this.getView())) {
-			// 	return;
-			// }
-			//<<<<<<<<<Date validation not working>>>>>>>>>>>>>>>>>>
-
 			//Get Operations and components.
 			var workOrderDetails = this.getView().getModel("createModel").oData;
+
+			//Remove empty components
+			var newComponents = [];
+			var Components = workOrderDetails.WorkOrderDetail.Components;
+
+			for (var i = 0; i < Components.length; i++) {
+				//If one of these fields are not null, only then retian the record
+				if (Components[i].Description || Components[i].RequirementQuantity) {
+					newComponents.push(Components[i]);
+				}
+			}
+
+			//Update the Components
+			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", newComponents);
+
+			//Remove Empty Operations
+			var newOperations = [];
+			var Operations = workOrderDetails.WorkOrderDetail.Operations;
+			if (Operations.length > 1) { //One Operation is mandatory
+				for (i = 0; i < Operations.length; i++) {
+					//If one of these fields are not null, only then retian the record
+					if (Operations[i].Description || Operations[i].RequirementQuantity) {
+						newOperations.push(Operations[i]);
+					}
+				}
+
+				if (newOperations.length === 0) {
+					newOperations.push(Operations[0]);
+				}
+
+				//Update the Operations
+				this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", newOperations);
+			}
+			if (!validator.validate(this.getView())) {
+				return;
+			}
 
 			//Perform the creation
 			this.oModel.create("/WorkOrderDetailSet", workOrderDetails.WorkOrderDetail, function() {

@@ -30,23 +30,6 @@ sap.ui.define([
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
-
-			// var standardListItem = new DisplayListItem({
-			// 	label: "{Id}",
-			// 	value: "{Name}"
-			// });
-
-			// //Bind components and work centers value help
-			// var userPlant = model.getData("/UserSettings('dummy')").Plant;
-			// var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-
-			// //Get work centers from browsers' local db
-
-			// this._workCenterDialogList.bindAggregation("items", {
-			// 	path: "/WorkCenters",
-			// 	template: standardListItem,
-			// 	filters: [oFilter1]
-			// });
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -105,7 +88,7 @@ sap.ui.define([
 					sap.ui.getCore().getMessageManager().removeAllMessages();
 					row.getCells()[1].setValue(that.formatter.removeLeadingZerosFromString(oData.Id));
 					row.getCells()[2].setText(oData.Name); //Component's description
-					row.getCells()[4].setSelectedKey(oData.UoM); //Component's UoM				
+					row.getCells()[4].setText(oData.UoM); //Component's UoM				
 				},
 				error: function() {
 					oView.setBusy(false);

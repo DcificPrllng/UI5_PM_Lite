@@ -13,13 +13,13 @@
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
 									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
-									<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Description}" design="Bold"/>
+									<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Description}" design="Bold" required="true"/>
 									<Input width="300px" class="sapUiTinyMarginBegin"
 										value="{path: 'createModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
 								</FlexBox>
 								<!--Second Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold"/>
+									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
 									<ComboBox class="sapUiTinyMarginBegin" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="true"
 										selectedKey="{path:'createModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" width="200px">
 										<items>
@@ -31,15 +31,15 @@
 										text="{parts:[{path: 'createModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'createModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin" design="Bold"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/BasicStart'}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/BasicStart', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold" class="cisLabels cisTopMargin"/>
 									<DatePicker width="124px"
-										dateValue="{path:'createModel>/WorkOrderDetail/ScheduledStart',type:'sap.ui.model.type.Date', formatOptions: { style: 'medium', strictParsing: true}}"
+										dateValue="{path:'createModel>/WorkOrderDetail/ScheduledStart', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin"/>
 								</FlexBox>
 								<!--Third Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin" required="true"/>
 									<ComboBox width="200px" items="{/ActivityTypes}"
 										selectedKey="{path:'createModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin">
@@ -52,13 +52,14 @@
 										text="{parts:[{path:'createModel>/WorkOrderDetail/Equipment'}, {path: 'createModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin" design="Bold"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/BasicFinish'}" class="sapUiTinyMarginBegin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/BasicFinish', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabel cisTopMargins cisTopMargin"/>
-									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/ScheduledFinish'}" class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin"/>
+									<DatePicker width="124px" dateValue="{path:'createModel>/WorkOrderDetail/ScheduledFinish', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
 									<ComboBox width="184px" selectedKey="{path:'createModel>/WorkOrderDetail/Priority', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin">
 										<items>
+											<core:ListItem text="" key=""/>
 											<core:ListItem text="SAFE CRIT (&lt;30 DAY)" key="1"/>
 											<core:ListItem text="OPS CRIT (&lt;30 DAY)" key="2"/>
 											<core:ListItem text="TIME SENS (&lt;60 DAY)" key="3"/>
@@ -176,9 +177,7 @@
 												<table:Column width="4rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox editable="false" showSecondaryValues="true" value="{path: 'createModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}">
-															<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
-														</ComboBox>
+														<Label text="{path: 'createModel>Unit'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">

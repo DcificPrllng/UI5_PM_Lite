@@ -78,9 +78,10 @@
 												<table:Column width="8rem">
 													<Label text="{i18n>WorkCenter}"/>
 													<table:template>
-														<ComboBox showSecondaryValues="true" value="{path: 'jsonModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
+														<ComboBox showSecondaryValues="true" value="{path: 'jsonModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
+															items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
 															<core:ListItem text="{localStorageModel>Id}" key="{localStorageModel>Id}" additionalText="{localStorageModel>Name}"></core:ListItem>
-														</ComboBox>														
+														</ComboBox>
 													</table:template>
 												</table:Column>
 												<table:Column hAlign="End">
@@ -98,11 +99,11 @@
 												<table:Column width="8rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox selectedKey="{path: 'jsonModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}" >
+														<ComboBox selectedKey="{path: 'jsonModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}">
 															<core:ListItem text="Minutes" key="MIN"></core:ListItem>
 															<core:ListItem text="Hours" key="H"></core:ListItem>
-															<core:ListItem text="Days" key="DAY"></core:ListItem>															
-														</ComboBox>													
+															<core:ListItem text="Days" key="DAY"></core:ListItem>
+														</ComboBox>
 													</table:template>
 												</table:Column>
 												<table:Column width="7rem">
@@ -157,9 +158,7 @@
 												<table:Column width="4rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox editable="false" showSecondaryValues="true" value ="{path: 'jsonModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}" >
-															<core:ListItem text="{Key}" key="{Key}" additionalText="{Text}"></core:ListItem>
-														</ComboBox>
+														<Label text="{path: 'jsonModel>Unit'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="5rem">
@@ -171,7 +170,7 @@
 												<table:Column width="7rem">
 													<Label text="{i18n>OperationReference}"/>
 													<table:template>
-														<Input value="{path: 'jsonModel>OperationReference',  type : 'pd.pm.lite.customTypes.Operation'}"/>
+														<Input value="{path: 'jsonModel>OperationReference', type : 'pd.pm.lite.customTypes.Operation'}"/>
 													</table:template>
 												</table:Column>
 											</table:columns>
