@@ -27,6 +27,7 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
+			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();

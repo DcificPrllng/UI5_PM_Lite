@@ -7,30 +7,33 @@ sap.ui.define([
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
 		formatter: formatter,
-		// onInit: function(){
-		// 	this.getEventBus();	
+		// onInit: function() {
+
+		// },
+		// getMP: function(){
+		// 	return this._oMP;
 		// },
 		getRouter: function() {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
 
 		onNavBack: function(oEvent) {
-			var oHistory, sPreviousHash;
+				var oHistory, sPreviousHash;
 
-			oHistory = History.getInstance();
-			sPreviousHash = oHistory.getPreviousHash();
+				oHistory = History.getInstance();
+				sPreviousHash = oHistory.getPreviousHash();
 
-			if (sPreviousHash !== undefined) {
-				//window.top.history.go(-1);
-				this.getRouter().navTo("appHome", {}, true /*no history*/ );
-			} else {
-				this.getRouter().navTo("appHome", {}, true /*no history*/ );
+				if (sPreviousHash !== undefined) {
+					//window.top.history.go(-1);
+					this.getRouter().navTo("appHome", {}, true /*no history*/ );
+				} else {
+					this.getRouter().navTo("appHome", {}, true /*no history*/ );
+				}
 			}
-		}
-		// ,
-		// getEventBus: function(){
-		// 	this.eventBus = this.getOwnerComponent().getEventBus();
-		// }
+			// ,
+			// getEventBus: function(){
+			// 	this.eventBus = this.getOwnerComponent().getEventBus();
+			// }
 	});
 
 });

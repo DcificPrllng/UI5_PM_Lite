@@ -2,12 +2,12 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 	"use strict";
 	return {
 		// ID and Description Formatting
-		commonIDFormatter: function(sID,sDescription) {
+		commonIDFormatter: function(sID, sDescription) {
 			if (sID) {
 				if (sDescription) {
 					var resourceBundle = this.getView().getModel("i18n").getResourceBundle();
-					var isnum = /^\d+$/.test(sID);  //Only for numbers
-					if (isnum){
+					var isnum = /^\d+$/.test(sID); //Only for numbers
+					if (isnum) {
 						sID = parseInt(sID, 10); //Remove leading zeroes
 					}
 					return resourceBundle.getText("Formatting.DescriptionAndId", [
@@ -97,6 +97,17 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 				}
 			}
 			return objects;
+		},
+		duration: function(label, start, end) {
+			var startDate = new Date(start);
+			var endDate = new Date(end);
+			var hours;
+			if (!start || !end) {
+				hours = 0;
+			} else {
+				hours = Math.abs(endDate - startDate) / 36e5;
+			}
+			return label.concat(isNaN(hours) === true ? 0 : hours.toFixed(2) + " Hours");
 		}
 	};
 });

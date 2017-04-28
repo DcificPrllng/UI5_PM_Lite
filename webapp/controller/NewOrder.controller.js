@@ -10,6 +10,8 @@ sap.ui.define([
 	"sap/ui/core/MessageType",
 	"sap/ui/core/ValueState",
 	"pd/pm/lite/controller/Validator",
+	"sap/m/MessagePopover",
+	"sap/m/MessagePopoverItem",
 	"pd/pm/lite/customTypes/Operation",
 	"pd/pm/lite/customTypes/Number",
 	"pd/pm/lite/customTypes/Mandatory",
@@ -19,11 +21,26 @@ sap.ui.define([
 	"sap/m/DatePicker",
 	"sap/ui/model/type/Date"
 ], function(Controller, JSONModel, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
-	Validator) {
+	Validator, MessagePopover, MessagePopoverItem) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.NewOrder", {
+
 		onInit: function() {
+
+			this._oMP = new MessagePopover({
+				items: {
+					path: "message>/",
+					template: new MessagePopoverItem({
+						description: "{message>description}",
+						type: "{message>type}",
+						title: "{message>message}"
+					})
+				}
+			});
+
+			this._oMP.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
+
 			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
@@ -32,6 +49,7 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
+			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");			
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
@@ -54,8 +72,14 @@ sap.ui.define([
 					BasicFinish: null,
 					ScheduledStart: null,
 					ScheduledFinish: null,
-					MainWorkCenter: null,
+					OperationDowntime:false,
+					BreakdownStart: null,
+					BreakdownFinish: null,
+					Breakdown:false,
+					MainWorkCenter: "",
 					Priority: "",
+					DowntimeStart:null,
+					DowntimeEnd: null,
 					Damage: {
 						DamageCodeGroup: "",
 						DamageCode: ""
@@ -142,18 +166,21 @@ sap.ui.define([
 				},
 				error: function() {
 					oView.setBusy(false);
-					that.oMessageManager.addMessages(
-						new Message({
-							message: that.oMessageManager.getMessageModel().getData()[0].message,
-							type: MessageType.Error,
-							target: control.getId(),
-							processor: that.oMessageProcessor,
-							validation: true
-						})
-					);
+					// that.oMessageManager.addMessages(
+					// 	new Message({
+					// 		message: that.oMessageManager.getMessageModel().getData()[0].message,
+					// 		type: MessageType.Error,
+					// 		target: control.getId(),
+					// 		processor: that.oMessageProcessor,
+					// 		validation: true
+					// 	})
+					// );
 					row.getCells()[1].setValue("");
 					row.getCells()[2].setText(""); //Component's description
-					row.getCells()[4].setSelectedKey(""); //Component's UoM						
+					row.getCells()[4].setText(""); //Component's UoM						
+
+					that._oMP.openBy(that.getView().byId("save"));
+
 				}
 			});
 		},
@@ -229,14 +256,19 @@ sap.ui.define([
 
 			//Get selected rows
 			var deletedRows = componentTable.getSelectedIndices();
+
+			if (deletedRows.length === 0) {
+				return;
+			}
+
 			deletedRows.map(function(c) {
 				//current context/Object
 				var d = componentTable.getContextByIndex(c).getObject();
 
 				//Delete them from json model.
-				var currentComponents = that.getView().getModel("jsonModel").getProperty("/Components");
+				var currentComponents = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Components");
 				that.findAndRemove(currentComponents, "ItemID", d.ItemID);
-				that.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
+				that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 				if (d.New !== "X") { //If this came from server  
 					//Mark for sending a request later
 					that.getView().getModel().remove("/Components(OrderNumber='" + d.OrderNumber + "',ItemID='" + d.ItemID + "')", {
@@ -247,20 +279,44 @@ sap.ui.define([
 		},
 		deleteSelectedOperations: function() {
 			var that = this;
-
 			//Get Table reference
 			var operationTable = this.getView().byId("OperationsTable");
 
 			//Get selected rows
 			var deletedRows = operationTable.getSelectedIndices();
+			if (deletedRows.length === 0) {
+				return; //No rows selected
+			}
+
+			var currentOperations = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
+			if (currentOperations.length < 2) {
+
+				var dialog = new Dialog({
+					title: "Warning",
+					type: "Message",
+					content: new Text({
+						text: "At least one Operation is required"
+					}),
+					beginButton: new Button({
+						text: "OK",
+						press: function() {
+							dialog.close();
+						}
+					}),
+					afterClose: function() {
+						dialog.destroy();
+					}
+				});
+				dialog.open();
+				return;
+			}
 			deletedRows.map(function(c) {
 				//current context/Object
 				var d = operationTable.getContextByIndex(c).getObject();
 
 				//Delete them from json model.
-				var currentOperations = that.getView().getModel("jsonModel").getProperty("/Operations");
 				that.findAndRemove(currentOperations, "OperationID", d.OperationID);
-				that.getView().getModel("jsonModel").setProperty("/Operations", currentOperations);
+				that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
 				if (d.New !== "X") { //If this came from server  
 					//Mark for sending a request later
 					that.getView().getModel().remove("/Operations(OrderNumber='" + d.OrderNumber + "',OperationID='" + d.OperationID + "')", {
@@ -278,7 +334,7 @@ sap.ui.define([
 			});
 		},
 		GoHome: function() {
-			var oView = this.getView();
+			//var oView = this.getView();
 			//Confirm from the user
 			var dialog = new Dialog({
 				title: "Cancel",
@@ -291,7 +347,6 @@ sap.ui.define([
 					press: function() {
 						window.location.hash = "#";
 						dialog.close();
-						oView.destroy();
 					}
 				}),
 				endButton: new Button({
@@ -305,6 +360,12 @@ sap.ui.define([
 				}
 			});
 			dialog.open();
+
+			this.getView().getModel("createModel").setData(this.initialData);
+		},
+		goHomeNoPrompt: function() {
+			this.getView().getModel("createModel").setData(this.initialData);
+			window.location.hash = "#";
 		},
 		SaveOrder: function() {
 			var validator = new Validator();
@@ -336,7 +397,6 @@ sap.ui.define([
 						newOperations.push(Operations[i]);
 					}
 				}
-
 				if (newOperations.length === 0) {
 					newOperations.push(Operations[0]);
 				}
@@ -349,10 +409,38 @@ sap.ui.define([
 			}
 
 			//Perform the creation
-			this.oModel.create("/WorkOrderDetailSet", workOrderDetails.WorkOrderDetail, function() {
-				console.log("success");
-			}, function() {
-				console.log("success");
+			var that = this;
+			that.getView().setBusy(true);
+			this.oModel.create("/WorkOrderDetailSet", workOrderDetails.WorkOrderDetail, {
+				success: function(data) {
+					that.getView().setBusy(false);
+					sap.ui.getCore().getMessageManager().removeAllMessages();
+
+					var message = "Success. Order " + data.OrderNumber + " created";
+					var dialog = new Dialog({
+						title: "Warning",
+						type: "Message",
+						content: new Text({
+							text: message
+						}),
+						beginButton: new Button({
+							text: "OK",
+							press: function() {
+								dialog.close();
+								that.goHomeNoPrompt();
+								//window.location.hash = "#";
+							}
+						}),
+						afterClose: function() {
+							dialog.destroy();
+						}
+					});
+					dialog.open();
+				},
+				error: function(evt) {
+					that.getView().setBusy(false);
+					that._oMP.openBy(that.getView().byId("save"));
+				}
 			});
 
 		},
@@ -376,7 +464,7 @@ sap.ui.define([
 				selectedComponent.Id));
 			var row = this.getView().getController()._ComponentDialog.data("source").getParent();
 			row.getCells()[2].setText(selectedComponent.Name); //Component's description
-			row.getCells()[4].setSelectedKey(selectedComponent.UoM); //Component's UoM
+			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM
 		},
 		showComponentValueHelp: function(oEvent) {
 			var ComponentDialog = this.getView().getController()._ComponentDialog;

@@ -24,6 +24,9 @@ div#uiArea {
     padding-top: 7px;
 }
 
+.pdForm > div{
+	width: 100%;
+}
 .oldNotes {
     border: 1px solid #bfbfbf;
     min-height: 120px;
@@ -32,7 +35,8 @@ div#uiArea {
 }
 
 .notificationBox {
-    max-width: 650px;
+    /*max-width: 650px;*/
+    width: 100%;
 }
 
 .notificationBox>.sapUiForm .sapUiFormTitle {

@@ -8,48 +8,55 @@
 					<HBox justifyContent="Center" height="100%">
 						<VBox width="90%" height="100%" direction="Column" alignContent="Center" alignItems="Center">
 							<FlexBox width="100%" height="14%" direction="Column" class="PDHeader sapUiTinyMargin">
-								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
-									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
-									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
-									<Label width="146px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
-									<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
-										text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
-									<Input width="300px" value="{path: 'jsonModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
-									<Label class="sapUiTinyMarginBegin cisTopMargin" width="217px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
-									<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
+								<!--//Forst Row-->
+								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="SpaceBetween">
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
+										<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
+											text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+										<Input width="400px" value="{path: 'jsonModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
+										<Label class="sapUiTinyMarginBegin cisTopMargin" width="333px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
+										<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
+									</FlexBox>
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="End">
+										<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
+										<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
+										<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
+									</FlexBox>
 								</FlexBox>
+								<!--//Second Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
 									<Label width="200px"
 										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/MainWorkCenter'}, {path:'jsonModel>/WorkOrderDetail/MainWorkCenterName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
-									<Label width="300px"
+									<Label width="400px" design="Bold"
 										text="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold"/>
+									<Label width="164px" text="{jsonModel>/WorkOrderDetail/ReportedBy}" class="sapUiTinyMarginBegin"/>										
 									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
 									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold"/>
 									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold"/>
-									<Label width="104px" text="{jsonModel>/WorkOrderDetail/ReportedBy}" class="sapUiTinyMarginBegin"/>
 								</FlexBox>
+								<!--//Third Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
 									<Label width="200px"
 										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/PmActivityType'}, {path: 'jsonModel>/WorkOrderDetail/PmActivityTypeName'}], formatter:'.formatter.commonIDFormatter'}"
 										class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
-									<Label width="300px"
+									<Label width="400px" design="Bold"
 										text="{parts:[{path:'jsonModel>/WorkOrderDetail/Equipment'}, {path: 'jsonModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"
 										class="sapUiTinyMarginBegin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold"/>
+									<Label width="164px" text="{jsonModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>										
 									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold"/>
 									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
 									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold"/>
 									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold"/>
-									<Label width="164px" text="{jsonModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>
 								</FlexBox>
 							</FlexBox>
 							<HBox height="86%" justifyContent="Center">
@@ -177,11 +184,9 @@
 										</table:Table>
 									</VBox>
 								</VBox>
-								<VBox width="40%" direction="Column" class="sapUiTinyMarginBegin pdForm">
-									<!--<f:SimpleForm  class="notificationBox" minWidth="1024" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout"-->
-									<!--	title="Notification" labelSpanL="1" labelSpanM="1" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">-->
-									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Notification"
-										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
+								<VBox width="40%" direction="Column" class="sapUiTinyMarginBegin pdForm" alignItems="End">
+									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification"
+										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1" >
 										<f:content>
 											<Label text="{i18n>Code}" class="PDLabel"/>
 											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
