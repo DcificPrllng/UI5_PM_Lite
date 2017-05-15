@@ -181,6 +181,7 @@ sap.ui.define([
 
 			var data = {};
 			data.plant = this.getView().byId("plantId").getValue();
+			data.MainWorkCenter = this.getView().byId("workCenterId").getValue();
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
 				data.FunctionalLocation = selectedObject.Id;
 				data.FunctionalLocationName = selectedObject.Name;

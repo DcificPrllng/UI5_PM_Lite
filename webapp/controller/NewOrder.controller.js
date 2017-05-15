@@ -49,7 +49,7 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
-			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");			
+			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
@@ -60,7 +60,14 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
-
+			
+			//For defaulting dates
+			var now = new Date();
+			
+			//End date is 180 days after today
+			var after180days = new Date();
+			after180days.setDate(after180days.getDate() + 180);
+			
 			this.initialData = {
 				"WorkOrderDetail": {
 					ShortDescription: "",
@@ -68,17 +75,17 @@ sap.ui.define([
 					FunctionalLocationName: "",
 					Equipment: "",
 					EquipmentName: "",
-					BasicStart: null,
-					BasicFinish: null,
+					BasicStart: now,
+					BasicFinish: after180days,
 					ScheduledStart: null,
 					ScheduledFinish: null,
-					OperationDowntime:false,
-					BreakdownStart: null,
+					OperationDowntime: false,
+					BreakdownStart: now,
 					BreakdownFinish: null,
-					Breakdown:false,
+					Breakdown: false,
 					MainWorkCenter: "",
-					Priority: "",
-					DowntimeStart:null,
+					Priority: "4",
+					DowntimeStart: now,
 					DowntimeEnd: null,
 					Damage: {
 						DamageCodeGroup: "",
@@ -114,6 +121,8 @@ sap.ui.define([
 				this.createModel.setProperty("/WorkOrderDetail/Equipment", data.Equipment);
 				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
 			}
+			this.createModel.setProperty("/WorkOrderDetail/MainWorkCenter", data.MainWorkCenter);
+			
 			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
 			var oView = this.getView();
 			var sPath = "/ValueHelpSet(FunctionalLocation='" + data.FunctionalLocation + "',Equipment='" + data.Equipment +
@@ -418,7 +427,7 @@ sap.ui.define([
 
 					var message = "Success. Order " + data.OrderNumber + " created";
 					var dialog = new Dialog({
-						title: "Warning",
+						title: "Information",
 						type: "Message",
 						content: new Text({
 							text: message
@@ -428,7 +437,6 @@ sap.ui.define([
 							press: function() {
 								dialog.close();
 								that.goHomeNoPrompt();
-								//window.location.hash = "#";
 							}
 						}),
 						afterClose: function() {

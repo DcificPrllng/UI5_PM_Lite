@@ -1,0 +1,49 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:common="sap.ui.commons">
+	<Dialog id="userStatusDialog" title="{i18n>SetUserStatus}" contentWidth="25rem" contentHeight="705px" class="cisUserStatusDialog">
+		<table:Table id="UserStatusesWithNumber" selectionMode="Single" selectionBehavior="Row" rowSelectionChange=".CalculateUserStatus"
+			visibleRowCountMode="Fixed" visibleRowCount="5" rows="{path : 'jsonModel>/UserStatusesWithNumber'}" 
+			title="{i18n>TitleWithNumber}">
+			<table:columns>
+				<table:Column width="3rem">
+					<Label text="{i18n>No.}"/>
+					<table:template>
+						<common:TextView text="{jsonModel>Number}"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="4rem">
+					<Label text="{i18n>Status}"/>
+					<table:template>
+						<common:TextView text="{jsonModel>Status}"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="14rem">
+					<Label text="{i18n>StatusText}"/>
+					<table:template>
+						<common:TextView text="{jsonModel>StatusText}"/>
+					</table:template>
+				</table:Column>
+			</table:columns>
+		</table:Table>
+		<table:Table id="UserStatusesNoNumber" selectionMode="MultiToggle" selectionBehavior="Row" rowSelectionChange=".CalculateUserStatus"
+			visibleRowCountMode="Fixed" visibleRowCount="12" rows="{path : 'jsonModel>/UserStatusesNoNumber'}"
+			title="{i18n>TitleWithoutNumber}">
+			<table:columns>
+				<table:Column width="4rem">
+					<Label text="{i18n>Status}"/>
+					<table:template>
+						<common:TextView text="{jsonModel>Status}"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="17rem">
+					<Label text="{i18n>StatusText}"/>
+					<table:template>
+						<common:TextView text="{jsonModel>StatusText}"/>
+					</table:template>
+				</table:Column>
+			</table:columns>
+		</table:Table>
+		<buttons>
+			<Button text="{i18n>OK}" press="_handleCValueHelpClose"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

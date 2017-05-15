@@ -7,70 +7,89 @@
 				<content>
 					<HBox justifyContent="Center" height="100%">
 						<VBox width="90%" height="100%" direction="Column" alignContent="Center" alignItems="Center">
-							<FlexBox width="100%" height="14%" direction="Column" class="PDHeader sapUiTinyMargin">
-								<!--//Forst Row-->
-								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="SpaceBetween">
-									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
-										<Text width="74px" class="sapUiTinyMarginBegin cisTopMargin"
-											text="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
-										<Input width="400px" value="{path: 'jsonModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
-										<Label class="sapUiTinyMarginBegin cisTopMargin" width="333px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
-										<Text class="sapUiTinyMarginBegin cisTopMargin" width="268px" text="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
-									</FlexBox>
-									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="End">
-										<Button type="Default" id="release" icon="sap-icon://flag" width="85px" text="{i18n>Release}" press=".ReleaseOrder"/>
-										<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
-										<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
-									</FlexBox>
+							<FlexBox height="16%" width="100%" direction="Column" class="PDHeader sapUiTinyMargin">
+								<!--//First Row-->
+								<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
+									<Button class="sapUiTinyMarginBegin cisUiTinyMarginBegin" type="Default" id="release" icon="sap-icon://flag" width="100px" text="{i18n>Release}" press=".ReleaseOrder"/>
+									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="90px" text="{i18n>Save}" press=".SaveOrder"/>
+									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="90px" text="{i18n>Cancel}" press=".GoHome"/>
+								</FlexBox>
+								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+									<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
+									<Input width="54px" class="sapUiTinyMarginBegin cisDisbaledInput" enabled="false" value="{path: 'jsonModel>/WorkOrderDetail/OrderType'}"/>
+									<Input width="74px" enabled="false" class="cisDisbaledInput"
+										value="{path: 'jsonModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+									<Input width="400px" value="{path: 'jsonModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
+									<Label class="sapUiTinyMarginBegin cisTopMargin" width="280px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
+									<Input width="250px" enabled="false" class="sapUiTinyMarginBegin cisDisbaledInput" value ="{jsonModel>/WorkOrderDetail/SystemStatus}"/>
+									<Input width="250px" enabled="false" class="cisDisbaledInput" value="{path: 'jsonModel>/WorkOrderDetail/UserStatus'}"/>
+									<core:Icon src="sap-icon://user-edit" class="sapUiTinyMarginBegin" press="showUserStatusValueHelp"/>
 								</FlexBox>
 								<!--//Second Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" design="Bold"/>
-									<Label width="200px"
-										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/MainWorkCenter'}, {path:'jsonModel>/WorkOrderDetail/MainWorkCenterName'}], formatter:'.formatter.commonIDFormatter'}"
-										class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold"/>
-									<Label width="400px" design="Bold"
+									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
+									<ComboBox class="sapUiTinyMarginBegin" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="false"
+										selectedKey="{path:'jsonModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" width="200px">
+										<items>
+											<core:ListItem text="{localStorageModel>Id} ({localStorageModel>Name})" key="{localStorageModel>Id}"
+												additionalText="{localStorageModel>Name}"></core:ListItem>
+										</items>
+									</ComboBox>
+									<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" design="Bold" class="cisLabels cisTopMargin"/>
+									<Label width="400px"
 										text="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
-										class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold"/>
-									<Label width="164px" text="{jsonModel>/WorkOrderDetail/ReportedBy}" class="sapUiTinyMarginBegin"/>										
-									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold"/>
-									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold"/>
-									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+										class="sapUiTinyMarginBegin cisLabels cisTopMargin" design="Bold"/>
+									<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold" class="cisLabels cisTopMargin"/>
+									<Label width="195px" text="{jsonModel>/WorkOrderDetail/ReportedBy}" design="Bold" class="sapUiTinyMarginBegin cisLabels cisTopMargin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold" class="cisLabels cisTopMargin"/>
+									<DatePicker width="124px" enabled="{path: 'jsonModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.BasicDateEditable'}" dateValue="{path:'jsonModel>/WorkOrderDetail/BasicStart'}" class="sapUiTinyMarginBegin cisDisbaledInput"/>
+									<Label width="104px" textAlign="Right" text="{i18n>SchStart}" design="Bold" class="cisLabels cisTopMargin"/>
+									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledStart', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin cisLabels cisTopMargin"
+										design="Bold"/>
 								</FlexBox>
 								<!--//Third Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold"/>
-									<Label width="200px"
-										text="{parts: [{path: 'jsonModel>/WorkOrderDetail/PmActivityType'}, {path: 'jsonModel>/WorkOrderDetail/PmActivityTypeName'}], formatter:'.formatter.commonIDFormatter'}"
-										class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold"/>
+									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin cisLabels" required="true"/>
+									<ComboBox width="200px" items="{/ActivityTypes}"
+										selectedKey="{path:'jsonModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
+										class="sapUiTinyMarginBegin">
+										<items>
+											<core:ListItem text="{Code} ({Name})" key="{Code}" additionalText="{Name}"/>
+										</items>
+									</ComboBox>									
+									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>
 									<Label width="400px" design="Bold"
 										text="{parts:[{path:'jsonModel>/WorkOrderDetail/Equipment'}, {path: 'jsonModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"
-										class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold"/>
-									<Label width="164px" text="{jsonModel>/WorkOrderDetail/Priority}" class="sapUiTinyMarginBegin"/>										
-									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold"/>
-									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
-									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold"/>
-									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}" class="sapUiTinyMarginBegin"/>
+										class="sapUiTinyMarginBegin cisLabels cisTopMargin"/>
+									<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>									
+									<ComboBox width="195px" enabled="{path: 'jsonModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.PriorityEditable'}" selectedKey="{path:'jsonModel>/WorkOrderDetail/Priority', type : 'pd.pm.lite.customTypes.Mandatory'}"
+										class="sapUiTinyMarginBegin cisDisbaledInput">
+										<items>
+											<core:ListItem text="" key=""/>
+											<core:ListItem text="SAFE CRIT (&lt;30 DAY)" key="1"/>
+											<core:ListItem text="OPS CRIT (&lt;30 DAY)" key="2"/>
+											<core:ListItem text="TIME SENS (&lt;60 DAY)" key="3"/>
+											<core:ListItem text="NON CRIT (&lt;180 DAY)" key="4"/>
+										</items>
+									</ComboBox>									
+									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
+									<DatePicker enabled="{path: 'jsonModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.BasicDateEditable'}" width="124px" dateValue="{path:'jsonModel>/WorkOrderDetail/BasicFinish'}" class="sapUiTinyMarginBegin cisDisbaledInput"/>									
+									<Label width="104px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabels cisTopMargin"/>
+									<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}" class="cisLabels cisTopMargin sapUiTinyMarginBegin"
+										design="Bold"/>
 								</FlexBox>
 							</FlexBox>
-							<HBox height="86%" justifyContent="Center">
-								<VBox width="60%">
-									<VBox height="50%">
+							<HBox height="84%" justifyContent="Center">
+								<VBox height="98%" width="60%" justifyContent="SpaceBetween">
+									<VBox height="50%" justifyContent="Start">
 										<table:Table id="OperationsTable" rows="{path:'jsonModel>/Operations', templateShareable:false}" selectionMode="MultiToggle"
 											visibleRowCountMode="Auto" minAutoRowCount="9" class="sapUiTinyMarginBegin">
 											<table:toolbar>
 												<Toolbar>
 													<content>
-														<Title text="{i18n>Operations}"/>
-														<ToolbarSpacer/>
-														<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-process" tooltip="{i18n>NewOperation}" press=".createNewRowOperations"/>
-														<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedOperations}"
+														<Button class="cisHeadingButton" width="100px" text="{i18n>Operations}"/>
+														<Button type="Accept" width="90px" text="Add" icon="sap-icon://add-process" tooltip="{i18n>NewOperation}" press=".createNewRowOperations"/>
+														<Button type="Reject" width="90px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedOperations}"
 															press=".deleteSelectedOperations"/>
 													</content>
 												</Toolbar>
@@ -122,16 +141,15 @@
 											</table:columns>
 										</table:Table>
 									</VBox>
-									<VBox height="50%">
+									<VBox height="50%" justifyContent="End">
 										<table:Table id="ComponentsTable" rows="{path: 'jsonModel>/Components', templateShareable:false}" minAutoRowCount="9"
 											visibleRowCountMode="Auto" class="sapUiTinyMarginBegin">
 											<table:toolbar>
 												<Toolbar>
 													<content>
-														<Title text="Components"/>
-														<ToolbarSpacer/>
-														<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-equipment" tooltip="{i18n>NewComponent}" press=".createNewRowComponents"/>
-														<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
+														<Button width="100px" class="cisHeadingButton" text="Components"/>
+														<Button type="Accept" width="90px" text="Add" icon="sap-icon://add-equipment" tooltip="{i18n>NewComponent}" press=".createNewRowComponents"/>
+														<Button type="Reject" width="90px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
 															press=".deleteSelectedComponents"/>
 													</content>
 												</Toolbar>
@@ -184,19 +202,51 @@
 										</table:Table>
 									</VBox>
 								</VBox>
-								<VBox width="40%" direction="Column" class="sapUiTinyMarginBegin pdForm" alignItems="End">
-									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification"
-										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1" >
+								<VBox height="98%" width="40%" direction="Column" class="sapUiTinyMarginBegin pdForm" alignItems="End" justifyContent="{= ${jsonModel>/WorkOrderDetail/OrderType} === 'PM02'? 'Start':'SpaceBetween' }">
+									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification" labelSpanL="2"
+										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Code}" class="PDLabel"/>
 											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}" class="PDLabel"/>
-											<Input value="{jsonModel>/WorkOrderDetail/NewNote}"/>
+											<TextArea growing="true" rows="2" value="{jsonModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
-											<FormattedText class="oldNotes" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
+											<FormattedText class="oldNotes" height="150px" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
 											<!--<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>-->
+										</f:content>
+									</f:SimpleForm>
+									<!--Operation Downtime (NPT)-->
+									<f:SimpleForm class="notificationBox" visible="{= ${jsonModel>/WorkOrderDetail/OrderType} === 'PM01'}" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout"
+										title="{i18n>OperationalDowntime} (NPT)" labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>DowntimeStart}" class="PDLabel"/>
+											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
+												displayFormat="short" displayFormatType="Gregorian"/>
+											<CheckBox text="{i18n>OperationalDowntime}"/>
+											<Label text="{i18n>DowntimeEnd}" class="PDLabel"/>
+											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
+												displayFormat="short" displayFormatType="Gregorian"/>
+											<Text
+												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'jsonModel>/WorkOrderDetail/DowntimeStart'}, {path: 'jsonModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
+												class="PDLabel"/>
+										</f:content>
+									</f:SimpleForm>
+									<!--Malfunction Data-->
+									<f:SimpleForm class="notificationBox" visible="{= ${jsonModel>/WorkOrderDetail/OrderType} === 'PM01'}" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="{i18n>MalfunctionData}"
+										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>BreakdownStart}" class="PDLabel"/>
+											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												type="sap.ui.model.type.DateTime" displayFormat="short" displayFormatType="Gregorian"/>
+											<CheckBox text="{i18n>Breakdown}"/>
+											<Label text="{i18n>BreakdownEnd}" class="PDLabel"/>
+											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												type="sap.ui.model.type.DateTime" displayFormat="short" displayFormatType="Gregorian"/>
+											<Text
+												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'jsonModel>/WorkOrderDetail/BreakdownStart'}, {path: 'jsonModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
+												class="PDLabel"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data"
@@ -232,6 +282,7 @@
 				<dependents>
 					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
 					<core:Fragment fragmentName="pd.pm.lite.view.ComponentDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.UserStatusDialog" type="XML"/>					
 				</dependents>
 			</Page>
 		</pages>

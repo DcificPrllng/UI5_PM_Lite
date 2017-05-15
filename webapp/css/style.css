@@ -11,6 +11,13 @@ div#uiArea {
     height: 100%
 }
 
+.cisUserStatusDialog .sapUiTableHdrTitle{
+	margin-top: 6px;
+    font-weight: bold;
+    font-size: 11px;
+    margin-left: 10px;
+}
+
 .FlexWrap {
     flex-wrap: wrap;
 }
@@ -24,9 +31,10 @@ div#uiArea {
     padding-top: 7px;
 }
 
-.pdForm > div{
-	width: 100%;
+.pdForm > div {
+    width: 100%;
 }
+
 .oldNotes {
     border: 1px solid #bfbfbf;
     min-height: 120px;
@@ -42,12 +50,27 @@ div#uiArea {
 .notificationBox>.sapUiForm .sapUiFormTitle {
     height: 2rem;
     line-height: 2rem;
+	font-weight: bold;
+    font-size: .86rem;    
+}
+
+.cisLabels .cisHeadingButton>.sapMBtnInner {
+    font-size: .86rem;
+    font-weight: bold;
+}
+
+.cisUiTinyMarginBegin {
+    margin-right: 0.5rem;
 }
 
 .cisUiTinyMargin {
     /*margin-right: 0.5rem;*/
     /*margin-bottom: 0.5rem;*/
     /*margin-left: 0.5rem;*/
+}
+
+.cisDisbaledInput .sapMInputBaseDisabledInner {
+    font-weight: bold;
 }
 
 .cisLabels .sapMLabel {

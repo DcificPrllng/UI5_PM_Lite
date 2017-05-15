@@ -21,6 +21,20 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 			return "";
 		},
+		BasicDateEditable: function(status){
+			if (status.substring(0,4) !== "CRTD"){ //Only 'Created' Orders cannot have Dates editable. Dates are driven by 'Priority' in this case
+				return true;
+			}else{
+				return false;
+			}
+		},
+		PriorityEditable: function(status){
+			if (status.substring(0,4) === "CRTD"){ //If status is 'CRTD' only then 'Priority' is editable
+				return true;
+			}else{
+				return false;
+			}
+		},		
 		removeLeadingZerosFromString: function(numberString) {
 			if (numberString === "" || numberString === "0") {
 				return "";

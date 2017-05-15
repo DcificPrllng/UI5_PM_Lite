@@ -4,14 +4,14 @@
 		<columns>
 			<Column width="7em">
 				<header>
-					<Text text="Product ID" />
+					<Text text="{i18n>SAPMM}" />
 				</header>
 			</Column>
 			<Column
 				minScreenWidth="Tablet"
 				demandPopin="true" >
 				<header>
-					<Text text="Name" />
+					<Text text="{i18n>Name}" />
 				</header>
 			</Column>
 			<Column

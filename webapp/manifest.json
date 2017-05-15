@@ -30,9 +30,11 @@
 		"_version": "1.1.0",
 		"rootView": "pd.pm.lite.view.App",
 		"dependencies": {
-			"minUI5Version": "1.30",
+			"minUI5Version": "1.38",
 			"libs": {
-				"sap.m": {}
+				"sap.m": {},
+				"sap.ui.unified": {},
+				"sap.ui.table": {}
 			}
 		},
 		"models": {
@@ -47,7 +49,7 @@
 			"css": [
 				{
 					"uri": "css/style.css"
-				}
+				}			
 			]
 		},
 		"routing": {
