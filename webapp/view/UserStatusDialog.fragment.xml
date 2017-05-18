@@ -1,8 +1,8 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:common="sap.ui.commons">
-	<Dialog id="userStatusDialog" title="{i18n>SetUserStatus}" contentWidth="25rem" contentHeight="705px" class="cisUserStatusDialog">
+	<Dialog id="userStatusDialog" title="{i18n>SetUserStatus}" contentWidth="25rem" contentHeight="715px" class="cisUserStatusDialog">
 		<table:Table id="UserStatusesWithNumber" selectionMode="Single" selectionBehavior="Row" rowSelectionChange=".CalculateUserStatus"
 			visibleRowCountMode="Fixed" visibleRowCount="5" rows="{path : 'jsonModel>/UserStatusesWithNumber'}" 
-			title="{i18n>TitleWithNumber}">
+			title="{i18n>TitleWithNumber}" width="100%">
 			<table:columns>
 				<table:Column width="3rem">
 					<Label text="{i18n>No.}"/>
@@ -26,7 +26,7 @@
 		</table:Table>
 		<table:Table id="UserStatusesNoNumber" selectionMode="MultiToggle" selectionBehavior="Row" rowSelectionChange=".CalculateUserStatus"
 			visibleRowCountMode="Fixed" visibleRowCount="12" rows="{path : 'jsonModel>/UserStatusesNoNumber'}"
-			title="{i18n>TitleWithoutNumber}">
+			title="{i18n>TitleWithoutNumber}" width="100%">
 			<table:columns>
 				<table:Column width="4rem">
 					<Label text="{i18n>Status}"/>

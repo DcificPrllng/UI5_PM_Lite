@@ -53,11 +53,11 @@
 								<!--Third Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin" required="true"/>
-									<ComboBox width="250px" items="{/ActivityTypes}"
+									<ComboBox width="250px" items="{createModel>/ActivityTypes}"
 										selectedKey="{path:'createModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin cisLabels cisTopMargin">
 										<items>
-											<core:ListItem text="{Code} ({Name})" key="{Code}" additionalText="{Name}"/>
+											<core:ListItem text="{createModel>Code} ({createModel>Name})" key="{createModel>Code}" additionalText="{createModel>Name}"/>
 										</items>
 									</ComboBox>
 									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>

@@ -68,7 +68,17 @@ sap.ui.define([
 			var after180days = new Date();
 			after180days.setDate(after180days.getDate() + 180);
 			
+			//Activity Types value help
+					var relevantActivityTypes = [];
+					var activityTypes = this.getOwnerComponent().getModel("localStorageModel").getData().ActivityTypes;
+					for (var k = 0; k < activityTypes.length; k++) {
+						if (activityTypes[k].OrderType === "PM01") {
+							relevantActivityTypes.push( activityTypes[k] );
+						}
+					}			
+			
 			this.initialData = {
+				"ActivityTypes": relevantActivityTypes,
 				"WorkOrderDetail": {
 					ShortDescription: "",
 					FunctionalLocation: "",

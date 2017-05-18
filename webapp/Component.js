@@ -49,25 +49,29 @@ sap.ui.define([
 			var workCenters = this._oJQueryStorage.get("_workCenters");
 			var units = this._oJQueryStorage.get("_units");
 			var userStatuses = this._oJQueryStorage.get("_userStatuses");
+			var activityTypes = this._oJQueryStorage.get("_activityTypes");			
 			
 			var that = this;
 			localStorageModel.setData({
 				"Plants": plants,
 				"WorkCenters": workCenters,
 				"Units": units,
-				"UserStatuses": userStatuses
+				"UserStatuses": userStatuses,
+				"ActivityTypes": activityTypes
 			});
 			
 			var plantHash = this._oJQueryStorage.get("plantHash");
 			var wcHash = this._oJQueryStorage.get("wcHash");
 			var unitHash = this._oJQueryStorage.get("unitHash");
 			var userStatusesHash = this._oJQueryStorage.get("userStatusesHash");
+			var activityTypesHash = this._oJQueryStorage.get("activityTypesHash");			
 			
 			oModel.setHeaders({
 				"plantHash": plantHash,
 				"wcHash": wcHash,
 				"unitHash": unitHash,
-				"userStatusesHash":userStatusesHash
+				"userStatusesHash":userStatusesHash,
+				"activityTypesHash":activityTypesHash
 			});
 			oModel.read("/Plants", {
 				groupId: "initialRead",
@@ -142,6 +146,24 @@ sap.ui.define([
 					}
 				}
 			});	
+			oModel.read("/ActivityTypes", {
+				groupId: "initialRead",
+				success: function(oData, response) {
+					if (response.headers["no_change"]){ 
+						//Nothing to do
+					}
+					else{
+						//Update the local storage value help data
+						that._oJQueryStorage.put("_activityTypes", oData.results);
+						//Update the local storage hash
+						that._oJQueryStorage.put("activityTypesHash", response.headers["new_hash"]);
+						//Update the localStorage json model
+						var currentData = localStorageModel.getData();
+						currentData.activityTypes = oData.results;
+						localStorageModel.setData(currentData);
+					}
+				}
+			});				
 			
 			oModel.submitChanges({  //There are no changes here. It is just above reads
 				groupId: "initialRead"

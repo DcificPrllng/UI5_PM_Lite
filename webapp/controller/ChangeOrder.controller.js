@@ -65,13 +65,23 @@ sap.ui.define([
 						}
 					}
 
+					//Keep only relevant activity types
+					var relevantActivityTypes = [];
+					var activityTypes = oView.getModel("localStorageModel").getData().ActivityTypes;
+					for (var k = 0; k < activityTypes.length; k++) {
+						if (activityTypes[k].OrderType === odata.OrderType) {
+							relevantActivityTypes.push( activityTypes[k] );
+						}
+					}					
+					
 					var jsonModel = new sap.ui.model.json.JSONModel();
 					jsonModel.setData({
 						Components: odata.Components.results,
 						Operations: odata.Operations.results,
 						WorkOrderDetail: odata,
 						UserStatusesWithNumber: UserStatusesWithNumber,
-						UserStatusesNoNumber: UserStatusesNoNumber
+						UserStatusesNoNumber: UserStatusesNoNumber,
+						ActivityTypes: relevantActivityTypes
 					});
 					oView.setModel(jsonModel, "jsonModel");
 				},
@@ -355,7 +365,7 @@ sap.ui.define([
 			if (operations.length > 1) { //One Operation is mandatory
 				for (i = 0; i < operations.length; i++) {
 					//If one of these fields are not null, only then retian the record
-					if (operations[i].Description || operations[i].RequirementQuantity) {
+					if (operations[i].ShortText || operations[i].WorkQuantity) {
 						newOperations.push(operations[i]);
 					}
 				}
@@ -385,6 +395,7 @@ sap.ui.define([
 			currentWorkOrderDetail.ShortDescription = workOrderDetails.WorkOrderDetail.ShortDescription;
 
 			currentWorkOrderDetail.SystemStatus = "";
+			currentWorkOrderDetail.UserStatus = workOrderDetails.WorkOrderDetail.UserStatus;
 			currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
 			currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
 			currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.ScheduledFinish;

@@ -11,6 +11,10 @@ div#uiArea {
     height: 100%
 }
 
+.sapMTB-Transparent-CTX.sapMTB.cisTableHeader {
+    padding-left: 0;
+}
+
 .cisUserStatusDialog .sapUiTableHdrTitle{
 	margin-top: 6px;
     font-weight: bold;
