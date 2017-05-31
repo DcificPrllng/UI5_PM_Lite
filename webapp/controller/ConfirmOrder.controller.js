@@ -17,7 +17,7 @@ sap.ui.define([
 ], function(Controller, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState, Validator) {
 	"use strict";
 
-	return Controller.extend("pd.pm.lite.controller.ChangeOrder", {
+	return Controller.extend("pd.pm.lite.controller.ConfirmOrder", {
 		onInit: function() {
 			//Router
 			var oRouter = this.getRouter();
@@ -28,27 +28,24 @@ sap.ui.define([
 			//All dialogs
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
-			this._ComponentDialog = this.getView().byId("idComponentDialog");
-			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
-			this._userStatusDialog = this.getView().byId("userStatusDialog");
 
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 		},
 
 		_onObjectMatched: function(oEvent) {
-			if (oEvent.getParameter("name") !== "changeOrder") {
+			if (oEvent.getParameter("name") !== "confirmOrder") {
 				return;
 			}
+
 			//Make data call
 			var oView = this.getView();
-			var that = this;
 			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
 			var parameters = {
 				urlParameters: {
 					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					"$expand": "Confirmations,OperationSteps,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
@@ -64,6 +61,7 @@ sap.ui.define([
 							break;
 						}
 					}
+
 					//Keep only relevant activity types
 					var relevantActivityTypes = [];
 					var activityTypes = [];
@@ -78,23 +76,12 @@ sap.ui.define([
 
 					var jsonModel = new sap.ui.model.json.JSONModel();
 					jsonModel.setData({
-						Components: odata.Components.results,
-						Operations: odata.Operations.results,
 						WorkOrderDetail: odata,
-						UserStatusesWithNumber: UserStatusesWithNumber,
-						UserStatusesNoNumber: UserStatusesNoNumber,
-						ActivityTypes: relevantActivityTypes
+						ActivityTypes: relevantActivityTypes,
+						Confirmations: odata.Confirmations.results,
+						OperationSteps: odata.OperationSteps.results
 					});
-					oView.setModel(jsonModel, "jsonModel");
-					var step;
-					var emptyComponents = 9 - odata.Components.results.length;
-					for (step = 0; step < emptyComponents; step++) {
-						that.createNewRowComponents();
-					}
-					var emptyOperations = 9 - odata.Operations.results.length;
-					for (step = 0; step < emptyOperations; step++) {
-						that.createNewRowOperations();
-					}
+					oView.setModel(jsonModel, "confirmModel");
 				},
 				error: function() {
 					oView.setBusy(false);
@@ -102,34 +89,11 @@ sap.ui.define([
 				}
 			};
 			oView.setBusy(true);
-			if (oView.getModel()) { //When navigated ot this view directly, there is no context. SO go back to the main screen
+			if (oView.getModel()) {
 				oView.getModel().read("/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')", parameters);
 			} else {
 				oView.setBusy(false);
 				window.location.hash = "#";
-			}
-		},
-		CalculateUserStatus: function(evt) {
-			var source = evt.getSource();
-			var newStatus = "";
-			if (source.getId().indexOf("UserStatusesWithNumber") >= 0) {
-				//This is single selection: WithNumber
-				var selectedIndex = source.getSelectedIndex();
-				var selectedContext = source.getContextByIndex(selectedIndex);
-				//Update the Status
-				var currenctStatus = this.oView.getModel("jsonModel").getProperty("/WorkOrderDetail/UserStatus");
-				var newWithNumberStatus = (selectedContext.getObject().Status + "     ").substring(0, 5);
-				newStatus = newWithNumberStatus + currenctStatus.substring(5);
-				this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
-			} else {
-				var selectedIndices = source.getSelectedIndices();
-				var curStatus = this.oView.getModel("jsonModel").getProperty("/WorkOrderDetail/UserStatus");
-				newStatus = (curStatus + "     ").substring(0, 5);
-				for (var i = 0; i < selectedIndices.length; i++) {
-					var selectedContxt = source.getContextByIndex(selectedIndices[i]);
-					newStatus = newStatus + (selectedContxt.getObject().Status + "     ").substring(0, 5);
-					this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
-				}
 			}
 		},
 		getComponentDetail: function(evt) {
@@ -172,49 +136,6 @@ sap.ui.define([
 				}
 			});
 		},
-		createNewRowOperations: function() {
-			var currentOperations = this.getView().getModel("jsonModel").getProperty("/Operations");
-
-			//Find the larget OperationID
-			var maxOperationId = this.getMax(currentOperations, "OperationID");
-			maxOperationId = maxOperationId + 10;
-
-			//Four digit id
-			var newOperationId = this.pad(maxOperationId, 4);
-
-			currentOperations.push({
-				"ActualWork": "",
-				"OperationID": newOperationId,
-				"OrderNumber": "",
-				"ShortText": "",
-				"WorkCenter": "",
-				"WorkQuantity": "",
-				"WorkUnit": "",
-				"New": true
-			});
-			this.getView().getModel("jsonModel").setProperty("/Operations", currentOperations);
-		},
-		createNewRowComponents: function() {
-			var currentComponents = this.getView().getModel("jsonModel").getProperty("/Components");
-			//Find the larget ItemId
-			var maxItemId = this.getMax(currentComponents, "ItemID");
-			maxItemId = maxItemId + 10;
-
-			//Four digit id
-			var newItemId = this.pad(maxItemId, 4);
-			currentComponents.push({
-				"ComponentNumber": "",
-				"ItemID": newItemId,
-				"OrderNumber": "",
-				"Description": "",
-				"RequirementQuantity": "",
-				"Unit": "",
-				"ItemCategory": "",
-				"OperationReference": "",
-				"New": true
-			});
-			this.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
-		},
 		getMax: function(arr, prop) {
 			var max;
 			if (arr.length === 0) {
@@ -239,14 +160,14 @@ sap.ui.define([
 
 			//Get selected rows
 			var deletedRows = componentTable.getSelectedIndices();
-			var currentComponentsRef = that.getView().getModel("jsonModel").getProperty("/Components");
-			var currentComponents = currentComponentsRef.slice();
 			deletedRows.map(function(c) {
 				//current context/Object
 				var d = componentTable.getContextByIndex(c).getObject();
 
 				//Delete them from json model.
+				var currentComponents = that.getView().getModel("jsonModel").getProperty("/Components");
 				that.findAndRemove(currentComponents, "ItemID", d.ItemID);
+				that.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
 				if (!d.New) { //If this came from server  
 					//Mark for sending a request later
 					that.getView().getModel().remove("/Components(OrderNumber='" + d.OrderNumber + "',ItemID='" + d.ItemID + "')", {
@@ -254,33 +175,6 @@ sap.ui.define([
 					});
 				}
 			});
-			that.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
-			componentTable.clearSelection();
-		},
-		deleteSelectedOperations: function() {
-			var that = this;
-
-			//Get Table reference
-			var operationTable = this.getView().byId("OperationsTable");
-
-			//Get selected rows
-			var deletedRows = operationTable.getSelectedIndices();
-			var currentOperationsRef = that.getView().getModel("jsonModel").getProperty("/Operations");
-			var currentOperations = currentOperationsRef.slice();
-			deletedRows.map(function(c) {
-				//current context/Object
-				var d = operationTable.getContextByIndex(c).getObject();
-				//Delete them from json model.
-				that.findAndRemove(currentOperations, "OperationID", d.OperationID);
-				if (!d.New) { //If this came from server  
-					//Mark for sending a request later
-					that.getView().getModel().remove("/Operations(OrderNumber='" + d.OrderNumber + "',OperationID='" + d.OperationID + "')", {
-						groupId: "saveAll"
-					});
-				}
-			});
-			that.getView().getModel("jsonModel").setProperty("/Operations", currentOperations);
-			operationTable.clearSelection();
 		},
 		findAndRemove: function(array, property, value) {
 			array.forEach(function(result, index) {
@@ -316,47 +210,6 @@ sap.ui.define([
 				}
 			});
 			dialog.open();
-		},
-		ReleaseOrder: function() {
-			//Call function to release the order
-			var workOrderDetails = this.getView().getModel("jsonModel").oData;
-			var oModel = this.getView().getModel();
-
-			this._busyDialog.open();
-			var that = this;
-			oModel.callFunction("/ReleaseOrder", {
-				method: "POST",
-				urlParameters: {
-					"OrderNumber": workOrderDetails.WorkOrderDetail.OrderNumber
-				},
-				success: function() {
-					that._busyDialog.close();
-					var msg = "Successfully released the order";
-					MessageToast.show(msg);
-					window.location.hash = "#";
-				},
-				error: function(oError) {
-					that._busyDialog.close();
-					var popUp = new Dialog({
-						title: "Error",
-						type: "Message",
-						state: "Error",
-						content: new sap.m.Text({
-							text: JSON.parse(oError.responseText).error.message.value
-						}),
-						beginButton: new sap.m.Button({
-							text: "OK",
-							press: function() {
-								popUp.close();
-							}
-						}),
-						afterClose: function() {
-							popUp.destroy();
-						}
-					});
-					popUp.open();
-				}
-			});
 		},
 		SaveOrder: function() {
 
@@ -396,17 +249,10 @@ sap.ui.define([
 				this.getView().getModel("jsonModel").setProperty("/Operations", newOperations);
 			}
 
-			//Rerender view
-			this.getView().rerender();
-			
 			if (!validator.validate(this.getView())) {
-					return;
+				return;
 			}
 
-			workOrderDetails = this.getView().getModel("jsonModel").oData;
-			operations = workOrderDetails.Operations;
-			components = workOrderDetails.Components;
-			
 			var currentWorkOrderDetail = {};
 			currentWorkOrderDetail.NotificationNumber = workOrderDetails.WorkOrderDetail.NotificationNumber;
 			currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
@@ -424,17 +270,10 @@ sap.ui.define([
 			currentWorkOrderDetail.UserStatus = workOrderDetails.WorkOrderDetail.UserStatus;
 			currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
 			currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
-			currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.BasicStart;
-			currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.BasicFinish;
+			currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.ScheduledFinish;
+			currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.ScheduledFinish;
 			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
 			currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
-
-			currentWorkOrderDetail.OperationDowntime = workOrderDetails.WorkOrderDetail.OperationDowntime;
-			currentWorkOrderDetail.DowntimeStart = workOrderDetails.WorkOrderDetail.DowntimeStart;
-			currentWorkOrderDetail.DowntimeEnd = workOrderDetails.WorkOrderDetail.DowntimeEnd;
-			currentWorkOrderDetail.Breakdown = workOrderDetails.WorkOrderDetail.Breakdown;
-			currentWorkOrderDetail.BreakdownStart = workOrderDetails.WorkOrderDetail.BreakdownStart;
-			currentWorkOrderDetail.BreakdownFinish = workOrderDetails.WorkOrderDetail.BreakdownFinish;
 
 			//Calculate changes and make approriate actions on Odata model
 			this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
@@ -590,18 +429,15 @@ sap.ui.define([
 			for (var i = 0; i < UserStatusesWithNumber.length; i++) {
 				if ((UserStatusesWithNumber[i].Status + "      ").substring(0, 4) === (currentStatus + "      ").substring(0, 4)) {
 					oView.getController()._userStatusDialog.getContent()[0].setSelectedIndex(i);
-					break; //Only one status will be selected
+					break;
 				}
 			}
 
 			//Selecting in the second table
-			for (var j = 1; j < allStatuses.length; j++) {
-				if (allStatuses[j] === ""){
-					continue;
-				}
+			for (var j = 0; j < allStatuses.length; j++) {
 				for (var m = 0; m < UserStatusesNoNumber.length; m++) {
 					if ((UserStatusesNoNumber[m].Status + "      ").substring(0, 4) === (allStatuses[j] + "      ").substring(0, 4)) {
-						oView.getController()._userStatusDialog.getContent()[1].addSelectionInterval(m,m);
+						oView.getController()._userStatusDialog.getContent()[1].setSelectedIndex(m);
 						break;
 					}
 				}

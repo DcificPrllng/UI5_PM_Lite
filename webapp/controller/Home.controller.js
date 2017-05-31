@@ -15,10 +15,13 @@ sap.ui.define([
 		},
 		formatter: formatter,
 		onInit: function() {
+			//Router
+			var oRouter = this.getRouter();
+			oRouter.attachRouteMatched(this._onObjectMatched, this);
+
 			this._toolBar = this.getView().byId("toolBar");
 			this._toolBar.bindElement({
 				path: "/UserSettings('dummy')"
-					// , parameters: {groupId:"initialRead"}
 			});
 			this._oTable = this.getView().byId("ordersTable");
 			this._oCount = this.getView().byId("countId");
@@ -29,6 +32,14 @@ sap.ui.define([
 			var chartModel = new JSONModel();
 
 			this.getView().setModel(chartModel, "chartdata");
+		},
+		_onObjectMatched: function(oEvent) {
+			if (oEvent.getParameter("name") !== "appHome") {
+				return;
+			}
+			//Refresh the table
+			
+
 		},
 		onAfterRendering: function() {
 			var that = this;
@@ -212,7 +223,9 @@ sap.ui.define([
 			var context = evt.getSource().getParent().getBindingContext("localModel");
 			var data = {};
 			data.OrderNumber = context.getProperty("OrderNumber");
-			this.gotoPersonas("IW41", data);
+			this.getRouter().navTo("confirmOrder", {
+				order: data.OrderNumber
+			});
 		},
 		triggerChange: function(evt) {
 			var context = evt.getSource().getParent().getBindingContext("localModel");

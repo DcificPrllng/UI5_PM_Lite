@@ -15,8 +15,8 @@ div#uiArea {
     padding-left: 0;
 }
 
-.cisUserStatusDialog .sapUiTableHdrTitle{
-	margin-top: 6px;
+.cisUserStatusDialog .sapUiTableHdrTitle {
+    margin-top: 6px;
     font-weight: bold;
     font-size: 11px;
     margin-left: 10px;
@@ -54,8 +54,8 @@ div#uiArea {
 .notificationBox>.sapUiForm .sapUiFormTitle {
     height: 2rem;
     line-height: 2rem;
-	font-weight: bold;
-    font-size: .86rem;    
+    font-weight: bold;
+    font-size: .86rem;
 }
 
 .cisLabels .cisHeadingButton>.sapMBtnInner {

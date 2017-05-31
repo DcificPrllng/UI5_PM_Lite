@@ -21,6 +21,11 @@
 		
 		<script>
 			sap.ui.getCore().attachInit(function () {
+
+				jQuery.sap.setIcons({
+					'favicon':'icons/favicons.png'
+				});
+				
 				sap.ui.require([
 					"sap/ui/unified/Shell",
 					"sap/ui/core/ComponentContainer"

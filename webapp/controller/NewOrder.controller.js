@@ -60,23 +60,26 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
-			
+
 			//For defaulting dates
 			var now = new Date();
-			
+
 			//End date is 180 days after today
 			var after180days = new Date();
 			after180days.setDate(after180days.getDate() + 180);
-			
+
 			//Activity Types value help
-					var relevantActivityTypes = [];
-					var activityTypes = this.getOwnerComponent().getModel("localStorageModel").getData().ActivityTypes;
-					for (var k = 0; k < activityTypes.length; k++) {
-						if (activityTypes[k].OrderType === "PM01") {
-							relevantActivityTypes.push( activityTypes[k] );
-						}
-					}			
-			
+			var relevantActivityTypes = [];
+			var activityTypes = [];
+			activityTypes = this.getOwnerComponent().getModel("localStorageModel").getData().ActivityTypes;
+			if (activityTypes) {
+				for (var k = 0; k < activityTypes.length; k++) {
+					if (activityTypes[k].OrderType === "PM01") { //all new orders are of type PM01
+						relevantActivityTypes.push(activityTypes[k]);
+					}
+				}
+			}
+
 			this.initialData = {
 				"ActivityTypes": relevantActivityTypes,
 				"WorkOrderDetail": {
@@ -113,7 +116,7 @@ sap.ui.define([
 			this.createModel.setData(this.initialData);
 
 			var step;
-			for (step = 0; step < 1; step++) {
+			for (step = 0; step < 9; step++) {
 				this.createNewRowComponents();
 				this.createNewRowOperations();
 			}
@@ -132,7 +135,7 @@ sap.ui.define([
 				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
 			}
 			this.createModel.setProperty("/WorkOrderDetail/MainWorkCenter", data.MainWorkCenter);
-			
+
 			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
 			var oView = this.getView();
 			var sPath = "/ValueHelpSet(FunctionalLocation='" + data.FunctionalLocation + "',Equipment='" + data.Equipment +
@@ -279,15 +282,14 @@ sap.ui.define([
 			if (deletedRows.length === 0) {
 				return;
 			}
-
+			var currentComponentsRef = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Components");
+			var currentComponents = currentComponentsRef.slice();
 			deletedRows.map(function(c) {
 				//current context/Object
 				var d = componentTable.getContextByIndex(c).getObject();
 
 				//Delete them from json model.
-				var currentComponents = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Components");
 				that.findAndRemove(currentComponents, "ItemID", d.ItemID);
-				that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 				if (d.New !== "X") { //If this came from server  
 					//Mark for sending a request later
 					that.getView().getModel().remove("/Components(OrderNumber='" + d.OrderNumber + "',ItemID='" + d.ItemID + "')", {
@@ -295,6 +297,7 @@ sap.ui.define([
 					});
 				}
 			});
+			that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 		},
 		deleteSelectedOperations: function() {
 			var that = this;
@@ -307,7 +310,8 @@ sap.ui.define([
 				return; //No rows selected
 			}
 
-			var currentOperations = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
+			var currentOperationsRef = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
+			var currentOperations = currentOperationsRef.slice();
 			if (currentOperations.length < 2) {
 
 				var dialog = new Dialog({
@@ -332,10 +336,9 @@ sap.ui.define([
 			deletedRows.map(function(c) {
 				//current context/Object
 				var d = operationTable.getContextByIndex(c).getObject();
-
 				//Delete them from json model.
 				that.findAndRemove(currentOperations, "OperationID", d.OperationID);
-				that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
+
 				if (d.New !== "X") { //If this came from server  
 					//Mark for sending a request later
 					that.getView().getModel().remove("/Operations(OrderNumber='" + d.OrderNumber + "',OperationID='" + d.OperationID + "')", {
@@ -343,6 +346,7 @@ sap.ui.define([
 					});
 				}
 			});
+			that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
 		},
 		findAndRemove: function(array, property, value) {
 			array.forEach(function(result, index) {
@@ -426,7 +430,6 @@ sap.ui.define([
 			if (!validator.validate(this.getView())) {
 				return;
 			}
-
 			//Perform the creation
 			var that = this;
 			that.getView().setBusy(true);

@@ -48,7 +48,7 @@
 				</Toolbar>
 			</table:toolbar>
 			<table:columns>
-				<table:Column width="62px">
+				<table:Column width="75px">
 					<Label text="Actions" tooltip="Choose any action"/>
 					<table:template>
 						<layout:HorizontalLayout>

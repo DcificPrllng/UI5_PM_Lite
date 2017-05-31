@@ -81,6 +81,11 @@
 					"target": "changeOrder"
 				},
 				{
+					"pattern": "ConfirmOrder/{order}",
+					"name": "confirmOrder",
+					"target": "confirmOrder"
+				},
+				{
 					"pattern": "NewOrder",
 					"name": "newOrder",
 					"target": "newOrder"
@@ -102,6 +107,11 @@
 				"changeOrder": {
 					"viewName": "ChangeOrder",
 					"viewId": "changeView",
+					"viewLevel": 2
+				},
+				"confirmOrder": {
+					"viewName": "ConfirmOrder",
+					"viewId": "confirmView",
 					"viewLevel": 2
 				},
 				"newOrder": {

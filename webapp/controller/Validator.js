@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 sap.ui.define([
-	'sap/ui/core/message/Message',
-	'sap/ui/core/MessageType'
+	"sap/ui/core/message/Message",
+	"sap/ui/core/MessageType"
 ], function(Message, MessageType) {
 	"use strict";
 
@@ -126,7 +126,32 @@ sap.ui.define([
 						// generally, aggregations are of type Array
 						if (aControlAggregation instanceof Array) {
 							for (j = 0; j < aControlAggregation.length; j += 1) {
-								this._validate(aControlAggregation[j]);
+								if ((oControl.sId.endsWith("OperationsTable") === false) && (oControl.sId.endsWith("ComponentsTable") === false)) {
+									this._validate(aControlAggregation[j]);
+								} else {
+									//If this is one of Components table or Operations Table
+									//Ensure that validation is done only to bound rows
+									try {
+										var boundRows = oControl.getModel("jsonModel").getProperty(oControl.getBinding("rows").sPath);
+									} catch (err) {
+										boundRows = oControl.getModel("createModel").getProperty(oControl.getBinding("rows").sPath);
+									}
+									if (boundRows) {
+										for (var b = 0; b < boundRows.length; b++) {
+											if (boundRows[b].hasOwnProperty("OperationID")) {
+												if (boundRows[b].OperationID === aControlAggregation[j].getAggregation("cells")[0].getProperty("value")) {
+													this._validate(aControlAggregation[j]);
+													break;
+												}
+											} else { //Component Table
+												if (boundRows[b].ItemID === aControlAggregation[j].getAggregation("cells")[0].getProperty("value")) {
+													this._validate(aControlAggregation[j]);
+													break;
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 						// ...however, with sap.ui.layout.form.Form, it is a single object *sigh*

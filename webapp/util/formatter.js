@@ -36,10 +36,15 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 		},		
 		removeLeadingZerosFromString: function(numberString) {
-			if (numberString === "" || numberString === "0") {
+			if (numberString === "" || numberString === "0" || numberString === undefined) {
 				return "";
 			}
-			return parseInt(numberString, 10);
+			var number = parseInt(numberString, 10);
+			if (number === 0) {
+				return "";
+			}else{
+				return number;
+			}			
 		},
 		orderNumber: function(orderNumber) {
 			return parseInt(orderNumber, 10);
@@ -65,7 +70,8 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 		},
 		date: function(date) {
 			var oDateFormat = DateFormat.getDateInstance({
-				pattern: "MM/dd/yyyy"
+				pattern: "MM/dd/yyyy",
+				UTC: true
 			});
 			return oDateFormat.format(new Date(date));
 		},

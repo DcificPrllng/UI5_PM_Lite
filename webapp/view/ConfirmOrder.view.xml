@@ -1,0 +1,332 @@
+<mvc:View class="sapUiSizeCompact" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" xmlns:f="sap.ui.layout.form" busyIndicatorDelay="0"
+	controllerName="pd.pm.lite.controller.ConfirmOrder">
+	<App>
+		<pages>
+			<Page title="{confirmModel>/WorkOrderDetail/OrderNumber}: {confirmModel>/WorkOrderDetail/ShortDescription}" showHeader="false"
+				class="cisLabels">
+				<content>
+					<HBox justifyContent="Center" height="100%">
+						<VBox width="90%" height="100%" direction="Column" alignContent="Center" alignItems="Center">
+							<HBox width="100%">
+								<FlexBox height="16%" width="89%" direction="Column" class="PDHeader sapUiTinyMargin">
+									<!--//First Row-->
+									<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
+										<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
+										<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
+									</FlexBox>
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
+										<Input width="80px" class="sapUiTinyMarginBegin cisDisbaledInput" enabled="false" value="{path: 'confirmModel>/WorkOrderDetail/OrderType'}"/>
+										<Input width="120px" enabled="false" class="cisDisbaledInput"
+											value="{path: 'confirmModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+										<Input width="454px" enabled="false" class="cisDisbaledInput"
+											value="{path: 'confirmModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
+										<Label class="cisTopMargin" width="104px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
+										<Input width="308px" enabled="false" class="sapUiTinyMarginBegin cisDisbaledInput" value="{confirmModel>/WorkOrderDetail/SystemStatus}"/>
+										<Input width="318px" enabled="false" class="cisDisbaledInput" value="{path: 'confirmModel>/WorkOrderDetail/UserStatus'}"/>
+									</FlexBox>
+									<!--//Second Row-->
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
+										<ComboBox class="sapUiTinyMarginBegin cisDisbaledInput" id="workCenterId" enabled="false" items="{localStorageModel>/WorkCenters}"
+											showSecondaryValues="false" selectedKey="{path:'confirmModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
+											width="200px">
+											<items>
+												<core:ListItem text="{localStorageModel>Id} ({localStorageModel>Name})" key="{localStorageModel>Id}"
+													additionalText="{localStorageModel>Name}"></core:ListItem>
+											</items>
+										</ComboBox>
+										<Label width="90px" textAlign="Right" text="{i18n>FunLoc}" design="Bold" class="cisLabels cisTopMargin"/>
+										<Input width="355px" enabled="false"
+											value="{parts:[{path: 'confirmModel>/WorkOrderDetail/FunctionalLocationName'},{path: 'confirmModel>/WorkOrderDetail/FunctionalLocation'}], formatter: '.formatter.commonIDFormatter'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+										<Label width="104px" textAlign="Right" text="{i18n>ReportedBy}" design="Bold" class="cisLabels cisTopMargin"/>
+										<Input width="195px" enabled="false" class="sapUiTinyMarginBegin cisDisbaledInput" value="{confirmModel>/WorkOrderDetail/ReportedBy}"/>
+										<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold" class="cisLabels cisTopMargin"/>
+										<!--<Input width="124px" value="{path:'confirmModel>/WorkOrderDetail/BasicStart', formatter:'.formatter.date'}" enabled="false"-->
+										<!--	class="sapUiTinyMarginBegin cisDisbaledInput" design="Bold"/>-->
+										<DatePicker width="124px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/BasicStart'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+										<Label width="84px" textAlign="Right" text="{i18n>SchStart}" design="Bold" class="cisLabels cisTopMargin"/>
+										<DatePicker width="104px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/ScheduledStart'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+									</FlexBox>
+									<!--//Third Row-->
+									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
+										<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin cisLabels" required="true"/>
+										<ComboBox width="200px" items="{confirmModel>/ActivityTypes}" enabled="false"
+											selectedKey="{path:'confirmModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput">
+											<items>
+												<core:ListItem text="{confirmModel>Code} ({confirmModel>Name})" key="{confirmModel>Code}" additionalText="{confirmModel>Name}"/>
+											</items>
+										</ComboBox>
+										<Label width="90px" textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>
+										<Input width="355px" enabled="false"
+											value="{parts:[{path:'confirmModel>/WorkOrderDetail/Equipment'}, {path: 'confirmModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+										<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
+										<ComboBox width="195px" enabled="false" selectedKey="{path:'confirmModel>/WorkOrderDetail/Priority'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput">
+											<items>
+												<core:ListItem text="" key=""/>
+												<core:ListItem text="SAFE CRIT (&lt;30 DAY)" key="1"/>
+												<core:ListItem text="OPS CRIT (&lt;30 DAY)" key="2"/>
+												<core:ListItem text="TIME SENS (&lt;60 DAY)" key="3"/>
+												<core:ListItem text="NON CRIT (&lt;180 DAY)" key="4"/>
+											</items>
+										</ComboBox>
+										<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
+										<!--<Input width="124px" value="{path:'confirmModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" design="Bold" enabled="false"-->
+										<!--	class="sapUiTinyMarginBegin cisDisbaledInput"/>-->
+										<DatePicker width="124px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/BasicFinish'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+											
+										<Label width="84px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabels cisTopMargin"/>
+										<DatePicker width="104px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/ScheduledFinish'}"
+											class="sapUiTinyMarginBegin cisDisbaledInput"/>
+									</FlexBox>
+								</FlexBox>
+								<FlexBox width="11%" direction="Column">
+									<Label/>
+									<Label text="Job Completion" design="Bold"/>
+									<RadioButton groupName="GroupA" text="Did Not Execute" selected="{confirmModel>JobCompletion/DidNotExecute}"/>
+									<RadioButton groupName="GroupA" text="Job Complete" selected="{confirmModel>JobCompletion/DidNotExecute}"/>
+									<CheckBox text="Technical Completion" selected="{confirmModel>JobCompletion/TechnicalCompletion}"/>
+								</FlexBox>
+							</HBox>
+							<HBox height="84%" justifyContent="Center">
+								<VBox height="98%" width="60%" justifyContent="SpaceBetween">
+									<VBox height="50%" justifyContent="Start">
+										<table:Table id="OperationsTable" rows="{path:'confirmModel>/OperationSteps', templateShareable:false}" selectionMode="None"
+											visibleRowCountMode="Auto" minAutoRowCount="9" class="sapUiTinyMarginBegin">
+											<table:toolbar>
+												<Toolbar class="cisTableHeader">
+													<content>
+														<Button width="120px" class="cisHeadingButton" text="{i18n>OperationStep}"/>
+													</content>
+												</Toolbar>
+											</table:toolbar>
+											<table:columns>
+												<table:Column width="5rem">
+													<Label text="{i18n>OpAc}"/>
+													<table:template>
+														<Input editable="{confirmModel>New}" value="{path:'confirmModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="15rem">
+													<Label text="{i18n>OpShortText}"/>
+													<table:template>
+														<Input value="{path: 'confirmModel>Description', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="7rem">
+													<Label text="{i18n>WorkCenter}"/>
+													<table:template>
+														<ComboBox showSecondaryValues="true" value="{path: 'confirmModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
+															items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
+															<core:ListItem text="{localStorageModel>Id}" key="{localStorageModel>Id}" additionalText="{localStorageModel>Name}"></core:ListItem>
+														</ComboBox>
+													</table:template>
+												</table:Column>
+												<table:Column width="4rem">
+													<Label text="{i18n>Actual}"/>
+													<table:template>
+														<Text text="{path: 'confirmModel>Actual', type : 'pd.pm.lite.customTypes.Number'}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="3rem">
+													<Label text="{i18n>Unit}"/>
+													<table:template>
+														<Text text="{path: 'confirmModel>Unit'}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="3rem">
+													<Label text="{i18n>Work}"/>
+													<table:template>
+														<Input value="{confirmModel>ActualWork}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="5rem">
+													<Label text="{i18n>Unit}"/>
+													<table:template>
+														<ComboBox selectedKey="{path: 'confirmModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}" showSecondaryValues="true">
+															<core:ListItem additionalText="Minutes" text="MIN"  key="MIN"></core:ListItem>
+															<core:ListItem additionalText="Hours" text="H" key="H"></core:ListItem>
+															<core:ListItem additionalText="Days" text="DAY" key="DAY"></core:ListItem>
+														</ComboBox>
+													</table:template>
+												</table:Column>
+												<table:Column width="7rem">
+													<Label text="{i18n>Pers No}"/>
+													<table:template>
+														<Input value="{path: 'confirmModel>PersonnelNumber', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="12rem">
+													<Label text="{i18n>Remarks}"/>
+													<table:template>
+														<Input value="{path: 'confirmModel>Remarks', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+													</table:template>
+												</table:Column>
+											</table:columns>
+										</table:Table>
+									</VBox>
+									<VBox height="50%" justifyContent="End">
+										<table:Table id="ComponentsTable" rows="{path: 'confirmModel>/Confirmations', templateShareable:false}" minAutoRowCount="9"
+											visibleRowCountMode="Auto" class="sapUiTinyMarginBegin" selectionMode="None">
+											<table:toolbar>
+												<Toolbar class="cisTableHeader">
+													<content>
+														<!--<Text width="200px" class="cisTableHeadingText" text="{i18n>PostedConfirmations}"/>-->
+														<Button width="170px" class="cisHeadingButton" text="{i18n>PostedConfirmations}"/>
+													</content>
+												</Toolbar>
+											</table:toolbar>
+											<table:columns>
+												<table:Column width="5rem">
+													<Label text="{i18n>Op}"/>
+													<table:template>
+														<Label text="{confirmModel>OperationID}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="8rem">
+													<Label text="{i18n>CreateDate}"/>
+													<table:template>
+														<Label text="{path: 'confirmModel>CreatedOn', formatter:'.formatter.date'}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="7rem">
+													<Label text="{i18n>CreatedBy}"/>
+													<table:template>
+														<Label text="{confirmModel>CreatedBy}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="5rem">
+													<Label text="{i18n>Wrk.Ctr.}"/>
+													<table:template>
+														<Text text="{confirmModel>WorkCenter}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="4rem">
+													<Label text="{i18n>Actual}"/>
+													<table:template>
+														<Label text="{confirmModel>Actual}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="3rem">
+													<Label text="{i18n>Unit}"/>
+													<table:template>
+														<Label text="{confirmModel>Unit}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="5rem">
+													<Label text="{i18n>Final}"/>
+													<table:template>
+														<CheckBox enabled="false" selected="{Final}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="8rem">
+													<Label text="{i18n>Pers No}"/>
+													<table:template>
+														<Label text="{path: 'confirmModel>PersonnelNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="18rem">
+													<Label text="{i18n>Remarks}"/>
+													<table:template>
+														<Label text="{confirmModel>Remark}"/>
+													</table:template>
+												</table:Column>
+											</table:columns>
+										</table:Table>
+									</VBox>
+								</VBox>
+								<VBox height="98%" width="40%" direction="Column" class="sapUiTinyMarginBegin pdForm" alignItems="End"
+									justifyContent="{= ${confirmModel>/WorkOrderDetail/OrderType} === 'PM02'? 'Start':'SpaceBetween' }">
+									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification" labelSpanL="2"
+										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>Code}" class="PDLabel"/>
+											<ComboBox selectedKey="{confirmModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+												<core:Item key="{Code}" text="{Name}"/>
+											</ComboBox>
+											<Label text="{i18n>Note}" class="PDLabel"/>
+											<TextArea growing="true" rows="2" value="{confirmModel>/WorkOrderDetail/NewNote}"/>
+											<Label text=""/>
+											<FormattedText class="oldNotes" height="150px" htmlText="{confirmModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
+										</f:content>
+									</f:SimpleForm>
+									<!--Operation Downtime (NPT)-->
+									<f:SimpleForm class="notificationBox" visible="{= ${confirmModel>/WorkOrderDetail/OrderType} === 'PM01'}" maxContainerCols="2"
+										editable="true" layout="ResponsiveGridLayout" title="{i18n>OperationalDowntime} (NPT)" labelSpanL="2" labelSpanM="2" emptySpanL="0"
+										emptySpanM="0" columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>DowntimeStart}" class="PDLabel"/>
+											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<CheckBox text="{i18n>OperationalDowntime}"/>
+											<Label text="{i18n>DowntimeEnd}" class="PDLabel"/>
+											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<Text
+												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeStart'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
+												class="PDLabel"/>
+										</f:content>
+									</f:SimpleForm>
+									<!--Malfunction Data-->
+									<f:SimpleForm class="notificationBox" visible="{= ${confirmModel>/WorkOrderDetail/OrderType} === 'PM01'}" maxContainerCols="2"
+										editable="true" layout="ResponsiveGridLayout" title="{i18n>MalfunctionData}" labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0"
+										columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>BreakdownStart}" class="PDLabel"/>
+											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<CheckBox text="{i18n>Breakdown}"/>
+											<Label text="{i18n>BreakdownEnd}" class="PDLabel"/>
+											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<Text
+												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownStart'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
+												class="PDLabel"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout" title="Failure Data"
+										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
+										<f:content>
+											<Label text="{i18n>Damage}" class="PDLabel"/>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCodeGroup}" items="{DamageCodeGroups}"
+												selectionChange=".getValidDamageCodes">
+												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
+											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
+												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
+											</ComboBox>
+											<Label text="{i18n>Text}" class="PDLabel"/>
+											<Input value="{confirmModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
+											<Label text="{i18n>CauseCode}" class="PDLabel"/>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCodeGroup}" items="{CauseCodeGroups}"
+												selectionChange=".getValidCauseCodes">
+												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
+											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
+												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
+											</ComboBox>
+											<Label text="{i18n>Text}" class="PDLabel"/>
+											<Input value="{confirmModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
+										</f:content>
+									</f:SimpleForm>
+								</VBox>
+							</HBox>
+						</VBox>
+					</HBox>
+				</content>
+				<dependents>
+					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
+				</dependents>
+			</Page>
+		</pages>
+	</App>
+	<BusyDialog id="ChangeBusyDialog"/>
+</mvc:View>

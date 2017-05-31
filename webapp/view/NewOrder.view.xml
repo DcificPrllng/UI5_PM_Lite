@@ -11,16 +11,16 @@
 							<FlexBox width="100%" height="14%" direction="Column" class="PDHeader sapUiTinyMargin">
 								<!--First Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="85px" text="{i18n>Save}" press=".SaveOrder"/>
-									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="85px" text="{i18n>Cancel}" press=".GoHome"/>
+									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
+									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
 								</FlexBox>
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<FlexBox class="cisUiTinyMargin" justifyContent="Start">
 										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Description}" design="Bold" required="true"/>
-										<Input width="400px" class="sapUiTinyMarginBegin"
+										<Input width="364px" class="sapUiTinyMarginBegin"
 											value="{path: 'createModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
 									</FlexBox>
-									<Label width="466px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
+									<Label width="504px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
 									<ComboBox width="184px" selectedKey="{path:'createModel>/WorkOrderDetail/Priority', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin">
 										<items>
@@ -43,9 +43,9 @@
 										</items>
 									</ComboBox>
 									<Label width="104px" textAlign="Right" text="{i18n>FunLoc}" class="cisLabels cisTopMargin" design="Bold"/>
-									<Label width="400px"
-										text="{parts:[{path: 'createModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'createModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"
-										class="sapUiTinyMarginBegin cisLabels cisTopMargin" design="Bold"/>
+									<Input width="400px" enabled="false"
+										value="{parts:[{path: 'createModel>/WorkOrderDetail/FunctionalLocationName'}, {path: 'createModel>/WorkOrderDetail/FunctionalLocation'}], formatter: '.formatter.commonIDFormatter'}"
+										class="sapUiTinyMarginBegin cisDisbaledInput" design="Bold"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicStart}" design="Bold" class="cisLabels cisTopMargin"/>
 									<DatePicker width="124px" enabled="false"
 										dateValue="{path:'createModel>/WorkOrderDetail/BasicStart', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
@@ -61,9 +61,9 @@
 										</items>
 									</ComboBox>
 									<Label width="104px" textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>
-									<Label width="400px"
-										text="{parts:[{path:'createModel>/WorkOrderDetail/Equipment'}, {path: 'createModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.commonIDFormatter'}"
-										class="sapUiTinyMarginBegin cisLabels cisTopMargin" design="Bold"/>
+									<Input width="400px" enabled="false"
+										value="{parts:[{path:'createModel>/WorkOrderDetail/Equipment'}, {path: 'createModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.commonIDFormatter'}"
+										class="sapUiTinyMarginBegin cisDisbaledInput"/>
 									<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
 									<DatePicker width="124px" enabled="false"
 										dateValue="{path:'createModel>/WorkOrderDetail/BasicFinish', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
@@ -77,23 +77,23 @@
 										<table:Table id="OperationsTable" rows="{path:'createModel>/WorkOrderDetail/Operations', templateShareable:false}"
 											selectionMode="MultiToggle" visibleRowCountMode="Auto" minAutoRowCount="9" class="sapUiTinyMarginBegin">
 											<table:toolbar>
-												<Toolbar>
+												<Toolbar class="cisTableHeader">
 													<content>
-														<Title text="{i18n>Operations}"/>
-														<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-process" tooltip="{i18n>NewOperation}" press=".createNewRowOperations"/>
-														<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedOperations}"
+														<Button class="cisHeadingButton" width="105px" text="{i18n>Operations}"/>
+														<Button type="Transparent" width="75px" text="Add" icon="sap-icon://add-process" tooltip="{i18n>NewOperation}" press=".createNewRowOperations"/>
+														<Button type="Transparent" width="85px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedOperations}"
 															press=".deleteSelectedOperations"/>
 													</content>
 												</Toolbar>
 											</table:toolbar>
 											<table:columns>
-												<table:Column width="4rem">
+												<table:Column width="5rem">
 													<Label text="{i18n>OpAc}"/>
 													<table:template>
 														<Input editable="{createModel>New}" value="{path:'createModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="8rem">
+												<table:Column width="7rem">
 													<Label text="{i18n>WorkCenter}"/>
 													<table:template>
 														<ComboBox showSecondaryValues="true" value="{path: 'createModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
@@ -102,7 +102,7 @@
 														</ComboBox>
 													</table:template>
 												</table:Column>
-												<table:Column hAlign="End">
+												<table:Column>
 													<Label text="{i18n>OpShortText}"/>
 													<table:template>
 														<Input value="{path: 'createModel>ShortText', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
@@ -117,10 +117,10 @@
 												<table:Column width="8rem">
 													<Label text="{i18n>Unit}"/>
 													<table:template>
-														<ComboBox selectedKey="{path: 'createModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}">
-															<core:ListItem text="Minutes" key="MIN"></core:ListItem>
-															<core:ListItem text="Hours" key="H"></core:ListItem>
-															<core:ListItem text="Days" key="DAY"></core:ListItem>
+														<ComboBox selectedKey="{path: 'createModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}" showSecondaryValues="true">
+															<core:ListItem additionalText="Minutes" text="MIN"  key="MIN"></core:ListItem>
+															<core:ListItem additionalText="Hours" text="H" key="H"></core:ListItem>
+															<core:ListItem additionalText="Days" text="DAY" key="DAY"></core:ListItem>
 														</ComboBox>
 													</table:template>
 												</table:Column>
@@ -138,11 +138,11 @@
 										<table:Table id="ComponentsTable" rows="{path: 'createModel>/WorkOrderDetail/Components', templateShareable:false}" minAutoRowCount="9"
 											visibleRowCountMode="Auto" class="sapUiTinyMarginBegin">
 											<table:toolbar>
-												<Toolbar>
+												<Toolbar class="cisTableHeader">
 													<content>
-														<Title text="Components"/>
-														<Button type="Accept" width="80px" text="Add" icon="sap-icon://add-equipment" tooltip="{i18n>NewComponent}" press=".createNewRowComponents"/>
-														<Button type="Reject" width="80px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
+														<Button width="105px" class="cisHeadingButton" text="Components"/>
+														<Button type="Transparent" width="95px" text="Add" icon="sap-icon://add-equipment" tooltip="{i18n>NewComponent}" press=".createNewRowComponents"/>
+														<Button type="Transparent" width="95px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
 															press=".deleteSelectedComponents"/>
 													</content>
 												</Toolbar>
@@ -161,7 +161,7 @@
 															value="{path: 'createModel>ComponentNumber', type : 'pd.pm.lite.customTypes.ComponentId'}" change=".getComponentDetail"/>
 													</table:template>
 												</table:Column>
-												<table:Column hAlign="End">
+												<table:Column>
 													<Label text="{i18n>Description}"/>
 													<table:template>
 														<Label text="{createModel>Description}"/>
@@ -215,11 +215,11 @@
 										<f:content>
 											<Label text="{i18n>DowntimeStart}" class="PDLabel"/>
 											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="short" displayFormatType="Gregorian"/>
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<CheckBox text="{i18n>OperationalDowntime}" selected="{createModel>/WorkOrderDetail/OperationDowntime}"/>
 											<Label text="{i18n>DowntimeEnd}" class="PDLabel"/>
 											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="short" displayFormatType="Gregorian"/>
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<Text
 												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'createModel>/WorkOrderDetail/DowntimeStart'}, {path: 'createModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -231,11 +231,11 @@
 										<f:content>
 											<Label text="{i18n>BreakdownStart}" class="PDLabel"/>
 											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="short" displayFormatType="Gregorian"/>
+												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<CheckBox text="{i18n>Breakdown}" selected="{createModel>/WorkOrderDetail/Breakdown}"/>
 											<Label text="{i18n>BreakdownEnd}" class="PDLabel"/>
 											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="short" displayFormatType="Gregorian"/>
+												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<Text
 												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'createModel>/WorkOrderDetail/BreakdownStart'}, {path: 'createModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>

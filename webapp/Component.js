@@ -13,8 +13,6 @@ sap.ui.define([
 		},
 
 		init: function() {
-			// src="/sap/public/bc/ui5_ui5/resources/sap-ui-core.js"
-							
 			// call the init function of the parent
 			UIComponent.prototype.init.apply(this, arguments);
 
@@ -37,6 +35,7 @@ sap.ui.define([
 			oModel.setSizeLimit(500); //Units have 250+ entries
 
 			//Local storage
+			jQuery.sap.require("jquery.sap.storage");
 			this._oJQueryStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
 
 			//Get Plants, WorkCenters and Units
