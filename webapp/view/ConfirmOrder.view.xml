@@ -20,18 +20,17 @@
 										<Input width="80px" class="sapUiTinyMarginBegin cisDisbaledInput" enabled="false" value="{path: 'confirmModel>/WorkOrderDetail/OrderType'}"/>
 										<Input width="120px" enabled="false" class="cisDisbaledInput"
 											value="{path: 'confirmModel>/WorkOrderDetail/OrderNumber', formatter: '.formatter.removeLeadingZerosFromString'}"/>
-										<Input width="454px" enabled="false" class="cisDisbaledInput"
-											value="{path: 'confirmModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
+										<Input width="454px" enabled="false" class="cisDisbaledInput" value="{path: 'confirmModel>/WorkOrderDetail/ShortDescription'}"
+											maxLength="40"/>
 										<Label class="cisTopMargin" width="104px" textAlign="Right" text="{i18n>SystemStatus}" design="Bold"/>
 										<Input width="308px" enabled="false" class="sapUiTinyMarginBegin cisDisbaledInput" value="{confirmModel>/WorkOrderDetail/SystemStatus}"/>
 										<Input width="318px" enabled="false" class="cisDisbaledInput" value="{path: 'confirmModel>/WorkOrderDetail/UserStatus'}"/>
 									</FlexBox>
 									<!--//Second Row-->
 									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-										<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
+										<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold"/>
 										<ComboBox class="sapUiTinyMarginBegin cisDisbaledInput" id="workCenterId" enabled="false" items="{localStorageModel>/WorkCenters}"
-											showSecondaryValues="false" selectedKey="{path:'confirmModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
-											width="200px">
+											showSecondaryValues="false" selectedKey="{path:'confirmModel>/WorkOrderDetail/MainWorkCenter'}" width="200px">
 											<items>
 												<core:ListItem text="{localStorageModel>Id} ({localStorageModel>Name})" key="{localStorageModel>Id}"
 													additionalText="{localStorageModel>Name}"></core:ListItem>
@@ -54,10 +53,9 @@
 									</FlexBox>
 									<!--//Third Row-->
 									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
-										<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin cisLabels" required="true"/>
+										<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin cisLabels"/>
 										<ComboBox width="200px" items="{confirmModel>/ActivityTypes}" enabled="false"
-											selectedKey="{path:'confirmModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}"
-											class="sapUiTinyMarginBegin cisDisbaledInput">
+											selectedKey="{path:'confirmModel>/WorkOrderDetail/PmActivityType'}" class="sapUiTinyMarginBegin cisDisbaledInput">
 											<items>
 												<core:ListItem text="{confirmModel>Code} ({confirmModel>Name})" key="{confirmModel>Code}" additionalText="{confirmModel>Name}"/>
 											</items>
@@ -66,7 +64,7 @@
 										<Input width="355px" enabled="false"
 											value="{parts:[{path:'confirmModel>/WorkOrderDetail/Equipment'}, {path: 'confirmModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"
 											class="sapUiTinyMarginBegin cisDisbaledInput"/>
-										<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
+										<Label width="104px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin"/>
 										<ComboBox width="195px" enabled="false" selectedKey="{path:'confirmModel>/WorkOrderDetail/Priority'}"
 											class="sapUiTinyMarginBegin cisDisbaledInput">
 											<items>
@@ -78,11 +76,8 @@
 											</items>
 										</ComboBox>
 										<Label width="104px" textAlign="Right" text="{i18n>BasicFinish}" design="Bold" class="cisLabels cisTopMargin"/>
-										<!--<Input width="124px" value="{path:'confirmModel>/WorkOrderDetail/BasicFinish', formatter:'.formatter.date'}" design="Bold" enabled="false"-->
-										<!--	class="sapUiTinyMarginBegin cisDisbaledInput"/>-->
 										<DatePicker width="124px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/BasicFinish'}"
 											class="sapUiTinyMarginBegin cisDisbaledInput"/>
-											
 										<Label width="84px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabels cisTopMargin"/>
 										<DatePicker width="104px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/ScheduledFinish'}"
 											class="sapUiTinyMarginBegin cisDisbaledInput"/>
@@ -91,9 +86,9 @@
 								<FlexBox width="11%" direction="Column">
 									<Label/>
 									<Label text="Job Completion" design="Bold"/>
-									<RadioButton groupName="GroupA" text="Did Not Execute" selected="{confirmModel>JobCompletion/DidNotExecute}"/>
-									<RadioButton groupName="GroupA" text="Job Complete" selected="{confirmModel>JobCompletion/DidNotExecute}"/>
-									<CheckBox text="Technical Completion" selected="{confirmModel>JobCompletion/TechnicalCompletion}"/>
+									<RadioButton groupName="GroupA" text="Did Not Execute" selected="{confirmModel>/WorkOrderDetail/JobCompletion/DidNotExecute}"/>
+									<RadioButton groupName="GroupA" text="Job Complete" selected="{confirmModel>/WorkOrderDetail/JobCompletion/JobComplete}"/>
+									<CheckBox text="Technical Completion" selected="{confirmModel>/WorkOrderDetail/JobCompletion/TechnicalCompletion}"/>
 								</FlexBox>
 							</HBox>
 							<HBox height="84%" justifyContent="Center">
@@ -109,22 +104,26 @@
 												</Toolbar>
 											</table:toolbar>
 											<table:columns>
-												<table:Column width="5rem">
-													<Label text="{i18n>OpAc}"/>
+												<table:Column width="6rem">
+													<Label text="{i18n>OpAc}" required="true"/>
 													<table:template>
-														<Input editable="{confirmModel>New}" value="{path:'confirmModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"/>
+														<ComboBox editable="{confirmModel>New}" value="{path:'confirmModel>OperationID', type : 'pd.pm.lite.customTypes.Number' }"
+															items="{path:'confirmModel>/OperationList', templateShareable:false}" selectionChange=".UpdateShortText">
+															<core:ListItem text="{confirmModel>OperationID}" key="{confirmModel>OperationID}" additionalText="{confirmModel>Description}"></core:ListItem>
+														</ComboBox>
 													</table:template>
 												</table:Column>
 												<table:Column width="15rem">
 													<Label text="{i18n>OpShortText}"/>
 													<table:template>
-														<Input value="{path: 'confirmModel>Description', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+														<Input editable="false" value="{path: 'confirmModel>Description' }" maxLength="40"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="7rem">
-													<Label text="{i18n>WorkCenter}"/>
+												<table:Column width="6.5rem">
+													<Label text="{i18n>WorkCenter}" required="true"/>
 													<table:template>
-														<ComboBox showSecondaryValues="true" value="{path: 'confirmModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
+														<ComboBox editable="{confirmModel>New}" showSecondaryValues="true"
+															value="{path: 'confirmModel>WorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}"
 															items="{path:'localStorageModel>/WorkCenters', templateShareable:false}">
 															<core:ListItem text="{localStorageModel>Id}" key="{localStorageModel>Id}" additionalText="{localStorageModel>Name}"></core:ListItem>
 														</ComboBox>
@@ -133,7 +132,7 @@
 												<table:Column width="4rem">
 													<Label text="{i18n>Actual}"/>
 													<table:template>
-														<Text text="{path: 'confirmModel>Actual', type : 'pd.pm.lite.customTypes.Number'}"/>
+														<Text text="{path: 'confirmModel>Actual'}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="3rem">
@@ -142,39 +141,45 @@
 														<Text text="{path: 'confirmModel>Unit'}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="3rem">
-													<Label text="{i18n>Work}"/>
+												<table:Column width="4rem">
+													<Label text="{i18n>Work}" required="true"/>
 													<table:template>
-														<Input value="{confirmModel>ActualWork}"/>
+														<Input value="{confirmModel>Work}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="5rem">
-													<Label text="{i18n>Unit}"/>
+												<table:Column width="6rem">
+													<Label text="{i18n>Unit}" required="true"/>
 													<table:template>
-														<ComboBox selectedKey="{path: 'confirmModel>Unit', type : 'pd.pm.lite.customTypes.Mandatory'}" showSecondaryValues="true">
-															<core:ListItem additionalText="Minutes" text="MIN"  key="MIN"></core:ListItem>
+														<ComboBox selectedKey="{path: 'confirmModel>WorkUnit', type : 'pd.pm.lite.customTypes.Mandatory'}" showSecondaryValues="true">
+															<core:ListItem additionalText="Minutes" text="MIN" key="MIN"></core:ListItem>
 															<core:ListItem additionalText="Hours" text="H" key="H"></core:ListItem>
 															<core:ListItem additionalText="Days" text="DAY" key="DAY"></core:ListItem>
 														</ComboBox>
 													</table:template>
 												</table:Column>
-												<table:Column width="7rem">
-													<Label text="{i18n>Pers No}"/>
+												<table:Column width="3rem">
+													<Label text="{i18n>Final}"/>
 													<table:template>
-														<Input value="{path: 'confirmModel>PersonnelNumber', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+														<CheckBox selected="{path: 'confirmModel>Final'}"/>
 													</table:template>
 												</table:Column>
-												<table:Column width="12rem">
+												<table:Column width="6rem">
+													<Label text="{i18n>Pers No}"/>
+													<table:template>
+														<Input value="{path: 'confirmModel>PersonnelNumber'}" maxLength="40"/>
+													</table:template>
+												</table:Column>
+												<table:Column width="10rem">
 													<Label text="{i18n>Remarks}"/>
 													<table:template>
-														<Input value="{path: 'confirmModel>Remarks', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
+														<Input value="{path: 'confirmModel>Remarks'}" maxLength="40"/>
 													</table:template>
 												</table:Column>
 											</table:columns>
 										</table:Table>
 									</VBox>
 									<VBox height="50%" justifyContent="End">
-										<table:Table id="ComponentsTable" rows="{path: 'confirmModel>/Confirmations', templateShareable:false}" minAutoRowCount="9"
+										<table:Table id="ConfirmationsTable" rows="{path: 'confirmModel>/Confirmations', templateShareable:false}" minAutoRowCount="9"
 											visibleRowCountMode="Auto" class="sapUiTinyMarginBegin" selectionMode="None">
 											<table:toolbar>
 												<Toolbar class="cisTableHeader">
@@ -224,7 +229,7 @@
 												<table:Column width="5rem">
 													<Label text="{i18n>Final}"/>
 													<table:template>
-														<CheckBox enabled="false" selected="{Final}"/>
+														<CheckBox enabled="false" selected="{confirmModel>Final}"/>
 													</table:template>
 												</table:Column>
 												<table:Column width="8rem">
@@ -248,11 +253,11 @@
 									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification" labelSpanL="2"
 										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
-											<Label text="{i18n>Code}" class="PDLabel"/>
+											<Label text="{i18n>Code}"/>
 											<ComboBox selectedKey="{confirmModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
-											<Label text="{i18n>Note}" class="PDLabel"/>
+											<Label text="{i18n>Note}"/>
 											<TextArea growing="true" rows="2" value="{confirmModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
 											<FormattedText class="oldNotes" height="150px" htmlText="{confirmModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
@@ -263,13 +268,13 @@
 										editable="true" layout="ResponsiveGridLayout" title="{i18n>OperationalDowntime} (NPT)" labelSpanL="2" labelSpanM="2" emptySpanL="0"
 										emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
-											<Label text="{i18n>DowntimeStart}" class="PDLabel"/>
-											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
-											<CheckBox text="{i18n>OperationalDowntime}"/>
-											<Label text="{i18n>DowntimeEnd}" class="PDLabel"/>
-											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<Label text="{i18n>DowntimeStart}"/>
+											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/DowntimeStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
+											<CheckBox text="{i18n>OperationalDowntime}" selected="{confirmModel>/WorkOrderDetail/OperationDowntime}"/>
+											<Label text="{i18n>DowntimeEnd}"/>
+											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/DowntimeEnd', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<Text
 												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeStart'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -280,13 +285,13 @@
 										editable="true" layout="ResponsiveGridLayout" title="{i18n>MalfunctionData}" labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0"
 										columnsL="1" columnsM="1">
 										<f:content>
-											<Label text="{i18n>BreakdownStart}" class="PDLabel"/>
-											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
-											<CheckBox text="{i18n>Breakdown}"/>
-											<Label text="{i18n>BreakdownEnd}" class="PDLabel"/>
-											<DateTimePicker dateValue="{confirmModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<Label text="{i18n>BreakdownStart}"/>
+											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/BreakdownStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<CheckBox text="{i18n>Breakdown}" selected="{confirmModel>/WorkOrderDetail/Breakdown}"/>
+											<Label text="{i18n>BreakdownEnd}"/>
+											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/BreakdownFinish', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<Text
 												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownStart'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -300,9 +305,7 @@
 												selectionChange=".getValidDamageCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCode}" />
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{confirmModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
 											<Label text="{i18n>CauseCode}" class="PDLabel"/>
@@ -310,9 +313,7 @@
 												selectionChange=".getValidCauseCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCode}" />
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{confirmModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 										</f:content>

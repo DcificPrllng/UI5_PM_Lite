@@ -158,7 +158,7 @@ sap.ui.define([
 						that._oJQueryStorage.put("activityTypesHash", response.headers["new_hash"]);
 						//Update the localStorage json model
 						var currentData = localStorageModel.getData();
-						currentData.activityTypes = oData.results;
+						currentData.ActivityTypes = oData.results;
 						localStorageModel.setData(currentData);
 					}
 				}

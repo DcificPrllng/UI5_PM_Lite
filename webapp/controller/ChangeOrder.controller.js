@@ -48,7 +48,8 @@ sap.ui.define([
 			var parameters = {
 				urlParameters: {
 					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					"$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					"$expand": "Components,Operations,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
@@ -61,6 +62,9 @@ sap.ui.define([
 						if (userStatuses[j].Key === odata.OrderType) {
 							var UserStatusesWithNumber = userStatuses[j].UserStatusesWithNumber.results;
 							var UserStatusesNoNumber = userStatuses[j].UserStatusesNoNumber.results;
+							UserStatusesNoNumber.sort(function(a, b) {
+								return a.Status.localeCompare(b.Status);
+							}); //Sort by Status
 							break;
 						}
 					}
@@ -130,6 +134,27 @@ sap.ui.define([
 					newStatus = newStatus + (selectedContxt.getObject().Status + "     ").substring(0, 5);
 					this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
 				}
+			}
+		},
+		validateDates: function(evt) {
+			var form = evt.getSource().getParent().getParent();
+			var formContent = form.getFormElements();
+			var startDateComponent = formContent[0].getFields()[0];
+			var endDateComponent = formContent[1].getFields()[0];
+
+			//If one of them is initial, return
+			if (!startDateComponent.getDateValue() || !endDateComponent.getDateValue()) {
+				return;
+			}
+
+			if (startDateComponent.getDateValue() > endDateComponent.getDateValue()) {
+				//Error
+				startDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+				endDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+			} else {
+				//Clear Error
+				startDateComponent.setValueState("None");
+				endDateComponent.setValueState("None");				
 			}
 		},
 		getComponentDetail: function(evt) {
@@ -230,6 +255,30 @@ sap.ui.define([
 		pad: function(num, size) {
 			var s = "000000000" + num;
 			return s.substr(s.length - size);
+		},
+		getValidDamageCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/DamageCodes";
+
+			//get instance of damage code control
+			var damageControl = oEvent.getSource().getParent().getFields()[1];
+			damageControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
+		},
+		getValidCauseCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/CauseCodes";
+
+			//get instance of damage code control
+			var causeControl = oEvent.getSource().getParent().getFields()[1];
+			causeControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
 		},
 		deleteSelectedComponents: function() {
 			var that = this;
@@ -398,15 +447,15 @@ sap.ui.define([
 
 			//Rerender view
 			this.getView().rerender();
-			
+
 			if (!validator.validate(this.getView())) {
-					return;
+				return;
 			}
 
 			workOrderDetails = this.getView().getModel("jsonModel").oData;
 			operations = workOrderDetails.Operations;
 			components = workOrderDetails.Components;
-			
+
 			var currentWorkOrderDetail = {};
 			currentWorkOrderDetail.NotificationNumber = workOrderDetails.WorkOrderDetail.NotificationNumber;
 			currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
@@ -596,12 +645,12 @@ sap.ui.define([
 
 			//Selecting in the second table
 			for (var j = 1; j < allStatuses.length; j++) {
-				if (allStatuses[j] === ""){
+				if (allStatuses[j] === "") {
 					continue;
 				}
 				for (var m = 0; m < UserStatusesNoNumber.length; m++) {
 					if ((UserStatusesNoNumber[m].Status + "      ").substring(0, 4) === (allStatuses[j] + "      ").substring(0, 4)) {
-						oView.getController()._userStatusDialog.getContent()[1].addSelectionInterval(m,m);
+						oView.getController()._userStatusDialog.getContent()[1].addSelectionInterval(m, m);
 						break;
 					}
 				}

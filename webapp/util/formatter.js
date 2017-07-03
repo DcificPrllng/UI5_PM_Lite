@@ -21,6 +21,22 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 			return "";
 		},
+		confirmationActive: function(systemStatus){
+			if (systemStatus === "R" || systemStatus === "PC"){
+				return true;
+			}
+			else {
+				return false;
+			}
+		},
+		confirmationNotActive: function(systemStatus){
+			if (systemStatus !== "R" && systemStatus !== "PC"){
+				return true;
+			}
+			else {
+				return false;
+			}
+		},		
 		BasicDateEditable: function(status){
 			if (status.substring(0,4) !== "CRTD"){ //Only 'Created' Orders cannot have Dates editable. Dates are driven by 'Priority' in this case
 				return true;
@@ -55,6 +71,12 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 			return parseInt(number, 10) + " (" + desc + ")";
 		},
+		functionalLocation: function(number, desc) {
+			if (!desc) {
+				return "";
+			}
+			return number + " (" + desc + ")";
+		},		
 		treeId: function(id, functionalLocation) {
 			if (functionalLocation) {
 				return id;
@@ -69,8 +91,12 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			return value;
 		},
 		date: function(date) {
+			if(!date){
+				return "";
+			}
 			var oDateFormat = DateFormat.getDateInstance({
-				pattern: "MM/dd/yyyy",
+				// pattern: "MM/dd/yyyy",
+				pattern: "MMM d,y",
 				UTC: true
 			});
 			return oDateFormat.format(new Date(date));

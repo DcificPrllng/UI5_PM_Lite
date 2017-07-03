@@ -134,7 +134,11 @@ sap.ui.define([
 									try {
 										var boundRows = oControl.getModel("jsonModel").getProperty(oControl.getBinding("rows").sPath);
 									} catch (err) {
-										boundRows = oControl.getModel("createModel").getProperty(oControl.getBinding("rows").sPath);
+										try {
+											boundRows = oControl.getModel("createModel").getProperty(oControl.getBinding("rows").sPath);
+										} catch (err) {
+											boundRows = oControl.getModel("confirmModel").getProperty(oControl.getBinding("rows").sPath);
+										}
 									}
 									if (boundRows) {
 										for (var b = 0; b < boundRows.length; b++) {

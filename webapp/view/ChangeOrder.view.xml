@@ -7,6 +7,7 @@
 				<content>
 					<HBox justifyContent="Center" height="100%">
 						<VBox width="90%" height="100%" direction="Column" alignContent="Center" alignItems="Center">
+							<!--Page Header-->							
 							<FlexBox height="16%" width="100%" direction="Column" class="PDHeader sapUiTinyMargin">
 								<!--//First Row-->
 								<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
@@ -80,9 +81,7 @@
 										dateValue="{path:'jsonModel>/WorkOrderDetail/BasicFinish'}" class="sapUiTinyMarginBegin cisDisbaledInput"/>
 									<Label width="84px" textAlign="Right" text="{i18n>SchFinish}" design="Bold" class="cisLabels cisTopMargin"/>
 									<DatePicker enabled="false" width="104px"
-										dateValue="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish'}" class="sapUiTinyMarginBegin cisDisbaledInput"/>									
-									<!--<Label width="84px" text="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish', formatter:'.formatter.date'}"-->
-									<!--	class="cisLabels cisTopMargin sapUiTinyMarginBegin" design="Bold"/>-->
+										dateValue="{path:'jsonModel>/WorkOrderDetail/ScheduledFinish'}" class="sapUiTinyMarginBegin cisDisbaledInput"/>	
 								</FlexBox>
 							</FlexBox>
 							<HBox height="84%" justifyContent="Center">
@@ -231,12 +230,12 @@
 										columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>DowntimeStart}" />
-											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path: 'jsonModel>/WorkOrderDetail/DowntimeStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" 
+											valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<CheckBox text="{i18n>OperationalDowntime}" selected="{jsonModel>/WorkOrderDetail/OperationDowntime}"/>
 											<Label text="{i18n>DowntimeEnd}" />
-											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'jsonModel>/WorkOrderDetail/DowntimeEnd', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" 
+											valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<Text
 												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'jsonModel>/WorkOrderDetail/DowntimeStart'}, {path: 'jsonModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
 												/>
@@ -248,12 +247,12 @@
 										columnsM="1">
 										<f:content>
 											<Label text="{i18n>BreakdownStart}" />
-											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'jsonModel>/WorkOrderDetail/BreakdownStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" 
+											valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<CheckBox text="{i18n>Breakdown}" selected="{jsonModel>/WorkOrderDetail/Breakdown}"/>
 											<Label text="{i18n>BreakdownEnd}" />
-											<DateTimePicker dateValue="{jsonModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path: 'jsonModel>/WorkOrderDetail/BreakdownFinish', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" 
+											valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<Text
 												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'jsonModel>/WorkOrderDetail/BreakdownStart'}, {path: 'jsonModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"/>
 										</f:content>
@@ -266,9 +265,7 @@
 												selectionChange=".getValidDamageCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Damage/DamageCode}"/>
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{jsonModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
 											<Label text="{i18n>CauseCode}" class="PDLabel"/>
@@ -276,9 +273,7 @@
 												selectionChange=".getValidCauseCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{jsonModel>/WorkOrderDetail/Cause/CauseCode}"/>
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{jsonModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 										</f:content>

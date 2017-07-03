@@ -8,19 +8,20 @@
 					<HBox justifyContent="Center" height="100%">
 						<VBox width="90%" height="100%" direction="Column" alignContent="Center" alignItems="Center">
 							<!--Page Header-->
-							<FlexBox width="100%" height="14%" direction="Column" class="PDHeader sapUiTinyMargin">
+							<FlexBox height="16%" width="100%" direction="Column" class="PDHeader sapUiTinyMargin">
 								<!--First Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
 									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
 								</FlexBox>
+								<!--Second Row-->								
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<FlexBox class="cisUiTinyMargin" justifyContent="Start">
 										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Description}" design="Bold" required="true"/>
 										<Input width="364px" class="sapUiTinyMarginBegin"
 											value="{path: 'createModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}" maxLength="40"/>
 									</FlexBox>
-									<Label width="504px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
+									<Label width="502px" textAlign="Right" text="{i18n>Priority}" design="Bold" class="cisLabels cisTopMargin" required="true"/>
 									<ComboBox width="184px" selectedKey="{path:'createModel>/WorkOrderDetail/Priority', type : 'pd.pm.lite.customTypes.Mandatory'}"
 										class="sapUiTinyMarginBegin">
 										<items>
@@ -32,7 +33,7 @@
 										</items>
 									</ComboBox>
 								</FlexBox>
-								<!--Second Row-->
+								<!--Third Row-->								
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
 									<ComboBox class="sapUiTinyMarginBegin" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="false"
@@ -50,7 +51,7 @@
 									<DatePicker width="124px" enabled="false"
 										dateValue="{path:'createModel>/WorkOrderDetail/BasicStart', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
 								</FlexBox>
-								<!--Third Row-->
+								<!--Fourth Row-->
 								<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 									<Label width="104px" textAlign="Right" text="{i18n>PMActType}" design="Bold" class="cisTopMargin" required="true"/>
 									<ComboBox width="250px" items="{createModel>/ActivityTypes}"
@@ -69,7 +70,7 @@
 										dateValue="{path:'createModel>/WorkOrderDetail/BasicFinish', type : 'pd.pm.lite.customTypes.Mandatory'}" class="sapUiTinyMarginBegin"/>
 								</FlexBox>
 							</FlexBox>
-							<HBox height="86%" justifyContent="Center">
+							<HBox height="84%" justifyContent="Center">
 								<!--Operations and Components Tables-->
 								<VBox width="60%" justifyContent="SpaceBetween">
 									<!--Operations Table-->
@@ -102,7 +103,7 @@
 														</ComboBox>
 													</table:template>
 												</table:Column>
-												<table:Column>
+												<table:Column width="25rem">
 													<Label text="{i18n>OpShortText}"/>
 													<table:template>
 														<Input value="{path: 'createModel>ShortText', type : 'pd.pm.lite.customTypes.Mandatory' }" maxLength="40"/>
@@ -214,12 +215,12 @@
 										title="{i18n>OperationalDowntime} (NPT)" labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>DowntimeStart}" class="PDLabel"/>
-											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/DowntimeStart}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'createModel>/WorkOrderDetail/DowntimeStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<CheckBox text="{i18n>OperationalDowntime}" selected="{createModel>/WorkOrderDetail/OperationDowntime}"/>
 											<Label text="{i18n>DowntimeEnd}" class="PDLabel"/>
-											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/DowntimeEnd}" valueFormat="yyyy-MM-ddTHH:mm:ss" type="sap.ui.model.type.DateTime"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'createModel>/WorkOrderDetail/DowntimeEnd', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss" 
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<Text
 												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'createModel>/WorkOrderDetail/DowntimeStart'}, {path: 'createModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -230,12 +231,12 @@
 										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>BreakdownStart}" class="PDLabel"/>
-											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/BreakdownStart}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'createModel>/WorkOrderDetail/BreakdownStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<CheckBox text="{i18n>Breakdown}" selected="{createModel>/WorkOrderDetail/Breakdown}"/>
 											<Label text="{i18n>BreakdownEnd}" class="PDLabel"/>
-											<DateTimePicker dateValue="{createModel>/WorkOrderDetail/BreakdownFinish}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												type="sap.ui.model.type.DateTime" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker value="{path:'createModel>/WorkOrderDetail/BreakdownFinish', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
+												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<Text
 												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'createModel>/WorkOrderDetail/BreakdownStart'}, {path: 'createModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -250,9 +251,7 @@
 												selectionChange=".getValidDamageCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Damage/DamageCode}" items="{DamageCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Damage/DamageCode}" />
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{createModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
 											<Label text="{i18n>CauseCode}" class="PDLabel"/>
@@ -260,9 +259,7 @@
 												selectionChange=".getValidCauseCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Cause/CauseCode}" items="{CauseCodes}">
-												<core:ListItem key="{Code}" text="{Code}" additionalText="{Name}"/>
-											</ComboBox>
+											<ComboBox showSecondaryValues="true" selectedKey="{createModel>/WorkOrderDetail/Cause/CauseCode}" />
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{createModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 										</f:content>

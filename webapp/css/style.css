@@ -26,6 +26,12 @@ div#uiArea {
     flex-wrap: wrap;
 }
 
+.activeColor{
+	color: cornflowerblue;
+}
+.inactiveColor{
+	color: lightgrey;
+}
 .PDHeader {
     flex: 1;
     justify-content: space-between;

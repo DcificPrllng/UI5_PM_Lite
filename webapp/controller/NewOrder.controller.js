@@ -60,7 +60,48 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
+		},
+		onExit: function() {
+			//Initialize the model before getting out
+			this.createModel.setData(this.initialData);
+		},
+		onDataReceived: function(channel, event, data) {
+			// do something with the data (bind to model)
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", data.FunctionalLocation);
+			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", data.FunctionalLocationName);
+			this.createModel.setProperty("/WorkOrderDetail/Plant", data.plant);
+			if (data.EquipmentName !== undefined) { //It is a dummy number
+				this.createModel.setProperty("/WorkOrderDetail/Equipment", data.Equipment);
+				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
+			}
+			this.createModel.setProperty("/WorkOrderDetail/MainWorkCenter", data.MainWorkCenter);
 
+			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
+			var oView = this.getView();
+			var sPath = "/ValueHelpSet(FunctionalLocation='" + data.FunctionalLocation + "',Equipment='" + data.Equipment +
+				"')";
+			var oParameters = {
+				urlParameters: {
+					"$expand": "DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes"
+				},
+				success: function(data) {
+					oView.setBusy(false);
+					oView.bindElement({
+						path: sPath
+					});
+				},
+				error: function() {
+					oView.setBusy(false);
+					window.location.hash = "#"; //Error. Go back to home screen
+				}
+			};
+			oView.setBusy(true);
+			oView.getModel().read(sPath, oParameters);
+		},
+		_onObjectMatched: function(oEvent) {
+			if (oEvent.getParameter("name") !== "newOrder") {
+				return;
+			}
 			//For defaulting dates
 			var now = new Date();
 
@@ -113,7 +154,8 @@ sap.ui.define([
 				}
 			};
 
-			this.createModel.setData(this.initialData);
+			var newEmptyObject = jQuery.extend(true, {}, this.initialData);
+			this.createModel.setData(newEmptyObject);
 
 			var step;
 			for (step = 0; step < 9; step++) {
@@ -121,48 +163,27 @@ sap.ui.define([
 				this.createNewRowOperations();
 			}
 		},
-		onExit: function() {
-			//Initialize the model before getting out
-			this.createModel.setData(this.initialData);
-		},
-		onDataReceived: function(channel, event, data) {
-			// do something with the data (bind to model)
-			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", data.FunctionalLocation);
-			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocationName", data.FunctionalLocationName);
-			this.createModel.setProperty("/WorkOrderDetail/Plant", data.plant);
-			if (data.EquipmentName !== undefined) { //It is a dummy number
-				this.createModel.setProperty("/WorkOrderDetail/Equipment", data.Equipment);
-				this.createModel.setProperty("/WorkOrderDetail/EquipmentName", data.EquipmentName);
-			}
-			this.createModel.setProperty("/WorkOrderDetail/MainWorkCenter", data.MainWorkCenter);
+		validateDates: function(evt) {
+			var form = evt.getSource().getParent().getParent();
+			var formContent = form.getFormElements();
+			var startDateComponent = formContent[0].getFields()[0];
+			var endDateComponent = formContent[1].getFields()[0];
 
-			//Read DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes
-			var oView = this.getView();
-			var sPath = "/ValueHelpSet(FunctionalLocation='" + data.FunctionalLocation + "',Equipment='" + data.Equipment +
-				"')";
-			var oParameters = {
-				urlParameters: {
-					"$expand": "DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
-				},
-				success: function() {
-					oView.setBusy(false);
-					oView.bindElement({
-						path: sPath
-					});
-				},
-				error: function() {
-					oView.setBusy(false);
-					window.location.hash = "#"; //Error. Go back to home screen
-				}
-			};
-			oView.setBusy(true);
-			oView.getModel().read(sPath, oParameters);
-		},
-		_onObjectMatched: function(oEvent) {
-			if (oEvent.getParameter("name") !== "newOrder") {
+			//If one of them is initial, return
+			if (!startDateComponent.getDateValue() || !endDateComponent.getDateValue()) {
 				return;
 			}
-		},
+
+			if (startDateComponent.getDateValue() > endDateComponent.getDateValue()) {
+				//Error
+				startDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+				endDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+			} else {
+				//Clear Error
+				startDateComponent.setValueState("None");
+				endDateComponent.setValueState("None");				
+			}
+		},			
 		getComponentDetail: function(evt) {
 			var enteredComponent = evt.getParameter("newValue");
 			var oView = this.getView();
@@ -248,6 +269,30 @@ sap.ui.define([
 			});
 			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 		},
+		getValidDamageCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/DamageCodes";
+
+			//get instance of damage code control
+			var damageControl = oEvent.getSource().getParent().getFields()[1];
+			damageControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
+		},
+		getValidCauseCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/CauseCodes";
+
+			//get instance of damage code control
+			var causeControl = oEvent.getSource().getParent().getFields()[1];
+			causeControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
+		},
 		getMax: function(arr, prop) {
 			var max;
 			if (arr.length === 0) {
@@ -263,12 +308,6 @@ sap.ui.define([
 		pad: function(num, size) {
 			var s = "000000000" + num;
 			return s.substr(s.length - size);
-		},
-		getValidDamageCodes: function(oEvent) {
-			// var selectedKey = oEvent.getParameter("selectedItem").getKey();
-		},
-		getValidCauseCodes: function(oEvent) {
-			// var selectedKey = oEvent.getParameter("selectedItem").getKey();
 		},
 		deleteSelectedComponents: function() {
 			var that = this;
@@ -383,11 +422,9 @@ sap.ui.define([
 				}
 			});
 			dialog.open();
-
-			this.getView().getModel("createModel").setData(this.initialData);
 		},
 		goHomeNoPrompt: function() {
-			this.getView().getModel("createModel").setData(this.initialData);
+			// this.getView().getModel("createModel").setData(this.initialData);
 			window.location.hash = "#";
 		},
 		SaveOrder: function() {
@@ -437,7 +474,6 @@ sap.ui.define([
 				success: function(data) {
 					that.getView().setBusy(false);
 					sap.ui.getCore().getMessageManager().removeAllMessages();
-
 					var message = "Success. Order " + data.OrderNumber + " created";
 					var dialog = new Dialog({
 						title: "Information",

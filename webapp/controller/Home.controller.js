@@ -199,9 +199,9 @@ sap.ui.define([
 			} else { //This is an equipment
 				data.Equipment = selectedObject.Id;
 				data.EquipmentName = selectedObject.Name;
-				data.FunctionalLocation = selectedObject.ParentId;
+				data.FunctionalLocation = selectedObject.ParentFL_ID;
 				//Get FL Name
-				var fl = formatter.getObjects(hierarchyTable.getModel().getData().root, "Id", selectedObject.ParentId);
+				var fl = formatter.getObjects(hierarchyTable.getModel().getData().root, "Id", data.FunctionalLocation);
 				if (fl.length > 0) {
 					data.FunctionalLocationName = fl[0].Name;
 				}

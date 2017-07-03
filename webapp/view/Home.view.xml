@@ -52,15 +52,10 @@
 					<Label text="Actions" tooltip="Choose any action"/>
 					<table:template>
 						<layout:HorizontalLayout>
-							<core:Icon press="triggerChange" src="sap-icon://edit" tooltip="{i18n>change}" class="rightMargin"/>
-							<core:Icon press="triggerConfirm" src="sap-icon://complete" tooltip="{i18n>confirm}" class="rightMargin"/>
+							<core:Icon press="triggerChange" src="sap-icon://edit" tooltip="{i18n>change}" class="rightMargin activeColor"/>
+							<core:Icon visible="{path: 'localModel>Statuses/SS', formatter:'.formatter.confirmationActive'}" press="triggerConfirm" src="sap-icon://complete" tooltip="{i18n>confirm}" class="rightMargin activeColor"/>
+							<core:Icon visible="{path: 'localModel>Statuses/SS', formatter:'.formatter.confirmationNotActive'}" src="sap-icon://complete" tooltip="{i18n>notyetreleased}" class="rightMargin inactiveColor"/>
 						</layout:HorizontalLayout>
-					</table:template>
-				</table:Column>
-				<table:Column visible="false" width="60px">
-					<Label text="Confirm" tooltip="Label Tooltip"/>
-					<table:template>
-						<core:Icon press="triggerConfirm" src="sap-icon://complete" tooltip="{i18n>confirm}"/>
 					</table:template>
 				</table:Column>
 				<table:Column filterProperty="OrderNumber" sortProperty="OrderNumber" width="100px" tooltip="{i18n>ttOrderNumber}">
@@ -109,7 +104,7 @@
 				<table:Column sortProperty="FunctionalLocation" width="300px" tooltip="{i18n>ttFunctionalLocation}">
 					<Label text="Functional Location"/>
 					<table:template>
-						<TextView text="{parts: [{path: 'localModel>FunctionalLocation'}, {path: 'localModel>FLDescription'}], formatter:'.formatter.equipment'}"/>
+						<TextView text="{parts: [{path: 'localModel>FunctionalLocation'}, {path: 'localModel>FLDescription'}], formatter:'.formatter.functionalLocation'}"/>
 					</table:template>
 				</table:Column>
 				<table:Column sortProperty="Equipment" width="300px" tooltip="{i18n>ttEquipmentNumber}">

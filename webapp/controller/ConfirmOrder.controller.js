@@ -38,29 +38,22 @@ sap.ui.define([
 			if (oEvent.getParameter("name") !== "confirmOrder") {
 				return;
 			}
-
+			var that = this;
+			
 			//Make data call
 			var oView = this.getView();
 			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
 			var parameters = {
 				urlParameters: {
 					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					"$expand": "Confirmations,OperationSteps,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					// "$expand": "Confirmations,OperationSteps,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
+					"$expand": "Confirmations,OperationSteps,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
 					oView.bindElement({
 						path: sPath
 					});
-
-					var userStatuses = oView.getModel("localStorageModel").getData().UserStatuses;
-					for (var j = 0; j < userStatuses.length; j++) {
-						if (userStatuses[j].Key === odata.OrderType) {
-							var UserStatusesWithNumber = userStatuses[j].UserStatusesWithNumber.results;
-							var UserStatusesNoNumber = userStatuses[j].UserStatusesNoNumber.results;
-							break;
-						}
-					}
 
 					//Keep only relevant activity types
 					var relevantActivityTypes = [];
@@ -79,9 +72,15 @@ sap.ui.define([
 						WorkOrderDetail: odata,
 						ActivityTypes: relevantActivityTypes,
 						Confirmations: odata.Confirmations.results,
-						OperationSteps: odata.OperationSteps.results
+						OperationSteps: odata.OperationSteps.results,
+						OperationList: odata.OperationSteps.results.slice()
 					});
 					oView.setModel(jsonModel, "confirmModel");
+					
+					var emptyOperations = 9 - odata.OperationSteps.results.length;
+					for (var step = 0; step < emptyOperations; step++) {
+						that.createNewRowOperations();
+					}					
 				},
 				error: function() {
 					oView.setBusy(false);
@@ -96,6 +95,46 @@ sap.ui.define([
 				window.location.hash = "#";
 			}
 		},
+		UpdateShortText: function(evt){
+			var shortText = evt.getSource().getSelectedItem().getProperty("additionalText");
+			var shortTextCell = evt.getSource().getParent().getAggregation("cells")[1];
+			shortTextCell.setValue(shortText);
+		},
+		createNewRowOperations: function() {
+			var currentOperationSteps = this.getView().getModel("confirmModel").getProperty("/OperationSteps");
+
+			currentOperationSteps.push({
+				"OperationID": "",
+				"New": true,
+				"Description": "",
+				"WorkCenter": "",
+				"Actual": "",
+				"Unit": "",
+				"WorkUnit":""
+			});
+			this.getView().getModel("confirmModel").setProperty("/OperationSteps", currentOperationSteps);
+		},	
+		validateDates: function(evt) {
+			var form = evt.getSource().getParent().getParent();
+			var formContent = form.getFormElements();
+			var startDateComponent = formContent[0].getFields()[0];
+			var endDateComponent = formContent[1].getFields()[0];
+
+			//If one of them is initial, return
+			if (!startDateComponent.getDateValue() || !endDateComponent.getDateValue()) {
+				return;
+			}
+
+			if (startDateComponent.getDateValue() > endDateComponent.getDateValue()) {
+				//Error
+				startDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+				endDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
+			} else {
+				//Clear Error
+				startDateComponent.setValueState("None");
+				endDateComponent.setValueState("None");				
+			}
+		},		
 		getComponentDetail: function(evt) {
 			var enteredComponent = evt.getParameter("newValue");
 			var oView = this.getView();
@@ -136,6 +175,30 @@ sap.ui.define([
 				}
 			});
 		},
+		getValidDamageCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/DamageCodes";
+
+			//get instance of damage code control
+			var damageControl = oEvent.getSource().getParent().getFields()[1];
+			damageControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
+		},
+		getValidCauseCodes: function(oEvent) {
+			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
+			var codePath = currentPath + "/CauseCodes";
+
+			//get instance of damage code control
+			var causeControl = oEvent.getSource().getParent().getFields()[1];
+			causeControl.bindItems(codePath, new sap.ui.core.ListItem({
+				key: "{Code}",
+				text: "{Code}",
+				additionalText: "{Name}"
+			}));
+		},		
 		getMax: function(arr, prop) {
 			var max;
 			if (arr.length === 0) {
@@ -215,39 +278,21 @@ sap.ui.define([
 
 			var validator = new Validator();
 			//Get Operations and components.
-			var workOrderDetails = this.getView().getModel("jsonModel").oData;
-			var operations = workOrderDetails.Operations;
-			var components = workOrderDetails.Components;
+			var workOrderDetails = this.getView().getModel("confirmModel").oData;
+			var confirmations = workOrderDetails.OperationSteps;
 
 			//Remove empty components
-			var newComponents = [];
+			var newConfirmations = [];
 
-			for (var i = 0; i < components.length; i++) {
+			for (var i = 0; i < confirmations.length; i++) {
 				//If one of these fields are not null, only then retian the record
-				if (components[i].Description || components[i].RequirementQuantity) {
-					newComponents.push(components[i]);
+				if (!confirmations[i].New || confirmations[i].OperationID) {
+					newConfirmations.push(confirmations[i]);
 				}
 			}
 
-			//Update the Components
-			this.getView().getModel("jsonModel").setProperty("/Components", newComponents);
-
-			//Remove Empty Operations
-			var newOperations = [];
-			if (operations.length > 1) { //One Operation is mandatory
-				for (i = 0; i < operations.length; i++) {
-					//If one of these fields are not null, only then retian the record
-					if (operations[i].ShortText || operations[i].WorkQuantity) {
-						newOperations.push(operations[i]);
-					}
-				}
-				if (newOperations.length === 0) {
-					newOperations.push(operations[0]);
-				}
-
-				//Update the Operations
-				this.getView().getModel("jsonModel").setProperty("/Operations", newOperations);
-			}
+			//Update the Operation Steps
+			this.getView().getModel("confirmModel").setProperty("/OperationSteps", newConfirmations);
 
 			if (!validator.validate(this.getView())) {
 				return;
@@ -275,55 +320,42 @@ sap.ui.define([
 			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
 			currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
 
+			currentWorkOrderDetail.OperationDowntime = workOrderDetails.WorkOrderDetail.OperationDowntime;
+			currentWorkOrderDetail.DowntimeStart = workOrderDetails.WorkOrderDetail.DowntimeStart;
+			currentWorkOrderDetail.DowntimeEnd = workOrderDetails.WorkOrderDetail.DowntimeEnd;
+			currentWorkOrderDetail.Breakdown = workOrderDetails.WorkOrderDetail.Breakdown;
+			currentWorkOrderDetail.BreakdownStart = workOrderDetails.WorkOrderDetail.BreakdownStart;
+			currentWorkOrderDetail.BreakdownFinish = workOrderDetails.WorkOrderDetail.BreakdownFinish;
+			
+			//Job Completion
+			currentWorkOrderDetail.JobCompletion = {};
+			currentWorkOrderDetail.JobCompletion.TechnicalCompletion = workOrderDetails.WorkOrderDetail.JobCompletion.TechnicalCompletion;
+			currentWorkOrderDetail.JobCompletion.JobComplete = workOrderDetails.WorkOrderDetail.JobCompletion.JobComplete;
+			currentWorkOrderDetail.JobCompletion.DidNotExecute = workOrderDetails.WorkOrderDetail.JobCompletion.DidNotExecute;
+			
 			//Calculate changes and make approriate actions on Odata model
 			this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
 				currentWorkOrderDetail, {
 					groupId: "saveAll"
 				});
 
-			for (var i = 0; i < operations.length; i++) {
-				var operationEntry = {};
-				operationEntry.ActualWork = operations[i].ActualWork === "" ? "0" : operations[i].ActualWor;
-				operationEntry.OperationID = operations[i].OperationID;
-				operationEntry.OrderNumber = operations[i].OrderNumber;
-				operationEntry.ShortText = operations[i].ShortText;
-				operationEntry.WorkCenter = operations[i].WorkCenter;
-				operationEntry.WorkQuantity = operations[i].WorkQuantity;
-				operationEntry.WorkUnit = operations[i].WorkUnit;
-
-				if (operations[i].New) {
-					this.getView().getModel().create("/Operations", operationEntry, {
-						groupId: "saveAll"
-					});
-				} else {
-					this.getView().getModel().update("/Operations(OrderNumber='" + operations[i].OrderNumber + "',OperationID='" + operations[i].OperationID +
-						"')", operationEntry, {
-							groupId: "saveAll"
-						});
-				}
-			}
-
-			for (i = 0; i < components.length; i++) {
+			for (i = 0; i < newConfirmations.length; i++) {
 				var componentEntry = {};
-				componentEntry.OrderNumber = components[i].OrderNumber;
-				componentEntry.ItemID = components[i].ItemID;
-				componentEntry.ComponentNumber = components[i].ComponentNumber;
-				componentEntry.Description = components[i].Description;
-				componentEntry.RequirementQuantity = components[i].RequirementQuantity;
-				componentEntry.Unit = components[i].Unit;
-				componentEntry.ItemCategory = components[i].ItemCategory;
-				componentEntry.OperationReference = components[i].OperationReference;
+				componentEntry.OrderNumber = workOrderDetails.WorkOrderDetail.OrderNumber;
+				componentEntry.OperationID = newConfirmations[i].OperationID;
+				componentEntry.WorkCenter = newConfirmations[i].WorkCenter;
+				// componentEntry.Current = parseInt(newConfirmations[i].Work);
+				componentEntry.Current = newConfirmations[i].Work;				
+				componentEntry.Unit = newConfirmations[i].WorkUnit;
+				componentEntry.PersonnelNumber = newConfirmations[i].PersonnelNumber;
+				componentEntry.Remark = newConfirmations[i].Remarks;
+				componentEntry.Final = newConfirmations[i].Final;
 
-				if (components[i].New) {
-					this.getView().getModel().create("/Components", componentEntry, {
+				if (componentEntry.Current > "0") {
+					this.getView().getModel().create("/PostedConfirmations", componentEntry, {
 						groupId: "saveAll"
 					});
-				} else {
-					this.getView().getModel().update("/Components(OrderNumber='" + components[i].OrderNumber + "',ItemID='" + components[i].ItemID +
-						"')", componentEntry, {
-							groupId: "saveAll"
-						});
-				}
+				} 
 			}
 			//Check if there is a new Notification
 			this._busyDialog.open();
