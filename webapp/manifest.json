@@ -46,11 +46,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -64,33 +62,31 @@
 					"target": "notFound"
 				}
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "appHome",
-					"target": "home"
-				},
-				{
-					"pattern": "personas",
-					"name": "personas",
-					"target": "personas"
-				},
-				{
-					"pattern": "ChangeOrder/{order}",
-					"name": "changeOrder",
-					"target": "changeOrder"
-				},
-				{
-					"pattern": "ConfirmOrder/{order}",
-					"name": "confirmOrder",
-					"target": "confirmOrder"
-				},
-				{
-					"pattern": "NewOrder",
-					"name": "newOrder",
-					"target": "newOrder"
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "appHome",
+				"target": "home"
+			}, {
+				"pattern": "personas",
+				"name": "personas",
+				"target": "personas"
+			}, {
+				"pattern": "ChangeOrder/{order}",
+				"name": "changeOrder",
+				"target": "changeOrder"
+			}, {
+				"pattern": "ConfirmOrder/{order}",
+				"name": "confirmOrder",
+				"target": "confirmOrder"
+			}, {
+				"pattern": "NewOrder",
+				"name": "newOrder",
+				"target": "newOrder"
+			}, {
+				"pattern": "Measurements/{entryList}",
+				"name": "measurement",
+				"target": "measurement"
+			}],
 			"targets": {
 				"home": {
 					"viewName": "Home",
@@ -117,6 +113,11 @@
 				"newOrder": {
 					"viewName": "NewOrder",
 					"viewId": "newView",
+					"viewLevel": 2
+				},
+				"measurement": {
+					"viewName": "Measurement",
+					"viewId": "measurementView",
 					"viewLevel": 2
 				}
 			}

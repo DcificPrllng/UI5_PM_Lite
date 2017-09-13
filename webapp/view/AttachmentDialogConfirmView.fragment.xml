@@ -1,0 +1,31 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:common="sap.ui.commons">
+	<Dialog id="attachmentDialog" title="{i18n>Attachments}" contentWidth="55rem" contentHeight="1015px">
+		<content>
+			<UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="10" showSeparators="None" change="onChange"
+				uploadComplete="onUploadComplete" beforeUploadStarts="onBeforeUploadStarts" uploadTerminated="onUploadTerminated"
+				fileDeleted="onFileDeleted"
+				uploadUrl="/sap/opu/odata/sap/ZWORKORDER_SRV/WorkOrderDetailSet('{confirmModel>/WorkOrderDetail/OrderNumber}')/OrderAttachments"
+				items="{path :'confirmModel>/OrderAttachments', templateShareable : 'true'}" numberOfAttachmentsText="Uploaded (8)"
+				mode="SingleSelectMaster">
+				<toolbar>
+					<OverflowToolbar id="myId">
+						<Title id="attachmentTitle"/>
+						<ToolbarSpacer/>
+						<RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments"/>
+						<RadioButton id="NotificationRB" groupName="from" text="{i18n>Notification}" select=".ShowRightAttachments"/>
+						<UploadCollectionToolbarPlaceholder></UploadCollectionToolbarPlaceholder>
+					</OverflowToolbar>
+				</toolbar>
+				<items>
+					<UploadCollectionItem contributor="{confirmModel>CreatedByID}" enableDelete="true" visibleDelete="true" enableEdit="false"
+						visibleEdit="false" documentId='{confirmModel>AttachmentId}' fileName="{confirmModel>FileName}" mimeType="{confirmModel>MimeType}"
+						uploadedDate="{ path: 'confirmModel>CreatedAt', formatter:'.formatter.date'}"
+						url="/sap/opu/odata/sap/ZWORKORDER_SRV/OrderAttachments(AttachmentId='{confirmModel>AttachmentId}',DocumentId='{confirmModel>/WorkOrderDetail/OrderNumber}')/$value"></UploadCollectionItem>
+				</items>
+			</UploadCollection>
+		</content>
+		<beginButton>
+			<Button text="{i18n>Close}" type="Transparent" press=".onDialogClose"/>
+		</beginButton>
+	</Dialog>
+</core:FragmentDefinition>

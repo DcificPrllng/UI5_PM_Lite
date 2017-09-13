@@ -21,36 +21,34 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 			return "";
 		},
-		confirmationActive: function(systemStatus){
-			if (systemStatus === "R" || systemStatus === "PC"){
+		confirmationActive: function(systemStatus) {
+			if (systemStatus === "R" || systemStatus === "PC") {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		},
-		confirmationNotActive: function(systemStatus){
-			if (systemStatus !== "R" && systemStatus !== "PC"){
+		confirmationNotActive: function(systemStatus) {
+			if (systemStatus !== "R" && systemStatus !== "PC") {
 				return true;
-			}
-			else {
-				return false;
-			}
-		},		
-		BasicDateEditable: function(status){
-			if (status.substring(0,4) !== "CRTD"){ //Only 'Created' Orders cannot have Dates editable. Dates are driven by 'Priority' in this case
-				return true;
-			}else{
+			} else {
 				return false;
 			}
 		},
-		PriorityEditable: function(status){
-			if (status.substring(0,4) === "CRTD"){ //If status is 'CRTD' only then 'Priority' is editable
+		BasicDateEditable: function(status) {
+			if (status.substring(0, 4) !== "CRTD") { //Only 'Created' Orders cannot have Dates editable. Dates are driven by 'Priority' in this case
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-		},		
+		},
+		PriorityEditable: function(status) {
+			if (status.substring(0, 4) === "CRTD") { //If status is 'CRTD' only then 'Priority' is editable
+				return true;
+			} else {
+				return false;
+			}
+		},
 		removeLeadingZerosFromString: function(numberString) {
 			if (numberString === "" || numberString === "0" || numberString === undefined) {
 				return "";
@@ -58,9 +56,9 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			var number = parseInt(numberString, 10);
 			if (number === 0) {
 				return "";
-			}else{
+			} else {
 				return number;
-			}			
+			}
 		},
 		orderNumber: function(orderNumber) {
 			return parseInt(orderNumber, 10);
@@ -76,7 +74,7 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 				return "";
 			}
 			return number + " (" + desc + ")";
-		},		
+		},
 		treeId: function(id, functionalLocation) {
 			if (functionalLocation) {
 				return id;
@@ -91,7 +89,7 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			return value;
 		},
 		date: function(date) {
-			if(!date){
+			if (!date) {
 				return "";
 			}
 			var oDateFormat = DateFormat.getDateInstance({
@@ -155,5 +153,6 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 			}
 			return label.concat(isNaN(hours) === true ? 0 : hours.toFixed(2) + " Hours");
 		}
+
 	};
 });

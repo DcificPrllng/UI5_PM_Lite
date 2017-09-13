@@ -22,12 +22,11 @@ sap.ui.define([
 	"sap/ui/model/type/Date"
 ], function(Controller, JSONModel, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
 	Validator, MessagePopover, MessagePopoverItem) {
-	"use strict";
+	// "use strict";
 
 	return Controller.extend("pd.pm.lite.controller.NewOrder", {
 
 		onInit: function() {
-
 			this._oMP = new MessagePopover({
 				items: {
 					path: "message>/",
@@ -60,6 +59,7 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
+			var oOperationsTable = this.getView().byId("OperationsTable");
 		},
 		onExit: function() {
 			//Initialize the model before getting out
@@ -453,7 +453,7 @@ sap.ui.define([
 			if (Operations.length > 1) { //One Operation is mandatory
 				for (i = 0; i < Operations.length; i++) {
 					//If one of these fields are not null, only then retian the record
-					if (Operations[i].Description || Operations[i].RequirementQuantity) {
+					if (Operations[i].ShortText || Operations[i].WorkQuantity) {
 						newOperations.push(Operations[i]);
 					}
 				}
@@ -571,7 +571,7 @@ sap.ui.define([
 					}
 				}
 			});
-		}
+		}		
 	});
 
 });

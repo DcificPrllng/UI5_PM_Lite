@@ -14,6 +14,8 @@
 									<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
 										<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
 										<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
+										<Button class="sapUiTinyMarginBegin" icon="sap-icon://attachment"
+											text="{= ${confirmModel>/OrderAttachments/length} + ${confirmModel>/NotificationAttachments/length}}" press=".ShowAttachmentDialog"/>
 									</FlexBox>
 									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
 										<Label width="104px" class="cisTopMargin" textAlign="Right" text="{i18n>Order}" design="Bold"/>
@@ -269,12 +271,13 @@
 										emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>DowntimeStart}"/>
-											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/DowntimeStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
+											<DateTimePicker
+												value="{path: 'confirmModel>/WorkOrderDetail/DowntimeStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}"
+												valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<CheckBox text="{i18n>OperationalDowntime}" selected="{confirmModel>/WorkOrderDetail/OperationDowntime}"/>
 											<Label text="{i18n>DowntimeEnd}"/>
-											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/DowntimeEnd', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
+											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/DowntimeEnd', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}"
+												valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
 											<Text
 												text="{parts:[{path: 'i18n>OperationalDowntime'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeStart'}, {path: 'confirmModel>/WorkOrderDetail/DowntimeEnd'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -286,12 +289,14 @@
 										columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>BreakdownStart}"/>
-											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/BreakdownStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker
+												value="{path: 'confirmModel>/WorkOrderDetail/BreakdownStart', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}"
+												valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<CheckBox text="{i18n>Breakdown}" selected="{confirmModel>/WorkOrderDetail/Breakdown}"/>
 											<Label text="{i18n>BreakdownEnd}"/>
-											<DateTimePicker value="{path: 'confirmModel>/WorkOrderDetail/BreakdownFinish', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}" valueFormat="yyyy-MM-ddTHH:mm:ss"
-												displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
+											<DateTimePicker
+												value="{path: 'confirmModel>/WorkOrderDetail/BreakdownFinish', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}"
+												valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian"/>
 											<Text
 												text="{parts:[{path: 'i18n>BreakdownDur'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownStart'}, {path: 'confirmModel>/WorkOrderDetail/BreakdownFinish'}], formatter: '.formatter.duration'}"
 												class="PDLabel"/>
@@ -305,7 +310,7 @@
 												selectionChange=".getValidDamageCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCode}" />
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Damage/DamageCode}"/>
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{confirmModel>/WorkOrderDetail/Damage/DamageText}" maxLength="40"/>
 											<Label text="{i18n>CauseCode}" class="PDLabel"/>
@@ -313,7 +318,7 @@
 												selectionChange=".getValidCauseCodes">
 												<core:ListItem key="{CodeGroup}" text="{CodeGroup}" additionalText="{Name}"/>
 											</ComboBox>
-											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCode}" />
+											<ComboBox showSecondaryValues="true" selectedKey="{confirmModel>/WorkOrderDetail/Cause/CauseCode}"/>
 											<Label text="{i18n>Text}" class="PDLabel"/>
 											<Input value="{confirmModel>/WorkOrderDetail/Cause/CauseText}" maxLength="40"/>
 										</f:content>
@@ -325,6 +330,7 @@
 				</content>
 				<dependents>
 					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.AttachmentDialogConfirmView" type="XML"/>
 				</dependents>
 			</Page>
 		</pages>

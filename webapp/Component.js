@@ -56,7 +56,8 @@ sap.ui.define([
 				"WorkCenters": workCenters,
 				"Units": units,
 				"UserStatuses": userStatuses,
-				"ActivityTypes": activityTypes
+				"ActivityTypes": activityTypes,
+				"EntryLists":{}
 			});
 			
 			var plantHash = this._oJQueryStorage.get("plantHash");

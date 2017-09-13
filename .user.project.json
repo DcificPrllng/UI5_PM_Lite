@@ -9,8 +9,8 @@
       "isDefaultVersion": 1,
       "urlParameters": [
         {
-          "paramName": "",
-          "paramValue": ""
+          "paramName": "saml2",
+          "paramValue": "disabled"
         }
       ],
       "hashParameter": "",
@@ -25,7 +25,7 @@
         "id": 5563116,
         "runnerId": "webapprunner",
         "displayName": "Run index.html",
-        "lastRunTimeStamp": 1499064336935
+        "lastRunTimeStamp": 1505278458813
       }
     },
     {

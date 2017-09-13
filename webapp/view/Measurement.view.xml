@@ -1,0 +1,56 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="pd.pm.lite.controller.Measurement"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page title="{i18n>Measurement}" showHeader="false">
+				<content>
+					<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
+						<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveMeasurements"/>
+						<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
+					</FlexBox>
+					<Table items="{MeasurementPoints}">
+						<columns>
+							<Column width="5rem">
+								<Text text="Meas. Point"/>
+							</Column>
+							<Column width="7rem">
+								<Text text="Meas. Position"/>
+							</Column>
+							<Column width="20rem">
+								<Text text="Description"/>
+							</Column>
+							<Column width="13rem">
+								<Text text="Reading"/>
+							</Column>
+							<Column width="4rem">
+								<Text text="Unit"/>
+							</Column>
+							<Column width="13rem">
+								<Text text="Reading Difference"/>
+							</Column>
+							<Column width="12rem">
+								<Text text="Meas. Time"/>
+							</Column>
+							<Column>
+								<Text text="Meas. Object"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<Text text="{MeasuringPoint}"/>
+								<Text text="{MeasurementPosition}"/>
+								<Text text="{Description}"/>
+								<Input value="{MeasurementReading}"/>
+								<Text text="{Unit}"/>
+								<Input value="{DifferenceFromLastReading}"/>
+								<DateTimePicker value="{path:'MeasurementTime', type:'sap.ui.model.type.DateTime', formatOptions:{ UTC: true }}"
+									valueFormat="yyyy-MM-ddTHH:mm:ss" displayFormat="MMM d, y, HH:mm:ss" displayFormatType="Gregorian" change=".validateDates"/>
+								<Text text=""/>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

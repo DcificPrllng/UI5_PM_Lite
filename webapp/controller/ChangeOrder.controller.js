@@ -14,7 +14,8 @@ sap.ui.define([
 	"pd/pm/lite/customTypes/Mandatory",
 	"pd/pm/lite/customTypes/ItemNumber",
 	"pd/pm/lite/customTypes/ComponentId"
-], function(Controller, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState, Validator) {
+], function(Controller, MessageToast, DisplayListItem, Dialog, Button, Text, Message, MessageType, ValueState,
+	Validator) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.ChangeOrder", {
@@ -22,7 +23,6 @@ sap.ui.define([
 			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
-			// var model = this.getOwnerComponent().getModel();
 			this.oView = this.getView();
 
 			//All dialogs
@@ -32,9 +32,16 @@ sap.ui.define([
 			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this._userStatusDialog = this.getView().byId("userStatusDialog");
-
+			//Dialog for attachment
+			this._attachmentDialog = this.getView().byId("attachmentDialog");
+			
+			//Error Handling
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
+			
+			//Tab handling for table
+			//var oTable = this.getView().byId("OperationsTable");
+			//this.setupTabHandling(oTable);
 		},
 
 		_onObjectMatched: function(oEvent) {
@@ -47,9 +54,7 @@ sap.ui.define([
 			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
 			var parameters = {
 				urlParameters: {
-					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
-					"$expand": "Components,Operations,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes"
+					"$expand": "Components,Operations,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes,OrderAttachments,NotificationAttachments"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
@@ -87,7 +92,9 @@ sap.ui.define([
 						WorkOrderDetail: odata,
 						UserStatusesWithNumber: UserStatusesWithNumber,
 						UserStatusesNoNumber: UserStatusesNoNumber,
-						ActivityTypes: relevantActivityTypes
+						ActivityTypes: relevantActivityTypes,
+						OrderAttachments: odata.OrderAttachments.results,
+						NotificationAttachments: odata.NotificationAttachments.results
 					});
 					oView.setModel(jsonModel, "jsonModel");
 					var step;
@@ -146,7 +153,6 @@ sap.ui.define([
 			if (!startDateComponent.getDateValue() || !endDateComponent.getDateValue()) {
 				return;
 			}
-
 			if (startDateComponent.getDateValue() > endDateComponent.getDateValue()) {
 				//Error
 				startDateComponent.setValueState("Error").setValueStateText("Start date cannot be later than End Date");
@@ -154,7 +160,7 @@ sap.ui.define([
 			} else {
 				//Clear Error
 				startDateComponent.setValueState("None");
-				endDateComponent.setValueState("None");				
+				endDateComponent.setValueState("None");
 			}
 		},
 		getComponentDetail: function(evt) {
@@ -491,7 +497,7 @@ sap.ui.define([
 					groupId: "saveAll"
 				});
 
-			for (var i = 0; i < operations.length; i++) {
+			for (i = 0; i < operations.length; i++) {
 				var operationEntry = {};
 				operationEntry.ActualWork = operations[i].ActualWork === "" ? "0" : operations[i].ActualWor;
 				operationEntry.OperationID = operations[i].OperationID;
@@ -548,14 +554,14 @@ sap.ui.define([
 						if (context.__batchResponses[0].response.statusCode === "400") {
 							//oModel.resetChanges(); //Data is set back to original. 
 							var error = jQuery.parseJSON(context.__batchResponses[0].response.body).error.message.value;
-							var dialog = new sap.m.Dialog({
+							var dialog = new Dialog({
 								title: "Error",
 								type: "Message",
 								state: "Error",
 								content: new sap.m.Text({
 									text: error
 								}),
-								beginButton: new sap.m.Button({
+								beginButton: new Button({
 									text: "OK",
 									press: function() {
 										dialog.close();

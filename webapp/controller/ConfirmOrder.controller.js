@@ -29,7 +29,9 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
-
+			//Dialog for attachment
+			this._attachmentDialog = this.getView().byId("attachmentDialog");
+			
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 		},
@@ -45,9 +47,7 @@ sap.ui.define([
 			var sPath = "/WorkOrderDetailSet('" + oEvent.getParameter("arguments").order + "')";
 			var parameters = {
 				urlParameters: {
-					// "$expand": "Components,Operations,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes,Units"
-					// "$expand": "Confirmations,OperationSteps,DamageCodeGroups,CauseCodeGroups,DamageCodes,CauseCodes,NotificationCodes"
-					"$expand": "Confirmations,OperationSteps,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes"
+					"$expand": "Confirmations,OperationSteps,DamageCodeGroups/DamageCodes,CauseCodeGroups/CauseCodes,NotificationCodes,OrderAttachments,NotificationAttachments"
 				},
 				success: function(odata) {
 					oView.setBusy(false);
@@ -66,14 +66,15 @@ sap.ui.define([
 							}
 						}
 					}
-
 					var jsonModel = new sap.ui.model.json.JSONModel();
 					jsonModel.setData({
 						WorkOrderDetail: odata,
 						ActivityTypes: relevantActivityTypes,
 						Confirmations: odata.Confirmations.results,
 						OperationSteps: odata.OperationSteps.results,
-						OperationList: odata.OperationSteps.results.slice()
+						OperationList: odata.OperationSteps.results.slice(),
+						OrderAttachments: odata.OrderAttachments.results,
+						NotificationAttachments: odata.NotificationAttachments.results
 					});
 					oView.setModel(jsonModel, "confirmModel");
 					

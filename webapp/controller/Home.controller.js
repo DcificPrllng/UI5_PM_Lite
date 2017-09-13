@@ -2,8 +2,10 @@ sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"pd/pm/lite/util/formatter",
-	"sap/ui/commons/MessageBox"
-], function(BaseController, JSONModel, formatter, MessageBox) {
+	"sap/ui/commons/MessageBox",
+	"sap/ui/model/Filter",
+	"sap/m/MessageToast"
+], function(BaseController, JSONModel, formatter, MessageBox, Filter, MessageToast) {
 	"use strict";
 	return BaseController.extend("pd.pm.lite.controller.Home", {
 
@@ -29,6 +31,7 @@ sap.ui.define([
 			jQuery.sap.require("jquery.sap.storage");
 			this._oJQueryStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
 			this._oHierarchyPopupNew = {};
+			this._oEntryListPopup = {};
 			var chartModel = new JSONModel();
 
 			this.getView().setModel(chartModel, "chartdata");
@@ -38,7 +41,6 @@ sap.ui.define([
 				return;
 			}
 			//Refresh the table
-			
 
 		},
 		onAfterRendering: function() {
@@ -119,7 +121,6 @@ sap.ui.define([
 			//Schedule Column
 			this._oTable.getColumns()[6].getLabel().setTooltip(oRttTextFieldDays);
 		},
-
 		searchTable: function(evt) {
 			var oTable = this.getView().byId("ordersTable");
 			var searchTerm = evt.getParameter("query");
@@ -148,6 +149,8 @@ sap.ui.define([
 			}
 		},
 		triggerPrint: function() {
+			var oView = this.getView();
+
 			//Selected row data
 			var selectedIndices = this._oTable.getSelectedIndices();
 			if (selectedIndices.length > 10) {
@@ -171,11 +174,30 @@ sap.ui.define([
 				return;
 			}
 
-			var orderData = {};
-			for (var i = 1; i <= selectedIndices.length; i++) {
-				orderData["Order" + i] = this._oTable.getContextByIndex(selectedIndices[i - 1]).getProperty("OrderNumber");
+			//Call function-import to Print
+			var oModel = this._oTable.getModel();
+			var urlParameters = {};
+			for (var i = 1; i <= 10; i++) {
+				if (i <= selectedIndices.length) {
+					urlParameters["OrderNumber" + i] = this._oTable.getContextByIndex(selectedIndices[i - 1]).getProperty("OrderNumber");
+				} else {
+					urlParameters["OrderNumber" + i] = "";
+				}
 			}
-			this.gotoPersonas("ZPRINT_PERSONAS", orderData);
+			oView.setBusyIndicatorDelay(100);
+			oView.setBusy(true);
+			oModel.callFunction("/PrintWorkOrders", {
+				method: "GET",
+				urlParameters: urlParameters,
+				success: function(oData, response) {
+					oView.setBusy(false);
+					MessageToast.show("Orders sent to printer");
+				},
+				error: function(oError) {
+					oView.setBusy(false);
+
+				}
+			});
 
 		},
 		triggerMM03: function() {
@@ -567,7 +589,7 @@ sap.ui.define([
 			//Selected row data
 			var selectedIndices = this._oTable.getSelectedIndices();
 			if (selectedIndices.length > 10) {
-				//Upto 10 orders can be printed at a time
+				//Upto 10 orders can be shown at a time
 				//raise error
 				MessageBox.show(
 					"You can select upto 10 orders",
@@ -670,8 +692,99 @@ sap.ui.define([
 
 		}, //called by refreshHierarchy
 		triggerMeasurement: function() {
-			var json = {};
-			this.gotoPersonas("IK34", json);
+			// var json = {};
+			// this.gotoPersonas("IK34", json);
+
+			//Check if Entry List for the Plant is already available
+			var plant = this.getView().byId("plantId").getValue();
+
+			//If the popup does not already exist, create it
+			if (!this._oEntryListPopup.hasOwnProperty(plant)) {
+			var oEntryListPopup = sap.ui.xmlfragment(this.getView().getId(), "pd.pm.lite.view.EntryList", this);
+			this._oEntryListPopup[plant] = oEntryListPopup;
+			}
+
+			//Set Data to the popup
+			this.setDataToEntryListPopup(oEntryListPopup, plant);
+			
+			//Open the popup
+			this._oEntryListPopup[plant].open();
+		},
+		setDataToEntryListPopup: function(oControl, plant) {
+
+			var that = this;
+			this._oEntryListPopup[plant].setBusy(true);
+			
+			this._oEntryListPopup[plant] //Ideally there hsould be no requirement to set model, as the view alreayd has the model and popup is 'dependent'. But somehow it doesnt work.
+				.setModel(this.getView().getModel("localStorageModel"), "localStorageModel");
+
+			//Check if the Entry List data is available in local storage
+			var oEntryListStoredData = this._oJQueryStorage.get("EntryList_" + plant);
+
+			//If data is available, check if it is older than 7 days
+			if (oEntryListStoredData) {
+				this._oEntryListPopup[plant].setBusy(false);
+				var EntryListFetchTimestamp = this._oJQueryStorage.get("EntryListFetchTimestamp_" + plant);
+				var difference = this.getTimeStamp() - EntryListFetchTimestamp;
+				var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+				var dataExpired;
+				if (daysDifference > 7) {
+					dataExpired = true;
+				}
+			}
+
+			//If the data is not available, fetch from server. If No change, then set the local storage timestamp
+			if (dataExpired || !oEntryListStoredData) {
+				//Current hash
+				var currentEntryListHash = this._oJQueryStorage.get("EntryList_hash_" + plant);
+				var oModel = this.getView().getModel();
+				oModel.setHeaders({
+					"If-None-Match": currentEntryListHash
+				});
+				var oFilter = new Filter("Plant", sap.ui.model.FilterOperator.EQ, plant);
+
+				oModel.read("/EntryLists", {
+					filters: [oFilter],
+					success: function(data, response) {
+						if (response.headers.no_change) {
+							//No change in the data. Set the data from local storage
+							oEntryListStoredData = this._oJQueryStorage.get("EntryList_" + plant);
+						} else {
+							oEntryListStoredData = data.results;
+							//Store in localstorage
+							that._oJQueryStorage.put("EntryList_" + plant, oEntryListStoredData);
+							that._oJQueryStorage.put("EntryList_hash_" + plant, response.headers.new_hash);
+						}
+						//Update the timestamp
+						that._oJQueryStorage.get("EntryListFetchTimestamp_" + plant, that.getTimeStamp());
+
+						//Set data to local storage model
+						var localStorageModel = that.getView().getModel("localStorageModel");
+						var currentData = localStorageModel.getData();
+						currentData.EntryLists = oEntryListStoredData;
+						localStorageModel.setData(currentData);
+						that._oEntryListPopup[plant].setBusy(false);
+					},
+					error: function(err) {
+						that._oEntryListPopup[plant].setBusy(false);
+					}
+				});
+			} else {
+				//Set data to local storage model
+				var localStorageModel = that.getView().getModel("localStorageModel");
+				var currentData = localStorageModel.getData();
+				currentData.EntryLists = oEntryListStoredData;
+				localStorageModel.setData(currentData);
+				this._oEntryListPopup[plant].setBusy(false);
+			}
+		},
+		showMeasurementScreen: function(evt) {
+			this.getRouter().navTo("measurement", {
+				entryList: evt.getParameter("listItem").getBindingContext("localStorageModel").getObject().Id
+			});
+		},
+		closeDialog: function() {
+			this._oEntryListPopup[this.getView().byId("plantId").getValue()].close();
 		},
 		gotoPersonas: function(tcode, data) {
 			this.getRouter().navTo("personas");
@@ -689,7 +802,7 @@ sap.ui.define([
 			//Selected row data
 			var selectedIndices = this._oTable.getSelectedIndices();
 			if (selectedIndices.length > 10) {
-				//Upto 10 orders can be printed at a time
+				//Upto 10 orders can be shown at a time
 				//raise error
 				MessageBox.show(
 					"You can select upto 10 orders",
