@@ -203,7 +203,7 @@
 										labelSpanL="2" labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Code}" class="PDLabel"/>
-											<ComboBox selectedKey="{createModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+											<ComboBox selectedKey="{createModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}" change=".updateNotificationGroup">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}" class="PDLabel"/>
@@ -271,7 +271,7 @@
 				</content>
 				<dependents>
 					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
-					<core:Fragment fragmentName="pd.pm.lite.view.ComponentDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.MaterialValueHelpDialog" type="XML"/>
 				</dependents>
 			</Page>
 		</pages>

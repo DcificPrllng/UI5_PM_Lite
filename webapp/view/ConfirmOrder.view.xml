@@ -14,7 +14,7 @@
 									<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
 										<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
 										<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
-										<Button class="sapUiTinyMarginBegin" icon="sap-icon://attachment"
+										<Button visible="false" class="sapUiTinyMarginBegin" icon="sap-icon://attachment"
 											text="{= ${confirmModel>/OrderAttachments/length} + ${confirmModel>/NotificationAttachments/length}}" press=".ShowAttachmentDialog"/>
 									</FlexBox>
 									<FlexBox width="100%" class="cisUiTinyMargin" justifyContent="Start">
@@ -256,7 +256,7 @@
 										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Code}"/>
-											<ComboBox selectedKey="{confirmModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+											<ComboBox selectedKey="{confirmModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}" change=".updateNotificationGroup">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}"/>

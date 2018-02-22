@@ -2,7 +2,7 @@ sap.ui.define([
 	"pd/pm/lite/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"pd/pm/lite/util/formatter",
-	"sap/ui/commons/MessageBox",
+	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/m/MessageToast"
 ], function(BaseController, JSONModel, formatter, MessageBox, Filter, MessageToast) {
@@ -20,11 +20,8 @@ sap.ui.define([
 			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
-
 			this._toolBar = this.getView().byId("toolBar");
-			this._toolBar.bindElement({
-				path: "/UserSettings('dummy')"
-			});
+			this._ComponentDialog = this.getView().byId("idComponentDialog");
 			this._oTable = this.getView().byId("ordersTable");
 			this._oCount = this.getView().byId("countId");
 			this._busyDialog = this.getView().byId("BusyDialog");
@@ -40,12 +37,7 @@ sap.ui.define([
 			if (oEvent.getParameter("name") !== "appHome") {
 				return;
 			}
-			//Refresh the table
-
-		},
-		onAfterRendering: function() {
 			var that = this;
-
 			this._toolBar.getElementBinding().attachEventOnce("dataReceived", function(evt) {
 				var userDefaults = evt.getSource().getModel().getData(evt.getSource().sPath);
 				that._userDefaults = userDefaults;
@@ -54,25 +46,25 @@ sap.ui.define([
 				var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, userDefaults.ViewType);
 				var combinedFilter = [oFilter1, oFilter2, oFilter3];
 				this._currentFilter = combinedFilter;
-				this._busyDialog.open();
-				that.getView().getModel().read(
-					"/WorkOrders", {
-						filters: combinedFilter,
-						success: function(oData) {
-							that._busyDialog.close();
-							that.getView().getModel("localModel").setData(oData);
-							that._oTable.bindRows("localModel>/results");
-							var oBinding = that._oTable.getBinding("rows");
-							oBinding.attachChange(function(evt) { //This event will be called by any change. Ex: Filtering, Search etc.
-								that._oCount.setText("Total Records: " + oBinding.getLength());
-								//Create JSON the Graph
-								var chartArray = [];
-							});
-						},
-						error: function() {
-							this._busyDialog.close();
-						}
-					});
+				// this._busyDialog.open();
+				// that.getView().getModel().read(
+				// 	"/WorkOrders", {
+				// 		filters: combinedFilter,
+				// 		success: function(oData) {
+				// 			that._busyDialog.close();
+				// 			that.getView().getModel("localModel").setData(oData);
+				// 			that._oTable.bindRows("localModel>/results");
+				// 			var oBinding = that._oTable.getBinding("rows");
+				// 			oBinding.attachChange(function(evt) { //This event will be called by any change. Ex: Filtering, Search etc.
+				// 				that._oCount.setText("Total Records: " + oBinding.getLength());
+				// 				//Create JSON the Graph
+				// 				var chartArray = [];
+				// 			});
+				// 		},
+				// 		error: function() {
+				// 			this._busyDialog.close();
+				// 		}
+				// 	});
 				if (userDefaults.ViewType === "Headers") {
 					this.showOperationColumns(false);
 				} else {
@@ -81,16 +73,91 @@ sap.ui.define([
 				//Pre Fetch the hierarchy for the user's default plant
 				that.createHierarchyPopup(userDefaults.Plant);
 
-				//Pre create teh Personas view and add it to the app
-				var personasView = sap.ui.xmlview({
-					viewName: "pd.pm.lite.view.personas"
-				});
-				this.getView().addDependent(personasView);
+				// //Pre create teh Personas view and add it to the app
+				// var personasView = sap.ui.xmlview({
+				// 	viewName: "pd.pm.lite.view.personas"
+				// });
+				// this.getView().addDependent(personasView);
 
 			}, this);
 
 			//Set Tootips
 			this.setTooltips();
+
+		},
+		onAfterRendering: function() {
+			var that = this;
+			var oModel = that.getView().getModel();
+			//Do not refresh everytime the view is loaded
+			if (oModel.getData("/WorkOrders") === undefined) {
+				this._busyDialog.open();
+				oModel.read(
+					"/WorkOrders", {
+						groupId: "initialRead",
+						success: function(oData) {
+							that._busyDialog.close();
+							that.getView().getModel("localModel").setData(oData);
+							that._oTable.bindRows("localModel>/results");
+							var oBinding = that._oTable.getBinding("rows");
+							oBinding.attachChange(function() { //This event will be called by any change. Ex: Filtering, Search etc.
+								that._oCount.setText("Total Records: " + oBinding.getLength());
+							});
+						},
+						error: function() {
+							this._busyDialog.close();
+						}
+					});
+
+				this.getView().getModel().submitChanges({ //There are no changes here. It is just initial reads for user settings and value helps
+					groupId: "initialRead"
+				});
+			}
+
+			// this._toolBar.getElementBinding().attachEventOnce("dataReceived", function(evt) {
+			// 	var userDefaults = evt.getSource().getModel().getData(evt.getSource().sPath);
+			// 	that._userDefaults = userDefaults;
+			// 	var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userDefaults.Plant);
+			// 	var oFilter2 = new sap.ui.model.Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, userDefaults.WorkCenter);
+			// 	var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, userDefaults.ViewType);
+			// 	var combinedFilter = [oFilter1, oFilter2, oFilter3];
+			// 	this._currentFilter = combinedFilter;
+			// 	// this._busyDialog.open();
+			// 	// that.getView().getModel().read(
+			// 	// 	"/WorkOrders", {
+			// 	// 		filters: combinedFilter,
+			// 	// 		success: function(oData) {
+			// 	// 			that._busyDialog.close();
+			// 	// 			that.getView().getModel("localModel").setData(oData);
+			// 	// 			that._oTable.bindRows("localModel>/results");
+			// 	// 			var oBinding = that._oTable.getBinding("rows");
+			// 	// 			oBinding.attachChange(function(evt) { //This event will be called by any change. Ex: Filtering, Search etc.
+			// 	// 				that._oCount.setText("Total Records: " + oBinding.getLength());
+			// 	// 				//Create JSON the Graph
+			// 	// 				var chartArray = [];
+			// 	// 			});
+			// 	// 		},
+			// 	// 		error: function() {
+			// 	// 			this._busyDialog.close();
+			// 	// 		}
+			// 	// 	});
+			// 	if (userDefaults.ViewType === "Headers") {
+			// 		this.showOperationColumns(false);
+			// 	} else {
+			// 		this.showOperationColumns(true);
+			// 	}
+			// 	//Pre Fetch the hierarchy for the user's default plant
+			// 	that.createHierarchyPopup(userDefaults.Plant);
+
+			// 	// //Pre create teh Personas view and add it to the app
+			// 	// var personasView = sap.ui.xmlview({
+			// 	// 	viewName: "pd.pm.lite.view.personas"
+			// 	// });
+			// 	// this.getView().addDependent(personasView);
+
+			// }, this);
+
+			// //Set Tootips
+			// this.setTooltips();
 		},
 		setTooltips: function() {
 			//Sch.
@@ -148,6 +215,15 @@ sap.ui.define([
 				}));
 			}
 		},
+		showComponentValueHelp: function(oEvent) {
+			var ComponentDialog = this.getView().getController()._ComponentDialog;
+			//ComponentDialog.data("source", oEvent.getSource());
+
+			//Clear current entries
+			ComponentDialog.removeAllItems();
+
+			this.getView().getController()._ComponentDialog.open();
+		},
 		triggerPrint: function() {
 			var oView = this.getView();
 
@@ -156,20 +232,16 @@ sap.ui.define([
 			if (selectedIndices.length > 10) {
 				//Upto 10 orders can be printed at a time
 				//raise error
-				MessageBox.show(
-					"You can select max upto 10 orders",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"You can select max upto 10 orders"
 				);
 				return;
 			}
 			if (selectedIndices.length === 0) {
 				//Nothing selected
 				//raise error
-				MessageBox.show(
-					"Select orders to be printed",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"Select orders to be printed"
 				);
 				return;
 			}
@@ -371,14 +443,8 @@ sap.ui.define([
 
 			popup.setBusyIndicatorDelay(100);
 			popup.setBusy(true);
-			var oModel4Hierarchies = new sap.ui.model.odata.v2.ODataModel({
-				serviceUrl: "/sap/opu/odata/sap/ZWORKORDER_SRV?",
-				serviceUrlParams: {
-					// "sap-client": jQuery.sap.getUriParameters().mParams["sap-client"][0] !== null ? jQuery.sap.getUriParameters().mParams[
-					// 		"sap-client"][0] : "" //if client was mentioned in url, pass it on
-				}
-			});
 
+			var oModel4Hierarchies = this.getView().getModel();
 			//Plant filter
 			var plantFilter = new sap.ui.model.Filter("ParentId", sap.ui.model.FilterOperator.EQ, plant);
 			oModel4Hierarchies.setHeaders({
@@ -591,20 +657,16 @@ sap.ui.define([
 			if (selectedIndices.length > 10) {
 				//Upto 10 orders can be shown at a time
 				//raise error
-				MessageBox.show(
-					"You can select upto 10 orders",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"You can select upto 10 orders"
 				);
 				return;
 			}
 			if (selectedIndices.length === 0) {
 				//Nothing selected
 				//raise error
-				MessageBox.show(
-					"Select atleast one order",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"Select atleast one order"
 				);
 				return;
 			}
@@ -700,13 +762,13 @@ sap.ui.define([
 
 			//If the popup does not already exist, create it
 			if (!this._oEntryListPopup.hasOwnProperty(plant)) {
-			var oEntryListPopup = sap.ui.xmlfragment(this.getView().getId(), "pd.pm.lite.view.EntryList", this);
-			this._oEntryListPopup[plant] = oEntryListPopup;
+				var oEntryListPopup = sap.ui.xmlfragment(this.getView().getId(), "pd.pm.lite.view.EntryList", this);
+				this._oEntryListPopup[plant] = oEntryListPopup;
 			}
 
 			//Set Data to the popup
 			this.setDataToEntryListPopup(oEntryListPopup, plant);
-			
+
 			//Open the popup
 			this._oEntryListPopup[plant].open();
 		},
@@ -714,7 +776,7 @@ sap.ui.define([
 
 			var that = this;
 			this._oEntryListPopup[plant].setBusy(true);
-			
+
 			this._oEntryListPopup[plant] //Ideally there hsould be no requirement to set model, as the view alreayd has the model and popup is 'dependent'. But somehow it doesnt work.
 				.setModel(this.getView().getModel("localStorageModel"), "localStorageModel");
 
@@ -804,20 +866,16 @@ sap.ui.define([
 			if (selectedIndices.length > 10) {
 				//Upto 10 orders can be shown at a time
 				//raise error
-				MessageBox.show(
-					"You can select upto 10 orders",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"You can select upto 10 orders"
 				);
 				return;
 			}
 			if (selectedIndices.length === 0) {
 				//Nothing selected
 				//raise error
-				MessageBox.show(
-					"Select atleast one order",
-					sap.ui.commons.MessageBox.Icon.ERROR,
-					"Error", [sap.ui.commons.MessageBox.Action.OK]
+				MessageBox.error(
+					"Select atleast one order"
 				);
 				return;
 			}

@@ -20,7 +20,7 @@
       "description": "GWD"
     },
     {
-      "path": "/resources",
+      "path": "/webapp/resources",
       "target": {
         "type": "service",
         "name": "sapui5",

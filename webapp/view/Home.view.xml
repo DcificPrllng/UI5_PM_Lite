@@ -8,19 +8,19 @@
 					<table:Table enableColumnFreeze="true" fixedColumnCount="3" id="ordersTable" selectionBehavior="RowSelector" selectionMode="MultiToggle"
 						visibleRowCountMode="Auto">
 						<table:extension>
-							<Toolbar id="toolBar">
+							<Toolbar id="toolBar" binding="{path: &quot;/UserSettings('dummy')&quot;, parameters : {groupId : 'initialRead'}}">
 								<Label text="Plant / Main Work Center"/>
-								<DropdownBox id="plantId" items="{localStorageModel>/Plants}" value="{Plant}" width="60px">
+								<DropdownBox id="plantId" items="{localStorageModel>/Plants}" value="{path: 'Plant',mode: 'OneWay'}" width="60px">
 									<items>
 										<core:ListItem text="{localStorageModel>Id}"/>
 									</items>
 								</DropdownBox>
-								<DropdownBox id="workCenterId" items="{localStorageModel>/WorkCenters}" value="{WorkCenter}" width="65px">
+								<DropdownBox id="workCenterId" items="{localStorageModel>/WorkCenters}" value="{path:'WorkCenter',mode: 'OneWay'}}" width="65px">
 									<items>
 										<core:ListItem text="{localStorageModel>Id}"/>
 									</items>
 								</DropdownBox>
-								<DropdownBox id="viewTypeId" value="{ViewType}" width="100px">
+								<DropdownBox id="viewTypeId" value="{path:'ViewType',mode: 'OneWay'}" width="100px">
 									<items>
 										<core:ListItem text="Headers"/>
 										<core:ListItem text="Operations"/>
@@ -41,11 +41,11 @@
 								<ToolbarSeparator/>
 								<Button icon="sap-icon://print" press="triggerPrint" text="Print" tooltip="Print"/>
 								<ToolbarSeparator/>
-								<Button icon="sap-icon://activity-items" press="showOrders" text="List Orders" tooltip="IW38 - Work Order List"/>
-								<ToolbarSeparator/>
-								<Button icon="sap-icon://activity-items" press="showOperations" text="List Operations" tooltip="IW37N - Work Order Operations List"/>
-								<ToolbarSeparator/>
-								<Button icon="sap-icon://sys-find" press="triggerMM03" text="View Materials" tooltip="MM03 - Material Search"/>
+								<Button icon="sap-icon://activity-items" press="showOrders" visible="false" text="List Orders" tooltip="IW38 - Work Order List"/>
+								<ToolbarSeparator visible="false"/>
+								<Button icon="sap-icon://activity-items" press="showOperations" visible="false" text="List Operations" tooltip="IW37N - Work Order Operations List"/>
+								<ToolbarSeparator visible="false"/>
+								<Button icon="sap-icon://sys-find" press="showComponentValueHelp" text="View Materials" tooltip="MM03 - Material Search"/>
 								<ToolbarSeparator/>
 								<Button icon="sap-icon://temperature" press="triggerMeasurement" text="Measurement" tooltip="IK34 - Enter Measurement Document Readings"/>
 							</Toolbar>
@@ -190,6 +190,7 @@
 				</mobile:content>
 				<mobile:dependents>
 					<core:Fragment fragmentName="pd.pm.lite.view.EntryList" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.ComponentDialog" type="XML"/>					
 				</mobile:dependents>
 			</mobile:Page>
 		</mobile:pages>

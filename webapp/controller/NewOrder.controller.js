@@ -47,8 +47,9 @@ sap.ui.define([
 			this.oView = this.getView();
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
-			this._ComponentDialog = this.getView().byId("idComponentDialog");
-			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
+			// this._ComponentDialog = this.getView().byId("idComponentDialog");
+			this._ComponentDialog = this.getView().byId("idMaterialDialog");			
+			// this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
@@ -60,6 +61,9 @@ sap.ui.define([
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
 			var oOperationsTable = this.getView().byId("OperationsTable");
+			
+			//Single select to componet valuehelp
+			this.getView().byId("smartTable_ResponsiveTable").getTable().setSelectionMode("Single");			
 		},
 		onExit: function() {
 			//Initialize the model before getting out
@@ -427,6 +431,9 @@ sap.ui.define([
 			// this.getView().getModel("createModel").setData(this.initialData);
 			window.location.hash = "#";
 		},
+		updateNotificationGroup: function(evt){
+			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/NotificationCodeGroup", evt.getSource().getSelectedItem().getBindingContext().getObject().Group);
+		},		
 		SaveOrder: function() {
 			var validator = new Validator();
 
@@ -528,7 +535,7 @@ sap.ui.define([
 			ComponentDialog.data("source", oEvent.getSource());
 
 			//Clear current entries
-			ComponentDialog.removeAllItems();
+			// ComponentDialog.removeAllItems();
 
 			this.getView().getController()._ComponentDialog.open();
 		},
@@ -568,6 +575,11 @@ sap.ui.define([
 				parameters: {
 					custom: {
 						search: searchTerm
+					}
+				},
+				events:{
+					dataReceived: function(data){
+						var i = 1;
 					}
 				}
 			});

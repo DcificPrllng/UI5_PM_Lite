@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/routing/History",
 	"pd/pm/lite/util/formatter",
-	"sap/m/UploadCollectionItem"
-], function(Controller, History, formatter, UploadCollectionItem) {
+	"sap/m/UploadCollectionItem",
+	"sap/ui/model/Filter"	
+], function(Controller, History, formatter, UploadCollectionItem, Filter) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
@@ -41,9 +42,9 @@ sap.ui.define([
 		ShowRightAttachments: function(evt) {
 			var selectedButton = evt.getSource().getId();
 			var modelName;
-			if (selectedButton.indexOf("confirmView") > -1 ) 	{
+			if (selectedButton.indexOf("confirmView") > -1) {
 				modelName = "confirmModel";
-			}else if (selectedButton.indexOf("changeView") > -1 ) {
+			} else if (selectedButton.indexOf("changeView") > -1) {
 				modelName = "jsonModel";
 			}
 			var uploadCollection = this.getView().byId("UploadCollection");
@@ -73,7 +74,8 @@ sap.ui.define([
 					path: "" + modelName + ">CreatedAt",
 					formatter: this.formatter.date
 				},
-				url: "/sap/opu/odata/sap/ZWORKORDER_SRV" + urlPart + "(AttachmentId='{" + modelName + ">AttachmentId}',DocumentId='" + DocumentId +
+				url: "/sap/opu/odata/sap/ZWORKORDER_SRV" + urlPart + "(AttachmentId='{" + modelName + ">AttachmentId}',DocumentId='" +
+					DocumentId +
 					"')/$value"
 			});
 			uploadCollection.bindItems(modelName + ">" + urlPart, oTemplate);
@@ -102,11 +104,11 @@ sap.ui.define([
 		},
 		onFileDeleted: function(evt) {
 			var modelName;
-			if (evt.getSource().getId().indexOf("confirmView") > -1 ) 	{
+			if (evt.getSource().getId().indexOf("confirmView") > -1) {
 				modelName = "confirmModel";
-			}else if (evt.getSource().getId().indexOf("changeView") > -1 ) {
+			} else if (evt.getSource().getId().indexOf("changeView") > -1) {
 				modelName = "jsonModel";
-			}			
+			}
 			var AttachmentId = evt.getParameter("item").getBindingContext(modelName).getObject().AttachmentId;
 			var oDataModel = evt.getSource().getModel();
 			var uploader = evt.getSource();
@@ -141,11 +143,11 @@ sap.ui.define([
 		reloadAttachments: function() {
 			var currentViewId = this.getView().getId();
 			var modelName;
-			if (currentViewId.indexOf("confirmView") > -1 ) 	{
+			if (currentViewId.indexOf("confirmView") > -1) {
 				modelName = "confirmModel";
-			}else if (currentViewId.indexOf("changeView") > -1 ) {
+			} else if (currentViewId.indexOf("changeView") > -1) {
 				modelName = "jsonModel";
-			}			
+			}
 			//Reload attachments
 			var uploadCollection = this.getView().byId("UploadCollection");
 			var order = uploadCollection.getModel(modelName).getProperty("/WorkOrderDetail/OrderNumber");
@@ -162,13 +164,40 @@ sap.ui.define([
 			//Read attachements
 			this.getView().getModel().read(readURL, {
 				success: function(oData) {
+					uploadCollection.setBusy(false);
+
 					if (orderSelected) {
 						jsonModel.OrderAttachments = oData.results;
 					} else {
 						jsonModel.NotificationAttachments = oData.results;
 					}
+
+					//Check if there are any attachments left. If yes, ensure that ATCH exists. If no attachments are left, then remove ATCH
+					var currentStatus = jsonModel.WorkOrderDetail.UserStatus;
+					// if ((jsonModel.OrderAttachments.length > 0) || (jsonModel.NotificationAttachments.length > 0)) {
+					if (jsonModel.OrderAttachments.length > 0) {
+						if (currentStatus.search("ATCH") === -1) {
+							//Set the user status ATCH		
+							//Length of current status 
+							if (currentStatus.length % 5 === 0) {
+								jsonModel.WorkOrderDetail.UserStatus = currentStatus + ("ATCH ");
+							} else if (currentStatus.length % 5 === 1) {
+								jsonModel.WorkOrderDetail.UserStatus = currentStatus + ("    ATCH ");
+							} else if (currentStatus.length % 5 === 2) {
+								jsonModel.WorkOrderDetail.UserStatus = currentStatus + ("   ATCH ");
+							} else if (currentStatus.length % 5 === 3) {
+								jsonModel.WorkOrderDetail.UserStatus = currentStatus + ("  ATCH ");
+							} else if (currentStatus.length % 5 === 4) {
+								jsonModel.WorkOrderDetail.UserStatus = currentStatus + (" ATCH ");
+							}
+						}
+					} else {
+						if (currentStatus.search("ATCH")) {
+							jsonModel.WorkOrderDetail.UserStatus = jsonModel.WorkOrderDetail.UserStatus.replace("ATCH ", "");
+							jsonModel.WorkOrderDetail.UserStatus = jsonModel.WorkOrderDetail.UserStatus.replace("ATCH", ""); //If ATCH is the last status"
+						}
+					}
 					uploadCollection.getModel(modelName).setData(jsonModel);
-					uploadCollection.setBusy(false);
 				}
 			});
 		},
@@ -179,6 +208,137 @@ sap.ui.define([
 		},
 		ShowAttachmentDialog: function() {
 			this.getView().getController()._attachmentDialog.open();
+		},
+		OnComponentSearch: function(oEvent) {
+			//Get the search item
+			var searchTerm = oEvent.getParameter("value");
+
+			var model = this.getOwnerComponent().getModel();
+
+			//Bind components and work centers value help
+			var userSettings = model.getData("/UserSettings('dummy')");
+			var userPlant;
+			if (!userSettings) {
+				userPlant = this.getView().getBindingContext().getObject().Plant;
+			} else {
+				userPlant = userSettings.Plant;
+			}
+			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+
+			//Bind items
+			var oTemplate = new sap.m.ColumnListItem({
+				cells: [
+					new sap.m.Text().bindText({
+						path: "Id",
+						formatter: this.formatter.removeLeadingZerosFromString
+					}),
+					new sap.m.Text({
+						text: "{Name}"
+					}),
+					new sap.m.Text({
+						text: "{MPN}"
+					}),
+					new sap.m.Text({
+						text: "{Manufacturer}"
+					})
+				]
+			});
+			var that = this;
+			var updateTitle = function(evt) {
+				var count = evt.getParameters().data.__count;
+				var formattedCount = formatter.integerWithThousandsSeparator(count, this.getModel("i18n").getResourceBundle().getText("matches"));
+				//Convert into 
+				this.setTitle("Components (" + formattedCount + ")");
+			};
+			that._ComponentDialog.bindAggregation("items", {
+				path: "/NewComponents",
+				template: oTemplate,
+				filters: [oFilter1],
+				parameters: {
+					custom: {
+						search: searchTerm
+					}
+				}
+			});
+			that._ComponentDialog.getBinding("items").attachDataReceived(updateTitle, that._ComponentDialog);
+		},
+		filterSmartTable: function() {
+			this.getView().byId("smartTable_ResponsiveTable").rebindTable();
+		},
+		onClearFilter: function() {
+			//Clear filters
+			this.getView().byId("SAPMaterialNumber").setValue("");
+			this.getView().byId("MaterialDescription").setValue("");
+			this.getView().byId("MPN").setValue("");
+			//Rebind
+			this.getView().byId("smartTable_ResponsiveTable").rebindTable();
+		},
+		onBeforeRebindTable: function(oEvent) {
+			var oBindingParams = oEvent.getParameter("bindingParams");
+			oBindingParams.filters = this.getFilterData();
+		},
+		getFilterData: function() {
+			var smartTableFilter = [];
+
+			var materialNumber = this.getView().byId("SAPMaterialNumber").getValue();
+			var description = this.getView().byId("MaterialDescription").getValue();
+			var MPN = this.getView().byId("MPN").getValue();
+			var oFilter;
+			if (materialNumber.length) {
+				oFilter = new Filter("MaterialNumber", sap.ui.model.FilterOperator.Contains, materialNumber.toUpperCase());
+				smartTableFilter.push(oFilter);
+			}
+
+			if (description.length) {
+				oFilter = new Filter("Description", sap.ui.model.FilterOperator.Contains, description.toUpperCase());
+				smartTableFilter.push(oFilter);
+			}
+			if (MPN.length) {
+				oFilter = new Filter("MPN", sap.ui.model.FilterOperator.Contains, MPN.toUpperCase());
+				smartTableFilter.push(oFilter);
+			}
+			return smartTableFilter;
+		},
+		updateSelectedMaterial: function(evt){
+			//Close the dialog
+			evt.getSource().getParent().close();
+			
+			//Get selection
+			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
+			var selectedIndex = oTable.getSelectedIndex();
+			if (selectedIndex === -1){
+				return; //Nothing selected
+			}
+			var selectedComponent = oTable.getContextByIndex(selectedIndex).getObject();
+			
+			//Remove selection
+			oTable.setSelectedIndex(-1);
+			
+			//Set the value to the right column item
+			this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
+				selectedComponent.MaterialNumber));
+			var row = this.getView().getController()._ComponentDialog.data("source").getParent();
+			row.getCells()[2].setText(selectedComponent.Description); //Component's description
+			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM			
+		},
+		showComponentValueHelp: function(oEvent) {
+			var ComponentDialog = this.getView().getController()._ComponentDialog;
+			ComponentDialog.data("source", oEvent.getSource());
+			//Clear current entries
+			// ComponentDialog.removeAllItems();
+			this.getView().getController()._ComponentDialog.open();
+		},		
+		onDataReceived: function() {
+			// var that = this;
+			// window.setTimeout(function() { //Wait for table to be rendered
+			// 	var oTable = that.getView().byId("smartTable_ResponsiveTable").getTable();
+			// 	var aColumns = oTable.getColumns();
+			// 	if (aColumns.length > 5) { //If more than 5 columns were selected to be displayed
+			// 		for (var i = 0; i < aColumns.length; i++) {
+			// 			oTable.autoResizeColumn(i);
+			// 		}
+			// 	}
+			// }, 1000);
 		}		
 	});
 

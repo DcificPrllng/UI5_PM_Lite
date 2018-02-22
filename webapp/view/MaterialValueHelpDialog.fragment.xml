@@ -1,0 +1,37 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar" xmlns:smartTable="sap.ui.comp.smarttable">
+	<Dialog id="idMaterialDialog" title="{i18n>Components}" >
+		<fb:FilterBar id="listFilterBar" showFilterConfiguration="false" useToolbar="false" searchEnabled="true" showRestoreButton="false"
+			showClearButton="true" showClearOnFB="true" search="filterSmartTable" clear="onClearFilter">
+			<fb:filterItems>
+				<fb:FilterItem name="SAPMaterialNumber" label="{i18n>SAPMaterialNumber}">
+					<fb:control>
+						<Input id="SAPMaterialNumber"/>
+					</fb:control>
+				</fb:FilterItem>
+				<fb:FilterItem name="MaterialDescription" label="{i18n>MaterialDescription}">
+					<fb:control>
+						<Input id="MaterialDescription"/>
+					</fb:control>
+				</fb:FilterItem>
+				<fb:FilterItem name="MPN" label="{i18n>MPN}">
+					<fb:control>
+						<Input id="MPN"/>
+					</fb:control>
+				</fb:FilterItem>
+			</fb:filterItems>
+		</fb:FilterBar>
+		<VBox fitContainer="true">
+			<smartTable:SmartTable id="smartTable_ResponsiveTable" entitySet="MaterialOutputSet" dataReceived="onDataReceived" tableType="Table"
+				beforeRebindTable="onBeforeRebindTable" editable="false" showFullScreenButton="false" persistencyKey="SmartTableAnalytical_Explored"
+				useVariantManagement="false" useTablePersonalisation="false" header="Items" showRowCount="false" class="sapUiResponsiveContentPadding"
+				useExportToExcel="false" enableAutoBinding="false" ignoreFromPersonalisation="Deleted,MPNMaterial,NoOfMPNs" >
+				<smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="80%"/>
+				</smartTable:layoutData>
+			</smartTable:SmartTable>
+		</VBox>
+		<beginButton>
+			<Button text="OK" press="updateSelectedMaterial"/>
+		</beginButton>
+	</Dialog>
+</core:FragmentDefinition>

@@ -12,7 +12,7 @@
 								<!--//First Row-->
 								<FlexBox width="100%" class="sapUiTinyMarginBegin" justifyContent="Start">
 									<Button class="sapUiTinyMarginBegin cisUiTinyMarginBegin" type="Default" id="release" icon="sap-icon://flag" width="95px"
-										text="{i18n>Release}" press=".ReleaseOrder"/>
+										text="{i18n>Release}" press=".ReleaseOrder" visible="{jsonModel>/WorkOrderDetail/ShowReleaseButton}"/>
 									<Button class="sapUiTinyMarginBegin" type="Accept" id="save" icon="sap-icon://save" width="95px" text="{i18n>Save}" press=".SaveOrder"/>
 									<Button class="sapUiTinyMarginBegin" type="Reject" id="cancel" icon="sap-icon://cancel" width="95px" text="{i18n>Cancel}" press=".GoHome"/>
 									<Button class="sapUiTinyMarginBegin" icon="sap-icon://attachment"
@@ -218,7 +218,7 @@
 										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
 											<Label text="{i18n>Code}"/>
-											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}">
+											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}" change=".updateNotificationGroup">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
 											<Label text="{i18n>Note}"/>
@@ -290,7 +290,7 @@
 				</content>
 				<dependents>
 					<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
-					<core:Fragment fragmentName="pd.pm.lite.view.ComponentDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.MaterialValueHelpDialog" type="XML"/>
 					<core:Fragment fragmentName="pd.pm.lite.view.UserStatusDialog" type="XML"/>
 					<core:Fragment fragmentName="pd.pm.lite.view.AttachmentDialog" type="XML"/>
 				</dependents>

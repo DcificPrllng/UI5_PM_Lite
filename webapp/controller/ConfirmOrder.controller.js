@@ -216,30 +216,6 @@ sap.ui.define([
 			var s = "000000000" + num;
 			return s.substr(s.length - size);
 		},
-		deleteSelectedComponents: function() {
-			var that = this;
-
-			//Get Table reference
-			var componentTable = this.getView().byId("ComponentsTable");
-
-			//Get selected rows
-			var deletedRows = componentTable.getSelectedIndices();
-			deletedRows.map(function(c) {
-				//current context/Object
-				var d = componentTable.getContextByIndex(c).getObject();
-
-				//Delete them from json model.
-				var currentComponents = that.getView().getModel("jsonModel").getProperty("/Components");
-				that.findAndRemove(currentComponents, "ItemID", d.ItemID);
-				that.getView().getModel("jsonModel").setProperty("/Components", currentComponents);
-				if (!d.New) { //If this came from server  
-					//Mark for sending a request later
-					that.getView().getModel().remove("/Components(OrderNumber='" + d.OrderNumber + "',ItemID='" + d.ItemID + "')", {
-						groupId: "saveAll"
-					});
-				}
-			});
-		},
 		findAndRemove: function(array, property, value) {
 			array.forEach(function(result, index) {
 				if (result[property] === value) {
@@ -275,6 +251,9 @@ sap.ui.define([
 			});
 			dialog.open();
 		},
+		updateNotificationGroup: function(evt){
+			this.getView().getModel("confirmModel").setProperty("/WorkOrderDetail/NotificationCodeGroup", evt.getSource().getSelectedItem().getBindingContext().getObject().Group);
+		},		
 		SaveOrder: function() {
 
 			var validator = new Validator();
@@ -415,106 +394,6 @@ sap.ui.define([
 			this.getView().getController()._workCenterDialogList.removeSelections();
 			WorkCenterDialog.data("source", oEvent.getSource());
 			WorkCenterDialog.open();
-		},
-		OnComponentSelected: function(evt) {
-			var selectedComponent = evt.getParameter("selectedItem").getBindingContext().getObject();
-			//Set the value to the right column item
-			this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
-				selectedComponent.Id));
-			var row = this.getView().getController()._ComponentDialog.data("source").getParent();
-			row.getCells()[2].setText(selectedComponent.Name); //Component's description
-			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM
-		},
-		showComponentValueHelp: function(oEvent) {
-			var ComponentDialog = this.getView().getController()._ComponentDialog;
-			ComponentDialog.data("source", oEvent.getSource());
-
-			//Clear current entries
-			ComponentDialog.removeAllItems();
-
-			this.getView().getController()._ComponentDialog.open();
-		},
-		_handleCValueHelpClose: function(oEvent) {
-			oEvent.getSource().getParent().close();
-		},
-		showUserStatusValueHelp: function() {
-
-			var oView = this.getView();
-			var sPath = "/UserStatusValueHelp('" + this.getView().getModel("jsonModel").getData("/WorkOrderDetail").WorkOrderDetail.OrderNumber +
-				"')";
-
-			oView.getController()._userStatusDialog.unbindElement();
-			oView.getController()._userStatusDialog.bindElement(sPath, {
-				"expand": "UserStatusesNoNumber,UserStatusesWithNumber"
-			});
-
-			oView.getController()._userStatusDialog.open();
-
-			//Marking current status on the popup
-			var currentStatus = this.getView().getModel("jsonModel").getProperty("/WorkOrderDetail").UserStatus;
-			var allStatuses = [];
-			allStatuses = currentStatus.split(" ");
-
-			var UserStatusesWithNumber = this.getView().getModel("jsonModel").getProperty("/UserStatusesWithNumber");
-			var UserStatusesNoNumber = this.getView().getModel("jsonModel").getProperty("/UserStatusesNoNumber");
-
-			//Selecting in the first table
-			for (var i = 0; i < UserStatusesWithNumber.length; i++) {
-				if ((UserStatusesWithNumber[i].Status + "      ").substring(0, 4) === (currentStatus + "      ").substring(0, 4)) {
-					oView.getController()._userStatusDialog.getContent()[0].setSelectedIndex(i);
-					break;
-				}
-			}
-
-			//Selecting in the second table
-			for (var j = 0; j < allStatuses.length; j++) {
-				for (var m = 0; m < UserStatusesNoNumber.length; m++) {
-					if ((UserStatusesNoNumber[m].Status + "      ").substring(0, 4) === (allStatuses[j] + "      ").substring(0, 4)) {
-						oView.getController()._userStatusDialog.getContent()[1].setSelectedIndex(m);
-						break;
-					}
-				}
-			}
-		},
-		OnComponentSearch: function(oEvent) {
-			//Get the search item
-			var searchTerm = oEvent.getParameter("value");
-
-			var model = this.getOwnerComponent().getModel();
-
-			//Bind components and work centers value help
-			var userPlant = model.getData("/UserSettings('dummy')").Plant;
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-
-			//Bind items
-			var oTemplate = new sap.m.ColumnListItem({
-				cells: [
-					new sap.m.Text().bindText({
-						path: "Id",
-						formatter: this.formatter.removeLeadingZerosFromString
-					}),
-					new sap.m.Text({
-						text: "{Name}"
-					}),
-					new sap.m.Text({
-						text: "{MPN}"
-					}),
-					new sap.m.Text({
-						text: "{Manufacturer}"
-					})
-				]
-			});
-
-			this._ComponentDialog.bindAggregation("items", {
-				path: "/NewComponents",
-				template: oTemplate,
-				filters: [oFilter1],
-				parameters: {
-					custom: {
-						search: searchTerm
-					}
-				}
-			});
 		}
 	});
 

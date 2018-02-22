@@ -28,22 +28,27 @@ sap.ui.define([
 			//All dialogs
 			this._busyDialog = this.getView().byId("ChangeBusyDialog");
 			this._WorkCenterDialog = this.getView().byId("idWorkCenterDialog");
-			this._ComponentDialog = this.getView().byId("idComponentDialog");
-			this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
+			// this._ComponentDialog = this.getView().byId("idComponentDialog");
+			this._ComponentDialog = this.getView().byId("idMaterialDialog");
+			// this._ComponentDialog._oSearchField.setPlaceholder("Search by any column");
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			this._userStatusDialog = this.getView().byId("userStatusDialog");
 			//Dialog for attachment
 			this._attachmentDialog = this.getView().byId("attachmentDialog");
-			
+
 			//Error Handling
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
-			
+
 			//Tab handling for table
 			//var oTable = this.getView().byId("OperationsTable");
 			//this.setupTabHandling(oTable);
+			//Single select to componet valuehelp
+			this.getView().byId("smartTable_ResponsiveTable").getTable().setSelectionMode("Single");			
 		},
+		onAfterRendering: function() {
 
+		},
 		_onObjectMatched: function(oEvent) {
 			if (oEvent.getParameter("name") !== "changeOrder") {
 				return;
@@ -139,8 +144,9 @@ sap.ui.define([
 				for (var i = 0; i < selectedIndices.length; i++) {
 					var selectedContxt = source.getContextByIndex(selectedIndices[i]);
 					newStatus = newStatus + (selectedContxt.getObject().Status + "     ").substring(0, 5);
-					this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
 				}
+				//Update the status to the model
+				this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
 			}
 		},
 		validateDates: function(evt) {
@@ -372,6 +378,30 @@ sap.ui.define([
 			});
 			dialog.open();
 		},
+		// ReleaseOrder: function() {
+		// 	this.getView().getModel("jsonModel").setProperty("/WorkOrderDetail/Release", true);
+
+		// 	var dialog = new Dialog({
+		// 		title: "Info",
+		// 		type: "Message",
+		// 		content: new Text({
+		// 			text: "Order has been marked for Release. Please save to release it."
+		// 		}),
+		// 		endButton: new Button({
+		// 			text: "OK",
+		// 			press: function() {
+		// 				dialog.close();
+		// 			}
+		// 		}),
+		// 		afterClose: function() {
+		// 			dialog.destroy();
+		// 		}
+		// 	});
+		// 	dialog.open();
+
+		// 	// this.updateOrder();
+		// 	// this.submitUpdates();
+		// },
 		ReleaseOrder: function() {
 			//Call function to release the order
 			var workOrderDetails = this.getView().getModel("jsonModel").oData;
@@ -382,13 +412,33 @@ sap.ui.define([
 			oModel.callFunction("/ReleaseOrder", {
 				method: "POST",
 				urlParameters: {
-					"OrderNumber": workOrderDetails.WorkOrderDetail.OrderNumber
+					"OrderNumber": workOrderDetails.WorkOrderDetail.OrderNumber,
+					"TestRun": true
 				},
 				success: function() {
 					that._busyDialog.close();
-					var msg = "Successfully released the order";
-					MessageToast.show(msg);
-					window.location.hash = "#";
+					// var msg = "Successfully released the order";
+					// MessageToast.show(msg);
+					// window.location.hash = "#";
+					that.getView().getModel("jsonModel").setProperty("/WorkOrderDetail/Release", true);
+
+					var dialog = new Dialog({
+						title: "Info",
+						type: "Message",
+						content: new Text({
+							text: "Order has been marked for Release. Please save to release it."
+						}),
+						endButton: new Button({
+							text: "OK",
+							press: function() {
+								dialog.close();
+							}
+						}),
+						afterClose: function() {
+							dialog.destroy();
+						}
+					});
+					dialog.open();
 				},
 				error: function(oError) {
 					that._busyDialog.close();
@@ -413,8 +463,194 @@ sap.ui.define([
 				}
 			});
 		},
+		updateNotificationGroup: function(evt) {
+			this.getView().getModel("jsonModel").setProperty("/WorkOrderDetail/NotificationCodeGroup", evt.getSource().getSelectedItem().getBindingContext()
+				.getObject().Group);
+		},
 		SaveOrder: function() {
+			this.updateOrder();
 
+			var validator = new Validator();
+			if (!validator.validate(this.getView())) {
+				return;
+			}
+
+			this.submitUpdates();
+			// var validator = new Validator();
+			// //Get Operations and components.
+			// var workOrderDetails = this.getView().getModel("jsonModel").oData;
+			// var operations = workOrderDetails.Operations;
+			// var components = workOrderDetails.Components;
+
+			// //Remove empty components
+			// var newComponents = [];
+
+			// for (var i = 0; i < components.length; i++) {
+			// 	//If one of these fields are not null, only then retian the record
+			// 	if (components[i].Description || components[i].RequirementQuantity) {
+			// 		newComponents.push(components[i]);
+			// 	}
+			// }
+
+			// //Update the Components
+			// this.getView().getModel("jsonModel").setProperty("/Components", newComponents);
+
+			// //Remove Empty Operations
+			// var newOperations = [];
+			// if (operations.length > 1) { //One Operation is mandatory
+			// 	for (i = 0; i < operations.length; i++) {
+			// 		//If one of these fields are not null, only then retian the record
+			// 		if (operations[i].ShortText || operations[i].WorkQuantity) {
+			// 			newOperations.push(operations[i]);
+			// 		}
+			// 	}
+			// 	if (newOperations.length === 0) {
+			// 		newOperations.push(operations[0]);
+			// 	}
+
+			// 	//Update the Operations
+			// 	this.getView().getModel("jsonModel").setProperty("/Operations", newOperations);
+			// }
+
+			// //Rerender view
+			// this.getView().rerender();
+
+			// if (!validator.validate(this.getView())) {
+			// 	return;
+			// }
+
+			// workOrderDetails = this.getView().getModel("jsonModel").oData;
+			// operations = workOrderDetails.Operations;
+			// components = workOrderDetails.Components;
+
+			// var currentWorkOrderDetail = {};
+			// currentWorkOrderDetail.NotificationNumber = workOrderDetails.WorkOrderDetail.NotificationNumber;
+			// currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
+			// currentWorkOrderDetail.FunctionalLocation = workOrderDetails.WorkOrderDetail.FunctionalLocation;
+			// currentWorkOrderDetail.MainWorkCenter = workOrderDetails.WorkOrderDetail.MainWorkCenter;
+			// currentWorkOrderDetail.OrderNumber = workOrderDetails.WorkOrderDetail.OrderNumber;
+			// currentWorkOrderDetail.PmActivityType = workOrderDetails.WorkOrderDetail.PmActivityType;
+
+			// currentWorkOrderDetail.ScheduledFinish = workOrderDetails.WorkOrderDetail.ScheduledFinish;
+			// currentWorkOrderDetail.ShortDescription = workOrderDetails.WorkOrderDetail.ShortDescription;
+
+			// currentWorkOrderDetail.SystemStatus = "";
+			// currentWorkOrderDetail.UserStatus = workOrderDetails.WorkOrderDetail.UserStatus;
+			// currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
+			// currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
+
+			// currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.BasicStart;
+			// currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.BasicFinish;
+
+			// currentWorkOrderDetail.NotificationCodeGroup = workOrderDetails.WorkOrderDetail.NotificationCodeGroup;
+			// currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
+			// currentWorkOrderDetail.NotificationLongText = workOrderDetails.WorkOrderDetail.NotificationLongText;			
+			// currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
+
+			// currentWorkOrderDetail.OperationDowntime = workOrderDetails.WorkOrderDetail.OperationDowntime;
+			// currentWorkOrderDetail.DowntimeStart = workOrderDetails.WorkOrderDetail.DowntimeStart;
+			// currentWorkOrderDetail.DowntimeEnd = workOrderDetails.WorkOrderDetail.DowntimeEnd;
+
+			// currentWorkOrderDetail.Breakdown = workOrderDetails.WorkOrderDetail.Breakdown;
+			// currentWorkOrderDetail.BreakdownStart = workOrderDetails.WorkOrderDetail.BreakdownStart;
+			// currentWorkOrderDetail.BreakdownFinish = workOrderDetails.WorkOrderDetail.BreakdownFinish;
+
+			// //Calculate changes and make approriate actions on Odata model
+			// this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
+			// 	currentWorkOrderDetail, {
+			// 		groupId: "saveAll"
+			// 	});
+
+			// for (i = 0; i < operations.length; i++) {
+			// 	var operationEntry = {};
+			// 	operationEntry.ActualWork = operations[i].ActualWork === "" ? "0" : operations[i].ActualWor;
+			// 	operationEntry.OperationID = operations[i].OperationID;
+			// 	operationEntry.OrderNumber = operations[i].OrderNumber;
+			// 	operationEntry.ShortText = operations[i].ShortText;
+			// 	operationEntry.WorkCenter = operations[i].WorkCenter;
+			// 	operationEntry.WorkQuantity = operations[i].WorkQuantity;
+			// 	operationEntry.WorkUnit = operations[i].WorkUnit;
+
+			// 	if (operations[i].New) {
+			// 		this.getView().getModel().create("/Operations", operationEntry, {
+			// 			groupId: "saveAll"
+			// 		});
+			// 	} else {
+			// 		this.getView().getModel().update("/Operations(OrderNumber='" + operations[i].OrderNumber + "',OperationID='" + operations[i].OperationID +
+			// 			"')", operationEntry, {
+			// 				groupId: "saveAll"
+			// 			});
+			// 	}
+			// }
+
+			// for (i = 0; i < components.length; i++) {
+			// 	var componentEntry = {};
+			// 	componentEntry.OrderNumber = components[i].OrderNumber;
+			// 	componentEntry.ItemID = components[i].ItemID;
+			// 	componentEntry.ComponentNumber = components[i].ComponentNumber;
+			// 	componentEntry.Description = components[i].Description;
+			// 	componentEntry.RequirementQuantity = components[i].RequirementQuantity;
+			// 	componentEntry.Unit = components[i].Unit;
+			// 	componentEntry.ItemCategory = components[i].ItemCategory;
+			// 	componentEntry.OperationReference = components[i].OperationReference;
+
+			// 	if (components[i].New) {
+			// 		this.getView().getModel().create("/Components", componentEntry, {
+			// 			groupId: "saveAll"
+			// 		});
+			// 	} else {
+			// 		this.getView().getModel().update("/Components(OrderNumber='" + components[i].OrderNumber + "',ItemID='" + components[i].ItemID +
+			// 			"')", componentEntry, {
+			// 				groupId: "saveAll"
+			// 			});
+			// 	}
+			// }
+
+			// this._busyDialog.open();
+			// var that = this;
+			// this.getView().getModel().submitChanges({
+			// 	groupId: "saveAll",
+			// 	success: function(context) {
+			// 		that._busyDialog.close();
+			// 		//Batch  request will always endup here.
+			// 		//Check for error again.
+			// 		if (context.__batchResponses[0].hasOwnProperty("response")) {
+			// 			if (context.__batchResponses[0].response.statusCode === "400") {
+			// 				//oModel.resetChanges(); //Data is set back to original. 
+			// 				var error = jQuery.parseJSON(context.__batchResponses[0].response.body).error.message.value;
+			// 				var dialog = new Dialog({
+			// 					title: "Error",
+			// 					type: "Message",
+			// 					state: "Error",
+			// 					content: new sap.m.Text({
+			// 						text: error
+			// 					}),
+			// 					beginButton: new Button({
+			// 						text: "OK",
+			// 						press: function() {
+			// 							dialog.close();
+			// 						}
+			// 					}),
+			// 					afterClose: function() {
+			// 						dialog.destroy();
+			// 					}
+			// 				});
+			// 				dialog.open();
+			// 			}
+			// 		} else {
+			// 			var msg = "Successfully updated the order";
+			// 			MessageToast.show(msg);
+			// 			window.location.hash = "#";
+			// 		}
+			// 	},
+			// 	error: function() {
+			// 		that._busyDialog.close();
+			// 		//Error Handling
+
+			// 	}
+			// });
+		},
+		updateOrder: function() {
 			var validator = new Validator();
 			//Get Operations and components.
 			var workOrderDetails = this.getView().getModel("jsonModel").oData;
@@ -467,8 +703,6 @@ sap.ui.define([
 			currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
 			currentWorkOrderDetail.FunctionalLocation = workOrderDetails.WorkOrderDetail.FunctionalLocation;
 			currentWorkOrderDetail.MainWorkCenter = workOrderDetails.WorkOrderDetail.MainWorkCenter;
-			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
-			currentWorkOrderDetail.NotificationLongText = workOrderDetails.WorkOrderDetail.NotificationLongText;
 			currentWorkOrderDetail.OrderNumber = workOrderDetails.WorkOrderDetail.OrderNumber;
 			currentWorkOrderDetail.PmActivityType = workOrderDetails.WorkOrderDetail.PmActivityType;
 
@@ -479,18 +713,24 @@ sap.ui.define([
 			currentWorkOrderDetail.UserStatus = workOrderDetails.WorkOrderDetail.UserStatus;
 			currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
 			currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
+
 			currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.BasicStart;
 			currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.BasicFinish;
+
+			currentWorkOrderDetail.NotificationCodeGroup = workOrderDetails.WorkOrderDetail.NotificationCodeGroup;
 			currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
+			currentWorkOrderDetail.NotificationLongText = workOrderDetails.WorkOrderDetail.NotificationLongText;
 			currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
 
 			currentWorkOrderDetail.OperationDowntime = workOrderDetails.WorkOrderDetail.OperationDowntime;
 			currentWorkOrderDetail.DowntimeStart = workOrderDetails.WorkOrderDetail.DowntimeStart;
 			currentWorkOrderDetail.DowntimeEnd = workOrderDetails.WorkOrderDetail.DowntimeEnd;
+
 			currentWorkOrderDetail.Breakdown = workOrderDetails.WorkOrderDetail.Breakdown;
 			currentWorkOrderDetail.BreakdownStart = workOrderDetails.WorkOrderDetail.BreakdownStart;
 			currentWorkOrderDetail.BreakdownFinish = workOrderDetails.WorkOrderDetail.BreakdownFinish;
 
+			currentWorkOrderDetail.Release = workOrderDetails.WorkOrderDetail.Release;
 			//Calculate changes and make approriate actions on Odata model
 			this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
 				currentWorkOrderDetail, {
@@ -541,7 +781,8 @@ sap.ui.define([
 						});
 				}
 			}
-			//Check if there is a new Notification
+		},
+		submitUpdates: function() {
 			this._busyDialog.open();
 			var that = this;
 			this.getView().getModel().submitChanges({
@@ -599,24 +840,15 @@ sap.ui.define([
 			WorkCenterDialog.data("source", oEvent.getSource());
 			WorkCenterDialog.open();
 		},
-		OnComponentSelected: function(evt) {
-			var selectedComponent = evt.getParameter("selectedItem").getBindingContext().getObject();
-			//Set the value to the right column item
-			this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
-				selectedComponent.Id));
-			var row = this.getView().getController()._ComponentDialog.data("source").getParent();
-			row.getCells()[2].setText(selectedComponent.Name); //Component's description
-			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM
-		},
-		showComponentValueHelp: function(oEvent) {
-			var ComponentDialog = this.getView().getController()._ComponentDialog;
-			ComponentDialog.data("source", oEvent.getSource());
-
-			//Clear current entries
-			ComponentDialog.removeAllItems();
-
-			this.getView().getController()._ComponentDialog.open();
-		},
+		// OnComponentSelected: function(evt) {
+		// 	var selectedComponent = evt.getParameter("selectedItem").getBindingContext().getObject();
+		// 	//Set the value to the right column item
+		// 	this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
+		// 		selectedComponent.Id));
+		// 	var row = this.getView().getController()._ComponentDialog.data("source").getParent();
+		// 	row.getCells()[2].setText(selectedComponent.Name); //Component's description
+		// 	row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM
+		// },
 		_handleCValueHelpClose: function(oEvent) {
 			oEvent.getSource().getParent().close();
 		},
@@ -661,46 +893,6 @@ sap.ui.define([
 					}
 				}
 			}
-		},
-		OnComponentSearch: function(oEvent) {
-			//Get the search item
-			var searchTerm = oEvent.getParameter("value");
-
-			var model = this.getOwnerComponent().getModel();
-
-			//Bind components and work centers value help
-			var userPlant = model.getData("/UserSettings('dummy')").Plant;
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
-
-			//Bind items
-			var oTemplate = new sap.m.ColumnListItem({
-				cells: [
-					new sap.m.Text().bindText({
-						path: "Id",
-						formatter: this.formatter.removeLeadingZerosFromString
-					}),
-					new sap.m.Text({
-						text: "{Name}"
-					}),
-					new sap.m.Text({
-						text: "{MPN}"
-					}),
-					new sap.m.Text({
-						text: "{Manufacturer}"
-					})
-				]
-			});
-
-			this._ComponentDialog.bindAggregation("items", {
-				path: "/NewComponents",
-				template: oTemplate,
-				filters: [oFilter1],
-				parameters: {
-					custom: {
-						search: searchTerm
-					}
-				}
-			});
 		}
 	});
 

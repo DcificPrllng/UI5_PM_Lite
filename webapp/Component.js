@@ -19,19 +19,20 @@ sap.ui.define([
 			// create the views based on the url/hash
 			this.getRouter().initialize();
 
-			var oModel = new Omodel({
-				serviceUrl: "/sap/opu/odata/sap/ZWORKORDER_SRV",
-				defaultBindingMode: "OneWay",
-				refreshAfterChange: false,
-				defaultCountMode: sap.ui.model.odata.CountMode.Inline
-			});
-
-			oModel.setDeferredBatchGroups(["saveAll", "initialRead"]);
+			// var oModel = new Omodel({
+			// 	serviceUrl: "/sap/opu/odata/sap/ZWORKORDER_SRV",
+			// 	defaultBindingMode: "OneWay",
+			// 	refreshAfterChange: false,
+			// 	defaultCountMode: sap.ui.model.odata.CountMode.Inline
+			// });
+			
+			var oModel = this.getModel();
+			oModel.setDeferredBatchGroups(["saveAll", "initialRead", "saveMeasurements"]);
 
 			//json Model
 			var jsonModel = new sap.ui.model.json.JSONModel();
 			this.setModel(jsonModel, "localModel");
-			this.setModel(oModel); //We are doing explicit binding here as we need extra serviceUrlParameters
+			// this.setModel(oModel); //We are doing explicit binding here as we need extra serviceUrlParameters
 			oModel.setSizeLimit(500); //Units have 250+ entries
 
 			//Local storage
@@ -57,7 +58,8 @@ sap.ui.define([
 				"Units": units,
 				"UserStatuses": userStatuses,
 				"ActivityTypes": activityTypes,
-				"EntryLists":{}
+				"EntryLists":{},
+				"MeasurementPoints":{}
 			});
 			
 			var plantHash = this._oJQueryStorage.get("plantHash");
@@ -164,10 +166,6 @@ sap.ui.define([
 					}
 				}
 			});				
-			
-			oModel.submitChanges({  //There are no changes here. It is just above reads
-				groupId: "initialRead"
-			});
 		}
 
 	});

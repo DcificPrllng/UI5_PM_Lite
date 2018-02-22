@@ -11,7 +11,25 @@
 			"version": "1.0.0"
 		},
 		"ach": "CA-UI5-DOC",
-		"dataSources": {}
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata/sap/ZWORKORDER_SRV",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"annotations": [
+						"annotation"
+					]
+				}
+			},
+			"annotation": {
+				"type": "ODataAnnotation",
+				"uri": "annotations/annotation.xml",
+				"settings": {
+					"localUri": "annotations/annotation.xml"
+				}
+			}
+		}
 	},
 	"sap.ui": {
 		"_version": "1.1.0",
@@ -43,12 +61,27 @@
 				"settings": {
 					"bundleName": "pd.pm.lite.i18n.i18n"
 				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"defaultBindingMode": "OneWay",
+					"refreshAfterChange": false,
+					"defaultCountMode": "Inline"
+				}
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties"
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -62,31 +95,38 @@
 					"target": "notFound"
 				}
 			},
-			"routes": [{
-				"pattern": "",
-				"name": "appHome",
-				"target": "home"
-			}, {
-				"pattern": "personas",
-				"name": "personas",
-				"target": "personas"
-			}, {
-				"pattern": "ChangeOrder/{order}",
-				"name": "changeOrder",
-				"target": "changeOrder"
-			}, {
-				"pattern": "ConfirmOrder/{order}",
-				"name": "confirmOrder",
-				"target": "confirmOrder"
-			}, {
-				"pattern": "NewOrder",
-				"name": "newOrder",
-				"target": "newOrder"
-			}, {
-				"pattern": "Measurements/{entryList}",
-				"name": "measurement",
-				"target": "measurement"
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "appHome",
+					"target": "home"
+				},
+				{
+					"pattern": "personas",
+					"name": "personas",
+					"target": "personas"
+				},
+				{
+					"pattern": "ChangeOrder/{order}",
+					"name": "changeOrder",
+					"target": "changeOrder"
+				},
+				{
+					"pattern": "ConfirmOrder/{order}",
+					"name": "confirmOrder",
+					"target": "confirmOrder"
+				},
+				{
+					"pattern": "NewOrder",
+					"name": "newOrder",
+					"target": "newOrder"
+				},
+				{
+					"pattern": "Measurements/{entryList}",
+					"name": "measurement",
+					"target": "measurement"
+				}
+			],
 			"targets": {
 				"home": {
 					"viewName": "Home",

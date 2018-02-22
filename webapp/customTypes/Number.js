@@ -12,7 +12,8 @@ sap.ui.define(["sap/ui/model/ValidateException",
 			return oValue;
 		},
 		validateValue: function(oValue) {
-			if (isNaN(Number(oValue)) || Number(oValue) === 0) {
+			// if (isNaN(Number(oValue)) || Number(oValue) === 0) {
+			if (isNaN(Number(oValue))){
 				var messageString = "Enter a valid number";
 				throw new ValidateException(messageString);
 			}

@@ -1,6 +1,9 @@
-sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
+sap.ui.define(["sap/ui/core/format/DateFormat", "sap/ui/core/format/NumberFormat"], function(DateFormat, NumberFormat) {
 	"use strict";
 	return {
+		MeasurementObject: function(object, objectID, objectName) {
+			return object + " - " + this.getView().getController().formatter.removeLeadingZerosFromString(objectID) + " - " + objectName;
+		},
 		// ID and Description Formatting
 		commonIDFormatter: function(sID, sDescription) {
 			if (sID) {
@@ -152,6 +155,14 @@ sap.ui.define(["sap/ui/core/format/DateFormat"], function(DateFormat) {
 				hours = Math.abs(endDate - startDate) / 36e5;
 			}
 			return label.concat(isNaN(hours) === true ? 0 : hours.toFixed(2) + " Hours");
+		},
+		integerWithThousandsSeparator: function(number, string){
+			var oIntegerInstance = NumberFormat.getIntegerInstance({
+				style: "standard",
+				groupingEnabled: true
+			});
+			var formattedNumber = oIntegerInstance.format(number) + " " + string;
+			return formattedNumber;
 		}
 
 	};

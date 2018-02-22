@@ -6,15 +6,9 @@
 		<meta charset="utf-8">
 		<title>PM Lite</title>
 		<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-		<!--Other options are
-		index_gateway.html
-		index_localhost.html
-		index_sap_cdn.html
-		index_pd_cdn.html
-		index_pd_bora_cdn.html-->
 		<script
 				id="sap-ui-bootstrap"
-				src="https://sapui5.hana.ondemand.com/1.44.27/resources/sap-ui-core.js" 				
+				src="https://localhost:2015/sapui5-rt-1.44.25/resources/sap-ui-core.js" 
 				data-sap-ui-libs="sap.m,sap.ui.layout,sap.ui.table,sap.ui.commons"
 				data-sap-ui-bindingSyntax="complex"
 				data-sap-ui-compatVersion="edge"
@@ -48,14 +42,14 @@
 					                            press: "performLogout"
 					    })],
 			            content: ComponentContainer
-			        	}).addStyleClass("sapUiSizeCompact").placeAt("content");
+			        }).addStyleClass("sapUiSizeCompact").placeAt("content");
 			        
 						var component = sap.ui.component({
 	                                 	name : "pd.pm.lite",
 	                                 	manifestFirst: true,
 	                                 	handleValidation: true,
 	                                 	async: true
-    				    				}).then(function(component){
+    				    		}).then(function(component){
 		 									ComponentContainer.setComponent(component);
 										});
 				});
