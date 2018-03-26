@@ -22,6 +22,10 @@ div#uiArea {
     margin-left: 10px;
 }
 
+.Description{
+	width: 18rem;
+}
+
 .FlexWrap {
     flex-wrap: wrap;
 }

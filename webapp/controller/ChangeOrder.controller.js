@@ -44,11 +44,14 @@ sap.ui.define([
 			//var oTable = this.getView().byId("OperationsTable");
 			//this.setupTabHandling(oTable);
 			//Single select to componet valuehelp
-			this.getView().byId("smartTable_ResponsiveTable").getTable().setSelectionMode("Single");			
+			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
+			oTable.setMode("SingleSelectLeft");
+			oTable.setProperty("includeItemInSelection", true);
+			oTable.setProperty("growingThreshold", 30);
+			oTable.setProperty("fixedLayout", false);
+			oTable.setRememberSelections(false);
 		},
-		onAfterRendering: function() {
-
-		},
+		onAfterRendering: function() {},
 		_onObjectMatched: function(oEvent) {
 			if (oEvent.getParameter("name") !== "changeOrder") {
 				return;
@@ -125,6 +128,9 @@ sap.ui.define([
 				window.location.hash = "#";
 			}
 		},
+		ShowAvailabilityStatus: function(){
+			
+		},
 		CalculateUserStatus: function(evt) {
 			var source = evt.getSource();
 			var newStatus = "";
@@ -137,6 +143,26 @@ sap.ui.define([
 				var newWithNumberStatus = (selectedContext.getObject().Status + "     ").substring(0, 5);
 				newStatus = newWithNumberStatus + currenctStatus.substring(5);
 				this.oView.getModel("jsonModel").setProperty("/WorkOrderDetail/UserStatus", newStatus);
+				//Show a information that if the new status is 'Ready for Release' (OK), then order needs to be saved before releasing the order
+				if (newStatus.startsWith("OK") && !currenctStatus.startsWith("OK")) {
+					var dialog = new Dialog({
+						title: "Information",
+						type: "Message",
+						content: new Text({
+							text: "You have selected the order status as 'Ready for Release'(OK). You need to save the order before you can release it."
+						}),
+						beginButton: new Button({
+							text: "OK",
+							press: function() {
+								dialog.close();
+							}
+						}),
+						afterClose: function() {
+							dialog.destroy();
+						}
+					});
+					dialog.open();
+				}
 			} else {
 				var selectedIndices = source.getSelectedIndices();
 				var curStatus = this.oView.getModel("jsonModel").getProperty("/WorkOrderDetail/UserStatus");
@@ -442,12 +468,17 @@ sap.ui.define([
 				},
 				error: function(oError) {
 					that._busyDialog.close();
+					try {
+						var errorMessage = JSON.parse(oError.responseText).error.message.value; //JSON error
+					} catch (err) {
+						errorMessage = $(oError.responseText).find("message").first().text(); //XML error
+					}
 					var popUp = new Dialog({
 						title: "Error",
 						type: "Message",
 						state: "Error",
 						content: new sap.m.Text({
-							text: JSON.parse(oError.responseText).error.message.value
+							text: errorMessage
 						}),
 						beginButton: new sap.m.Button({
 							text: "OK",

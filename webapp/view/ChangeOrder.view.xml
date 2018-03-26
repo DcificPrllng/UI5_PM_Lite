@@ -161,6 +161,8 @@
 															press=".createNewRowComponents"/>
 														<Button type="Transparent" width="85px" text="Delete" icon="sap-icon://delete" tooltip="{i18n>DeleteselectedComponents}"
 															press=".deleteSelectedComponents"/>
+														<Button type="Transparent" width="105px" text="Part Status" icon="sap-icon://check-availability" tooltip="{i18n>CheckAvailabilityStatus}"
+															press=".ShowAvailabilityStatus"/>
 													</content>
 												</Toolbar>
 											</table:toolbar>
@@ -217,12 +219,12 @@
 									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification" labelSpanL="2"
 										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
+											<Label text="{i18n>Note}"/>
+											<TextArea growing="true" rows="2" value="{jsonModel>/WorkOrderDetail/NewNote}"/>											
 											<Label text="{i18n>Code}"/>
 											<ComboBox selectedKey="{jsonModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}" change=".updateNotificationGroup">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
-											<Label text="{i18n>Note}"/>
-											<TextArea growing="true" rows="2" value="{jsonModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
 											<FormattedText class="oldNotes" height="150px" htmlText="{jsonModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
 											<!--<core:HTML class="oldNotes" content="{jsonModel>/WorkOrderDetail/NotificationLongText}"/>-->

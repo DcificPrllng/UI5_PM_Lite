@@ -173,7 +173,7 @@ sap.ui.define([
 				text: sHtml
 			});
 			//Schedule Column
-			this._oTable.getColumns()[5].getLabel().setTooltip(oRttTextField);
+			this._oTable.getColumns()[4].getLabel().setTooltip(oRttTextField);
 
 			//Days
 			var sHtmlDays = "Days<br>";
@@ -186,7 +186,7 @@ sap.ui.define([
 				text: sHtmlDays
 			});
 			//Schedule Column
-			this._oTable.getColumns()[6].getLabel().setTooltip(oRttTextFieldDays);
+			this._oTable.getColumns()[5].getLabel().setTooltip(oRttTextFieldDays);
 		},
 		searchTable: function(evt) {
 			var oTable = this.getView().byId("ordersTable");
@@ -233,7 +233,7 @@ sap.ui.define([
 				//Upto 10 orders can be printed at a time
 				//raise error
 				MessageBox.error(
-					"You can select max upto 10 orders"
+					"You can select maximum of 10 orders"
 				);
 				return;
 			}
@@ -287,6 +287,9 @@ sap.ui.define([
 			var data = {};
 			data.plant = this.getView().byId("plantId").getValue();
 			data.MainWorkCenter = this.getView().byId("workCenterId").getValue();
+			if (data.MainWorkCenter === "*" || data.MainWorkCenter === "E*"){
+				data.MainWorkCenter = this._userDefaults.WorkCenter; //go back to the user's default work center
+			}
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
 				data.FunctionalLocation = selectedObject.Id;
 				data.FunctionalLocationName = selectedObject.Name;

@@ -63,7 +63,12 @@ sap.ui.define([
 			var oOperationsTable = this.getView().byId("OperationsTable");
 			
 			//Single select to componet valuehelp
-			this.getView().byId("smartTable_ResponsiveTable").getTable().setSelectionMode("Single");			
+			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
+			oTable.setMode("SingleSelectLeft");		
+			oTable.setProperty("includeItemInSelection", true);
+			oTable.setProperty("growingThreshold", 30);
+			oTable.setProperty("fixedLayout",false);
+			oTable.setRememberSelections(false);	
 		},
 		onExit: function() {
 			//Initialize the model before getting out

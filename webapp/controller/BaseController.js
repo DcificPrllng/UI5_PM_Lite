@@ -3,8 +3,11 @@ sap.ui.define([
 	"sap/ui/core/routing/History",
 	"pd/pm/lite/util/formatter",
 	"sap/m/UploadCollectionItem",
-	"sap/ui/model/Filter"	
-], function(Controller, History, formatter, UploadCollectionItem, Filter) {
+	"sap/ui/model/Filter",
+	"sap/m/Dialog",
+	"sap/m/Text",
+	"sap/m/Button"
+], function(Controller, History, formatter, UploadCollectionItem, Filter, Dialog, Text, Button) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
@@ -22,6 +25,7 @@ sap.ui.define([
 					return lastIndex !== -1 && lastIndex === position;
 				};
 			}
+		
 		},
 		getRouter: function() {
 			return sap.ui.core.UIComponent.getRouterFor(this);
@@ -299,21 +303,40 @@ sap.ui.define([
 			}
 			return smartTableFilter;
 		},
-		updateSelectedMaterial: function(evt){
-			//Close the dialog
-			evt.getSource().getParent().close();
-			
+		updateSelectedMaterial: function(evt) {
+
 			//Get selection
 			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
-			var selectedIndex = oTable.getSelectedIndex();
-			if (selectedIndex === -1){
-				return; //Nothing selected
+			// var selectedIndex = oTable.getSelectedIndex();
+			if (!oTable.getSelectedItem()) { //Nothing selected
+				var dialog = new Dialog({
+					title: "Error",
+					type: "Message",
+					state: "Error",
+					content: new Text({
+						text: "Choose a material and then press 'Select'"
+					}),
+					beginButton: new Button({
+						text: "OK",
+						press: function() {
+							dialog.close();
+						}
+					}),
+					afterClose: function() {
+						dialog.destroy();
+					}
+				});
+				dialog.open();
+				return; 
 			}
-			var selectedComponent = oTable.getContextByIndex(selectedIndex).getObject();
-			
+			var selectedComponent = oTable.getSelectedContexts()[0].getObject();
+
 			//Remove selection
-			oTable.setSelectedIndex(-1);
-			
+			// oTable.setSelectedIndex(-1);
+
+			//Close the dialog
+			evt.getSource().getParent().close();
+
 			//Set the value to the right column item
 			this.getView().getController()._ComponentDialog.data("source").setValue(this.formatter.removeLeadingZerosFromString(
 				selectedComponent.MaterialNumber));
@@ -327,7 +350,7 @@ sap.ui.define([
 			//Clear current entries
 			// ComponentDialog.removeAllItems();
 			this.getView().getController()._ComponentDialog.open();
-		},		
+		},
 		onDataReceived: function() {
 			// var that = this;
 			// window.setTimeout(function() { //Wait for table to be rendered
@@ -339,7 +362,7 @@ sap.ui.define([
 			// 		}
 			// 	}
 			// }, 1000);
-		}		
+		}
 	});
 
 });

@@ -255,12 +255,12 @@
 									<f:SimpleForm class="notificationBox" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="Notification" labelSpanL="2"
 										labelSpanM="2" emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1">
 										<f:content>
+											<Label text="{i18n>Note}"/>
+											<TextArea growing="true" rows="2" value="{confirmModel>/WorkOrderDetail/NewNote}"/>											
 											<Label text="{i18n>Code}"/>
 											<ComboBox selectedKey="{confirmModel>/WorkOrderDetail/NotificationCode}" items="{path:'NotificationCodes', templateShareable:false}" change=".updateNotificationGroup">
 												<core:Item key="{Code}" text="{Name}"/>
 											</ComboBox>
-											<Label text="{i18n>Note}"/>
-											<TextArea growing="true" rows="2" value="{confirmModel>/WorkOrderDetail/NewNote}"/>
 											<Label text=""/>
 											<FormattedText class="oldNotes" height="150px" htmlText="{confirmModel>/WorkOrderDetail/NotificationLongText}"></FormattedText>
 										</f:content>
