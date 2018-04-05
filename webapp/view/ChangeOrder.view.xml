@@ -295,6 +295,7 @@
 					<core:Fragment fragmentName="pd.pm.lite.view.MaterialValueHelpDialog" type="XML"/>
 					<core:Fragment fragmentName="pd.pm.lite.view.UserStatusDialog" type="XML"/>
 					<core:Fragment fragmentName="pd.pm.lite.view.AttachmentDialog" type="XML"/>
+					<core:Fragment fragmentName="pd.pm.lite.view.PartStatusDialog" type="XML"/>					
 				</dependents>
 			</Page>
 		</pages>

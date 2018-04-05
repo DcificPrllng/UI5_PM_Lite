@@ -35,6 +35,8 @@ sap.ui.define([
 			this._userStatusDialog = this.getView().byId("userStatusDialog");
 			//Dialog for attachment
 			this._attachmentDialog = this.getView().byId("attachmentDialog");
+			//Dialog for Part Status
+			this._partStatusDialog = this.getView().byId("idPartStatusDialog");
 
 			//Error Handling
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
@@ -128,8 +130,8 @@ sap.ui.define([
 				window.location.hash = "#";
 			}
 		},
-		ShowAvailabilityStatus: function(){
-			
+		ShowAvailabilityStatus: function() {
+			this._partStatusDialog.open();
 		},
 		CalculateUserStatus: function(evt) {
 			var source = evt.getSource();
@@ -428,6 +430,9 @@ sap.ui.define([
 		// 	// this.updateOrder();
 		// 	// this.submitUpdates();
 		// },
+		closeDialog: function(){
+			this._partStatusDialog.close();
+		},
 		ReleaseOrder: function() {
 			//Call function to release the order
 			var workOrderDetails = this.getView().getModel("jsonModel").oData;
@@ -507,179 +512,6 @@ sap.ui.define([
 			}
 
 			this.submitUpdates();
-			// var validator = new Validator();
-			// //Get Operations and components.
-			// var workOrderDetails = this.getView().getModel("jsonModel").oData;
-			// var operations = workOrderDetails.Operations;
-			// var components = workOrderDetails.Components;
-
-			// //Remove empty components
-			// var newComponents = [];
-
-			// for (var i = 0; i < components.length; i++) {
-			// 	//If one of these fields are not null, only then retian the record
-			// 	if (components[i].Description || components[i].RequirementQuantity) {
-			// 		newComponents.push(components[i]);
-			// 	}
-			// }
-
-			// //Update the Components
-			// this.getView().getModel("jsonModel").setProperty("/Components", newComponents);
-
-			// //Remove Empty Operations
-			// var newOperations = [];
-			// if (operations.length > 1) { //One Operation is mandatory
-			// 	for (i = 0; i < operations.length; i++) {
-			// 		//If one of these fields are not null, only then retian the record
-			// 		if (operations[i].ShortText || operations[i].WorkQuantity) {
-			// 			newOperations.push(operations[i]);
-			// 		}
-			// 	}
-			// 	if (newOperations.length === 0) {
-			// 		newOperations.push(operations[0]);
-			// 	}
-
-			// 	//Update the Operations
-			// 	this.getView().getModel("jsonModel").setProperty("/Operations", newOperations);
-			// }
-
-			// //Rerender view
-			// this.getView().rerender();
-
-			// if (!validator.validate(this.getView())) {
-			// 	return;
-			// }
-
-			// workOrderDetails = this.getView().getModel("jsonModel").oData;
-			// operations = workOrderDetails.Operations;
-			// components = workOrderDetails.Components;
-
-			// var currentWorkOrderDetail = {};
-			// currentWorkOrderDetail.NotificationNumber = workOrderDetails.WorkOrderDetail.NotificationNumber;
-			// currentWorkOrderDetail.Equipment = workOrderDetails.WorkOrderDetail.Equipment;
-			// currentWorkOrderDetail.FunctionalLocation = workOrderDetails.WorkOrderDetail.FunctionalLocation;
-			// currentWorkOrderDetail.MainWorkCenter = workOrderDetails.WorkOrderDetail.MainWorkCenter;
-			// currentWorkOrderDetail.OrderNumber = workOrderDetails.WorkOrderDetail.OrderNumber;
-			// currentWorkOrderDetail.PmActivityType = workOrderDetails.WorkOrderDetail.PmActivityType;
-
-			// currentWorkOrderDetail.ScheduledFinish = workOrderDetails.WorkOrderDetail.ScheduledFinish;
-			// currentWorkOrderDetail.ShortDescription = workOrderDetails.WorkOrderDetail.ShortDescription;
-
-			// currentWorkOrderDetail.SystemStatus = "";
-			// currentWorkOrderDetail.UserStatus = workOrderDetails.WorkOrderDetail.UserStatus;
-			// currentWorkOrderDetail.Cause = workOrderDetails.WorkOrderDetail.Cause;
-			// currentWorkOrderDetail.Damage = workOrderDetails.WorkOrderDetail.Damage;
-
-			// currentWorkOrderDetail.BasicStart = workOrderDetails.WorkOrderDetail.BasicStart;
-			// currentWorkOrderDetail.BasicFinish = workOrderDetails.WorkOrderDetail.BasicFinish;
-
-			// currentWorkOrderDetail.NotificationCodeGroup = workOrderDetails.WorkOrderDetail.NotificationCodeGroup;
-			// currentWorkOrderDetail.NotificationCode = workOrderDetails.WorkOrderDetail.NotificationCode;
-			// currentWorkOrderDetail.NotificationLongText = workOrderDetails.WorkOrderDetail.NotificationLongText;			
-			// currentWorkOrderDetail.NewNote = workOrderDetails.WorkOrderDetail.NewNote;
-
-			// currentWorkOrderDetail.OperationDowntime = workOrderDetails.WorkOrderDetail.OperationDowntime;
-			// currentWorkOrderDetail.DowntimeStart = workOrderDetails.WorkOrderDetail.DowntimeStart;
-			// currentWorkOrderDetail.DowntimeEnd = workOrderDetails.WorkOrderDetail.DowntimeEnd;
-
-			// currentWorkOrderDetail.Breakdown = workOrderDetails.WorkOrderDetail.Breakdown;
-			// currentWorkOrderDetail.BreakdownStart = workOrderDetails.WorkOrderDetail.BreakdownStart;
-			// currentWorkOrderDetail.BreakdownFinish = workOrderDetails.WorkOrderDetail.BreakdownFinish;
-
-			// //Calculate changes and make approriate actions on Odata model
-			// this.getView().getModel().update("/WorkOrderDetailSet('" + workOrderDetails.WorkOrderDetail.OrderNumber + "')",
-			// 	currentWorkOrderDetail, {
-			// 		groupId: "saveAll"
-			// 	});
-
-			// for (i = 0; i < operations.length; i++) {
-			// 	var operationEntry = {};
-			// 	operationEntry.ActualWork = operations[i].ActualWork === "" ? "0" : operations[i].ActualWor;
-			// 	operationEntry.OperationID = operations[i].OperationID;
-			// 	operationEntry.OrderNumber = operations[i].OrderNumber;
-			// 	operationEntry.ShortText = operations[i].ShortText;
-			// 	operationEntry.WorkCenter = operations[i].WorkCenter;
-			// 	operationEntry.WorkQuantity = operations[i].WorkQuantity;
-			// 	operationEntry.WorkUnit = operations[i].WorkUnit;
-
-			// 	if (operations[i].New) {
-			// 		this.getView().getModel().create("/Operations", operationEntry, {
-			// 			groupId: "saveAll"
-			// 		});
-			// 	} else {
-			// 		this.getView().getModel().update("/Operations(OrderNumber='" + operations[i].OrderNumber + "',OperationID='" + operations[i].OperationID +
-			// 			"')", operationEntry, {
-			// 				groupId: "saveAll"
-			// 			});
-			// 	}
-			// }
-
-			// for (i = 0; i < components.length; i++) {
-			// 	var componentEntry = {};
-			// 	componentEntry.OrderNumber = components[i].OrderNumber;
-			// 	componentEntry.ItemID = components[i].ItemID;
-			// 	componentEntry.ComponentNumber = components[i].ComponentNumber;
-			// 	componentEntry.Description = components[i].Description;
-			// 	componentEntry.RequirementQuantity = components[i].RequirementQuantity;
-			// 	componentEntry.Unit = components[i].Unit;
-			// 	componentEntry.ItemCategory = components[i].ItemCategory;
-			// 	componentEntry.OperationReference = components[i].OperationReference;
-
-			// 	if (components[i].New) {
-			// 		this.getView().getModel().create("/Components", componentEntry, {
-			// 			groupId: "saveAll"
-			// 		});
-			// 	} else {
-			// 		this.getView().getModel().update("/Components(OrderNumber='" + components[i].OrderNumber + "',ItemID='" + components[i].ItemID +
-			// 			"')", componentEntry, {
-			// 				groupId: "saveAll"
-			// 			});
-			// 	}
-			// }
-
-			// this._busyDialog.open();
-			// var that = this;
-			// this.getView().getModel().submitChanges({
-			// 	groupId: "saveAll",
-			// 	success: function(context) {
-			// 		that._busyDialog.close();
-			// 		//Batch  request will always endup here.
-			// 		//Check for error again.
-			// 		if (context.__batchResponses[0].hasOwnProperty("response")) {
-			// 			if (context.__batchResponses[0].response.statusCode === "400") {
-			// 				//oModel.resetChanges(); //Data is set back to original. 
-			// 				var error = jQuery.parseJSON(context.__batchResponses[0].response.body).error.message.value;
-			// 				var dialog = new Dialog({
-			// 					title: "Error",
-			// 					type: "Message",
-			// 					state: "Error",
-			// 					content: new sap.m.Text({
-			// 						text: error
-			// 					}),
-			// 					beginButton: new Button({
-			// 						text: "OK",
-			// 						press: function() {
-			// 							dialog.close();
-			// 						}
-			// 					}),
-			// 					afterClose: function() {
-			// 						dialog.destroy();
-			// 					}
-			// 				});
-			// 				dialog.open();
-			// 			}
-			// 		} else {
-			// 			var msg = "Successfully updated the order";
-			// 			MessageToast.show(msg);
-			// 			window.location.hash = "#";
-			// 		}
-			// 	},
-			// 	error: function() {
-			// 		that._busyDialog.close();
-			// 		//Error Handling
-
-			// 	}
-			// });
 		},
 		updateOrder: function() {
 			var validator = new Validator();

@@ -37,7 +37,7 @@
 						</Record>
 						<Record Type="UI.DataField">
 							<PropertyValue Property="Value" Path="UoM"/>
-						</Record>						
+						</Record>
 					</Collection>
 				</Annotation>
 			</Annotations>
@@ -49,9 +49,117 @@
 			</Annotations>
 			<Annotations Target="ZWORKORDER_SRV.MaterialOutput/UoM">
 				<Annotation Term="Common.Label" String="Unit"/>
-			</Annotations>			
+			</Annotations>
 			<Annotations Target="ZWORKORDER_SRV.MaterialOutput/Deleted">
 				<Annotation Term="UI.Hidden" Bool="true"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus">
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="MaterialNumber"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Name"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="RequiredQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="WithdrawnQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="OnHandQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="BinNumber"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="FreightGroup"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="PRNumber"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="PONumber"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="POQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="OpenPOCount"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="FFReceivedQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="FFReceivedDate"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="RRQuantity"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="RRDate"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ModeOfTransport"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ETAPortOfEntry"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/BinNumber">
+				<Annotation Term="Common.Label" String="Bin"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/ETAPortOfEntry">
+				<Annotation Term="Common.Label" String="ETA Dest"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/FFReceivedDate">
+				<Annotation Term="Common.Label" String="FF Date"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/FFReceivedQuantity">
+				<Annotation Term="Common.Label" String="FF"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/FreightGroup">
+				<Annotation Term="Common.Label" String="G"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/MaterialNumber">
+				<Annotation Term="Common.Label" String="MM #"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/ModeOfTransport">
+				<Annotation Term="Common.Label" String="MoT"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/Name">
+				<Annotation Term="Common.Label" String="Material Description"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/OnHandQuantity">
+				<Annotation Term="Common.Label" String="OnHn"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/OpenPOCount">
+				<Annotation Term="Common.Label" String="Cnt"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/PONumber">
+				<Annotation Term="Common.Label" String="{@i18n&gt;PURCH_ORD}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/POQuantity">
+				<Annotation Term="Common.Label" String="{@i18n&gt;QTY}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/PRNumber">
+				<Annotation Term="Common.Label" String="{@i18n&gt;PURCH_REQ}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/RRDate">
+				<Annotation Term="Common.Label" String="{@i18n&gt;RIG_DATE}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/RRQuantity">
+				<Annotation Term="Common.Label" String="{@i18n&gt;RIG}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/RequiredQuantity">
+				<Annotation Term="Common.Label" String="{@i18n&gt;QTY}"/>
+			</Annotations>
+			<Annotations Target="ZWORKORDER_SRV.PartStatus/WithdrawnQuantity">
+				<Annotation Term="Common.Label" String="{@i18n&gt;WTDR}"/>
 			</Annotations>
 		</Schema>
 	</edmx:DataServices>
