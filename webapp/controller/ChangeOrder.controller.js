@@ -108,11 +108,13 @@ sap.ui.define([
 					});
 					oView.setModel(jsonModel, "jsonModel");
 					var step;
-					var emptyComponents = 9 - odata.Components.results.length;
+					// var emptyComponents = 9 - odata.Components.results.length;
+					var emptyComponents = 5 - odata.Components.results.length;
 					for (step = 0; step < emptyComponents; step++) {
 						that.createNewRowComponents();
 					}
-					var emptyOperations = 9 - odata.Operations.results.length;
+					// var emptyOperations = 9 - odata.Operations.results.length;
+					var emptyOperations = 5 - odata.Operations.results.length;
 					for (step = 0; step < emptyOperations; step++) {
 						that.createNewRowOperations();
 					}

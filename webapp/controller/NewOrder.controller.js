@@ -167,7 +167,7 @@ sap.ui.define([
 			this.createModel.setData(newEmptyObject);
 
 			var step;
-			for (step = 0; step < 9; step++) {
+			for (step = 0; step < 5; step++) {
 				this.createNewRowComponents();
 				this.createNewRowOperations();
 			}
