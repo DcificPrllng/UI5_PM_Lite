@@ -84,7 +84,7 @@ div#uiArea {
 }
 
 .cisDisbaledInput .sapMInputBaseDisabledInner {
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .cisLabels .sapMLabel {

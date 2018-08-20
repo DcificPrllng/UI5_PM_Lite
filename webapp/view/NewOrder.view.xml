@@ -31,7 +31,7 @@
 									<core:ListItem text="NON CRIT (&lt;180 DAY)" key="4"/>
 								</m:items>
 							</m:ComboBox>
-							<m:Label textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" design="Bold" required="true"/>
+							<m:Label textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" required="true"/>
 							<m:ComboBox class="sapUiTinyMarginBegin" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="false"
 								selectedKey="{path:'createModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}" width="308px">
 								<m:items>

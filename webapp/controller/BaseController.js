@@ -227,22 +227,22 @@ sap.ui.define([
 			} else {
 				userPlant = userSettings.Plant;
 			}
-			var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
+			var oFilter1 = new Filter("Plant", sap.ui.model.FilterOperator.EQ, userPlant);
 
 			//Bind items
 			var oTemplate = new sap.m.ColumnListItem({
 				cells: [
-					new sap.m.Text().bindText({
+					new Text().bindText({
 						path: "Id",
 						formatter: this.formatter.removeLeadingZerosFromString
 					}),
-					new sap.m.Text({
+					new Text({
 						text: "{Name}"
 					}),
-					new sap.m.Text({
+					new Text({
 						text: "{MPN}"
 					}),
-					new sap.m.Text({
+					new Text({
 						text: "{Manufacturer}"
 					})
 				]

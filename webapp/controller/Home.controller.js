@@ -5,22 +5,21 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/m/MessageToast"
-], function(BaseController, JSONModel, formatter, MessageBox, Filter, MessageToast) {
+], function (BaseController, JSONModel, formatter, MessageBox, Filter, MessageToast) {
 	"use strict";
 	return BaseController.extend("pd.pm.lite.controller.Home", {
 
-		onDisplayNotFound: function(oEvent) {
+		onDisplayNotFound: function (oEvent) {
 			// display the "notFound" target without changing the hash
 			this.getRouter().getTargets().display("notFound", {
 				fromTarget: "home"
 			});
 		},
 		formatter: formatter,
-		onInit: function() {
+		onInit: function () {
 			//Router
 			var oRouter = this.getRouter();
 			oRouter.attachRouteMatched(this._onObjectMatched, this);
-			this._toolBar = this.getView().byId("toolBar");
 			this._ComponentDialog = this.getView().byId("idComponentDialog");
 			this._oTable = this.getView().byId("ordersTable");
 			this._oCount = this.getView().byId("countId");
@@ -33,59 +32,16 @@ sap.ui.define([
 
 			this.getView().setModel(chartModel, "chartdata");
 		},
-		_onObjectMatched: function(oEvent) {
+		_onObjectMatched: function (oEvent) {
 			if (oEvent.getParameter("name") !== "appHome") {
 				return;
 			}
-			var that = this;
-			this._toolBar.getElementBinding().attachEventOnce("dataReceived", function(evt) {
-				var userDefaults = evt.getSource().getModel().getData(evt.getSource().sPath);
-				that._userDefaults = userDefaults;
-				var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userDefaults.Plant);
-				var oFilter2 = new sap.ui.model.Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, userDefaults.WorkCenter);
-				var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, userDefaults.ViewType);
-				var combinedFilter = [oFilter1, oFilter2, oFilter3];
-				this._currentFilter = combinedFilter;
-				// this._busyDialog.open();
-				// that.getView().getModel().read(
-				// 	"/WorkOrders", {
-				// 		filters: combinedFilter,
-				// 		success: function(oData) {
-				// 			that._busyDialog.close();
-				// 			that.getView().getModel("localModel").setData(oData);
-				// 			that._oTable.bindRows("localModel>/results");
-				// 			var oBinding = that._oTable.getBinding("rows");
-				// 			oBinding.attachChange(function(evt) { //This event will be called by any change. Ex: Filtering, Search etc.
-				// 				that._oCount.setText("Total Records: " + oBinding.getLength());
-				// 				//Create JSON the Graph
-				// 				var chartArray = [];
-				// 			});
-				// 		},
-				// 		error: function() {
-				// 			this._busyDialog.close();
-				// 		}
-				// 	});
-				if (userDefaults.ViewType === "Headers") {
-					this.showOperationColumns(false);
-				} else {
-					this.showOperationColumns(true);
-				}
-				//Pre Fetch the hierarchy for the user's default plant
-				that.createHierarchyPopup(userDefaults.Plant);
-
-				// //Pre create teh Personas view and add it to the app
-				// var personasView = sap.ui.xmlview({
-				// 	viewName: "pd.pm.lite.view.personas"
-				// });
-				// this.getView().addDependent(personasView);
-
-			}, this);
 
 			//Set Tootips
 			this.setTooltips();
 
 		},
-		onAfterRendering: function() {
+		onAfterRendering: function () {
 			var that = this;
 			var oModel = that.getView().getModel();
 			//Do not refresh everytime the view is loaded
@@ -94,72 +50,46 @@ sap.ui.define([
 				oModel.read(
 					"/WorkOrders", {
 						groupId: "initialRead",
-						success: function(oData) {
+						success: function (oData) {
 							that._busyDialog.close();
 							that.getView().getModel("localModel").setData(oData);
 							that._oTable.bindRows("localModel>/results");
 							var oBinding = that._oTable.getBinding("rows");
-							oBinding.attachChange(function() { //This event will be called by any change. Ex: Filtering, Search etc.
+							that._oCount.setText("Total Records: " + oBinding.getLength()); //Count for the initial run
+							oBinding.attachChange(function () { //This event will be called by any change. Ex: Filtering, Search etc.
 								that._oCount.setText("Total Records: " + oBinding.getLength());
 							});
 						},
-						error: function() {
+						error: function () {
 							this._busyDialog.close();
 						}
 					});
+
+				this.getView().byId("toolBar").bindElement("/UserSettings('dummy')", {
+					groupId: "initialRead"
+				});
+				this.getView().byId("toolBar").getElementBinding().attachDataReceived(function (evt) {
+					this._userDefaults = evt.getParameter("data");
+					var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._userDefaults.Plant);
+					var oFilter2 = new sap.ui.model.Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, this._userDefaults.WorkCenter);
+					var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, this._userDefaults.ViewType);
+					var combinedFilter = [oFilter1, oFilter2, oFilter3];
+					this._currentFilter = combinedFilter;
+					if (this._userDefaults.ViewType === "Headers") {
+						this.showOperationColumns(false);
+					} else {
+						this.showOperationColumns(true);
+					}
+					//Pre Fetch the hierarchy for the user's default plant
+					this.createHierarchyPopup(this._userDefaults.Plant);
+				}.bind(this));
 
 				this.getView().getModel().submitChanges({ //There are no changes here. It is just initial reads for user settings and value helps
 					groupId: "initialRead"
 				});
 			}
-
-			// this._toolBar.getElementBinding().attachEventOnce("dataReceived", function(evt) {
-			// 	var userDefaults = evt.getSource().getModel().getData(evt.getSource().sPath);
-			// 	that._userDefaults = userDefaults;
-			// 	var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, userDefaults.Plant);
-			// 	var oFilter2 = new sap.ui.model.Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, userDefaults.WorkCenter);
-			// 	var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, userDefaults.ViewType);
-			// 	var combinedFilter = [oFilter1, oFilter2, oFilter3];
-			// 	this._currentFilter = combinedFilter;
-			// 	// this._busyDialog.open();
-			// 	// that.getView().getModel().read(
-			// 	// 	"/WorkOrders", {
-			// 	// 		filters: combinedFilter,
-			// 	// 		success: function(oData) {
-			// 	// 			that._busyDialog.close();
-			// 	// 			that.getView().getModel("localModel").setData(oData);
-			// 	// 			that._oTable.bindRows("localModel>/results");
-			// 	// 			var oBinding = that._oTable.getBinding("rows");
-			// 	// 			oBinding.attachChange(function(evt) { //This event will be called by any change. Ex: Filtering, Search etc.
-			// 	// 				that._oCount.setText("Total Records: " + oBinding.getLength());
-			// 	// 				//Create JSON the Graph
-			// 	// 				var chartArray = [];
-			// 	// 			});
-			// 	// 		},
-			// 	// 		error: function() {
-			// 	// 			this._busyDialog.close();
-			// 	// 		}
-			// 	// 	});
-			// 	if (userDefaults.ViewType === "Headers") {
-			// 		this.showOperationColumns(false);
-			// 	} else {
-			// 		this.showOperationColumns(true);
-			// 	}
-			// 	//Pre Fetch the hierarchy for the user's default plant
-			// 	that.createHierarchyPopup(userDefaults.Plant);
-
-			// 	// //Pre create teh Personas view and add it to the app
-			// 	// var personasView = sap.ui.xmlview({
-			// 	// 	viewName: "pd.pm.lite.view.personas"
-			// 	// });
-			// 	// this.getView().addDependent(personasView);
-
-			// }, this);
-
-			// //Set Tootips
-			// this.setTooltips();
 		},
-		setTooltips: function() {
+		setTooltips: function () {
 			//Sch.
 			var sHtml = "Schedule Compliance<br>";
 			sHtml += "<hr>";
@@ -188,7 +118,7 @@ sap.ui.define([
 			//Schedule Column
 			this._oTable.getColumns()[5].getLabel().setTooltip(oRttTextFieldDays);
 		},
-		searchTable: function(evt) {
+		searchTable: function (evt) {
 			var oTable = this.getView().byId("ordersTable");
 			var searchTerm = evt.getParameter("query");
 			if (searchTerm === "") {
@@ -215,7 +145,8 @@ sap.ui.define([
 				}));
 			}
 		},
-		showComponentValueHelp: function(oEvent) {
+
+		showComponentValueHelp: function (oEvent) {
 			var ComponentDialog = this.getView().getController()._ComponentDialog;
 			//ComponentDialog.data("source", oEvent.getSource());
 
@@ -224,7 +155,8 @@ sap.ui.define([
 
 			this.getView().getController()._ComponentDialog.open();
 		},
-		triggerPrint: function() {
+
+		triggerPrint: function () {
 			var oView = this.getView();
 
 			//Selected row data
@@ -261,23 +193,23 @@ sap.ui.define([
 			oModel.callFunction("/PrintWorkOrders", {
 				method: "GET",
 				urlParameters: urlParameters,
-				success: function(oData, response) {
+				success: function (oData, response) {
 					oView.setBusy(false);
 					MessageToast.show("Orders sent to printer");
 				},
-				error: function(oError) {
+				error: function (oError) {
 					oView.setBusy(false);
 
 				}
 			});
 
 		},
-		triggerMM03: function() {
+		triggerMM03: function () {
 			//Open MM03
 			var data = {};
 			this.gotoPersonas("MM03", data);
 		},
-		gotoIW31: function(evt) {
+		gotoIW31: function (evt) {
 			//Get Selected Data
 			var hierarchyTable = evt.getSource().getParent().getParent();
 			var selectedObject = hierarchyTable.getContextByIndex(hierarchyTable.getSelectedIndex()).getObject();
@@ -285,9 +217,9 @@ sap.ui.define([
 			//Check if nothing was selected
 
 			var data = {};
-			data.plant = this.getView().byId("plantId").getValue();
-			data.MainWorkCenter = this.getView().byId("workCenterId").getValue();
-			if (data.MainWorkCenter === "*" || data.MainWorkCenter === "E*"){
+			data.plant = this.getView().byId("plantId").getSelectedKey();
+			data.MainWorkCenter = this.getView().byId("workCenterId").getSelectedKey();
+			if (data.MainWorkCenter === "*" || data.MainWorkCenter === "E*") {
 				data.MainWorkCenter = this._userDefaults.WorkCenter; //go back to the user's default work center
 			}
 			if (selectedObject.FunctionalLocation) { //This is a Functional location
@@ -316,7 +248,7 @@ sap.ui.define([
 			//Close the popup
 			hierarchyTable.getParent().close();
 		},
-		triggerConfirm: function(evt) {
+		triggerConfirm: function (evt) {
 			var context = evt.getSource().getParent().getBindingContext("localModel");
 			var data = {};
 			data.OrderNumber = context.getProperty("OrderNumber");
@@ -324,7 +256,7 @@ sap.ui.define([
 				order: data.OrderNumber
 			});
 		},
-		triggerChange: function(evt) {
+		triggerChange: function (evt) {
 			var context = evt.getSource().getParent().getBindingContext("localModel");
 			var data = {};
 			data.OrderNumber = context.getProperty("OrderNumber");
@@ -332,18 +264,18 @@ sap.ui.define([
 				order: data.OrderNumber
 			});
 		},
-		performLogout: function() {
+		performLogout: function () {
 			this.getView().setBusy(true);
 			window.location.replace("/sap/public/bc/icf/logoff");
 		},
-		getIcon: function(oType) {
+		getIcon: function (oType) {
 			if (oType) {
 				return "sap-icon://functional-location";
 			} else {
 				return "sap-icon://technical-object";
 			}
 		},
-		getTooltip: function(oType) {
+		getTooltip: function (oType) {
 			if (oType) {
 				return "Functional Location";
 			} else {
@@ -351,7 +283,7 @@ sap.ui.define([
 			}
 
 		},
-		getTimeStamp: function() {
+		getTimeStamp: function () {
 			// Create a date object with the current time
 			var now = new Date();
 			// Create an array with the current month, day and time
@@ -374,7 +306,7 @@ sap.ui.define([
 			// Return the formatted string
 			return date.join("/") + " " + time.join(":") + " " + suffix;
 		},
-		createHierarchyPopup: function(plant) {
+		createHierarchyPopup: function (plant) {
 			var controller = this;
 			var oRowTemplate = new sap.ui.layout.HorizontalLayout({
 				content: [new sap.ui.core.Icon({
@@ -438,7 +370,7 @@ sap.ui.define([
 			//Set Data to the popup
 			this.setDataToHierarchyPopup(oHierarchyPopup, plant);
 		},
-		setDataToHierarchyPopup: function(popup, plant) {
+		setDataToHierarchyPopup: function (popup, plant) {
 			var that = this;
 
 			//Get current hash
@@ -457,7 +389,7 @@ sap.ui.define([
 			//Make a server call and pass the hash
 			oModel4Hierarchies.read("/CompleteHierarchy", {
 				filters: [plantFilter],
-				success: function(data, response) {
+				success: function (data, response) {
 					//Check repsonse header to see if "No_Change" was sent
 					if (response.headers.no_change) {
 						//No change in the data. Set the data from local storage
@@ -503,14 +435,14 @@ sap.ui.define([
 					});
 					popup.setBusy(false);
 				},
-				error: function() {
+				error: function () {
 					popup.setBusy(false);
 				}
 			});
 		},
-		openHierarchyPopup: function() {
+		openHierarchyPopup: function () {
 			//Get the current plant in the screen
-			var plant = this.getView().byId("plantId").getValue();
+			var plant = this.getView().byId("plantId").getSelectedKey();
 
 			//If the popup does not already exist, create it
 			if (!this._oHierarchyPopupNew.hasOwnProperty(plant)) {
@@ -520,7 +452,7 @@ sap.ui.define([
 			//Open the popup
 			this._oHierarchyPopupNew[plant].open();
 		},
-		createNew: function() {
+		createNew: function () {
 			var controller = this;
 			if (!this._hierarchyPopup) {
 				if (!this._oHierarchyTable) {
@@ -591,7 +523,7 @@ sap.ui.define([
 			}
 			//Get from local storage
 			var data = {};
-			var plant = this.getView().byId("plantId").getValue();
+			var plant = this.getView().byId("plantId").getSelectedKey();
 			data = this._oJQueryStorage.get("hierarchy_" + plant);
 			var hierarchyFrom = this._oJQueryStorage.get("hierarchy_" + plant + "_StoredOn");
 			var timeStampLabel = sap.ui.getCore().byId("timestamp");
@@ -612,8 +544,8 @@ sap.ui.define([
 			}
 			this._hierarchyPopup.open();
 		},
-		searchHierarchy: function(evt) {
-			var plant = this.getView().byId("plantId").getValue();
+		searchHierarchy: function (evt) {
+			var plant = this.getView().byId("plantId").getSelectedKey();
 			var searchTerm = evt.getParameter("query");
 
 			var searchTerms = searchTerm.split(" "); //words separated by space are considered as separate search terms. 
@@ -646,15 +578,15 @@ sap.ui.define([
 				oHierarchyTable.addEventDelegate({});
 			}
 		},
-		refreshHierarchy: function() {
-			var plant = this.getView().byId("plantId").getValue();
+		refreshHierarchy: function () {
+			var plant = this.getView().byId("plantId").getSelectedKey();
 			var currentHash = this._oJQueryStorage.get("hash_" + plant);
 			this._oJQueryStorage.remove("hierarchyStoredOn");
 			this.refreshFromServer(currentHash);
 			// Above fetch should happen only once per application load. Have a parameter to indicate that the hierarchy for this plant has already been fetched.
 			// If the hierarchy has to be fetched from server again, application has to be reloaded. (browser refresh)
 		},
-		showOperations: function() {
+		showOperations: function () {
 			//Selected row data
 			var selectedIndices = this._oTable.getSelectedIndices();
 			if (selectedIndices.length > 10) {
@@ -680,7 +612,7 @@ sap.ui.define([
 			}
 			this.gotoPersonas("ZOPERATIONS_PERSONAS", orderData);
 		},
-		refreshFromServer: function(currentHash) {
+		refreshFromServer: function (currentHash) {
 			//If no data, then get it from server
 			this._hierarchyPopup.setBusyIndicatorDelay(100);
 			this._hierarchyPopup.setBusy(true);
@@ -701,7 +633,7 @@ sap.ui.define([
 			});
 			oModel4Hierarchies.read("/CompleteHierarchy", {
 				filters: [plantFilter],
-				success: function(data, response) {
+				success: function (data, response) {
 					//Check repsonse header to see if "No_Change" was sent
 					if (response.headers["no_change"]) {
 						//Nothing to do. No change in the data
@@ -750,18 +682,18 @@ sap.ui.define([
 					});
 					that._hierarchyPopup.setBusy(false);
 				},
-				error: function() {
+				error: function () {
 					that._hierarchyPopup.setBusy(false);
 				}
 			});
 
 		}, //called by refreshHierarchy
-		triggerMeasurement: function() {
+		triggerMeasurement: function () {
 			// var json = {};
 			// this.gotoPersonas("IK34", json);
 
 			//Check if Entry List for the Plant is already available
-			var plant = this.getView().byId("plantId").getValue();
+			var plant = this.getView().byId("plantId").getSelectedKey();
 
 			//If the popup does not already exist, create it
 			if (!this._oEntryListPopup.hasOwnProperty(plant)) {
@@ -775,7 +707,7 @@ sap.ui.define([
 			//Open the popup
 			this._oEntryListPopup[plant].open();
 		},
-		setDataToEntryListPopup: function(oControl, plant) {
+		setDataToEntryListPopup: function (oControl, plant) {
 
 			var that = this;
 			this._oEntryListPopup[plant].setBusy(true);
@@ -810,7 +742,7 @@ sap.ui.define([
 
 				oModel.read("/EntryLists", {
 					filters: [oFilter],
-					success: function(data, response) {
+					success: function (data, response) {
 						if (response.headers.no_change) {
 							//No change in the data. Set the data from local storage
 							oEntryListStoredData = this._oJQueryStorage.get("EntryList_" + plant);
@@ -830,7 +762,7 @@ sap.ui.define([
 						localStorageModel.setData(currentData);
 						that._oEntryListPopup[plant].setBusy(false);
 					},
-					error: function(err) {
+					error: function (err) {
 						that._oEntryListPopup[plant].setBusy(false);
 					}
 				});
@@ -843,15 +775,15 @@ sap.ui.define([
 				this._oEntryListPopup[plant].setBusy(false);
 			}
 		},
-		showMeasurementScreen: function(evt) {
+		showMeasurementScreen: function (evt) {
 			this.getRouter().navTo("measurement", {
 				entryList: evt.getParameter("listItem").getBindingContext("localStorageModel").getObject().Id
 			});
 		},
-		closeDialog: function() {
-			this._oEntryListPopup[this.getView().byId("plantId").getValue()].close();
+		closeDialog: function () {
+			this._oEntryListPopup[this.getView().byId("plantId").getSelectedKey()].close();
 		},
-		gotoPersonas: function(tcode, data) {
+		gotoPersonas: function (tcode, data) {
 			this.getRouter().navTo("personas");
 			var url = this._userDefaults.PersonasUrl + "#" + tcode + "&" + JSON.stringify(data);
 			document.getElementById("webguiFrame").src = url;
@@ -863,7 +795,7 @@ sap.ui.define([
 				src: 'session.startTransaction("' + tcode + '");'
 			});
 		},
-		showOrders: function() {
+		showOrders: function () {
 			//Selected row data
 			var selectedIndices = this._oTable.getSelectedIndices();
 			if (selectedIndices.length > 10) {
@@ -889,19 +821,19 @@ sap.ui.define([
 			}
 			this.gotoPersonas("ZORDERS_PERSONAS", orderData);
 		},
-		showOperationColumns: function(value) {
+		showOperationColumns: function (value) {
 			this.getView().byId("Operations1").setVisible(value);
 			this.getView().byId("Operations2").setVisible(value);
 			this.getView().byId("Operations3").setVisible(value);
 		},
-		getFilteredOrders: function() {
+		getFilteredOrders: function () {
 
 			this._busyDialog.open();
 
 			//Find new filter values
-			var plant = this.getView().byId("plantId").getValue();
-			var workCenter = this.getView().byId("workCenterId").getValue();
-			var viewType = this.getView().byId("viewTypeId").getValue();
+			var plant = this.getView().byId("plantId").getSelectedKey();
+			var workCenter = this.getView().byId("workCenterId").getSelectedKey();
+			var viewType = this.getView().byId("viewTypeId").getSelectedKey();
 
 			if (viewType === "Headers") {
 				this.showOperationColumns(false);
@@ -918,7 +850,7 @@ sap.ui.define([
 			this.getView().getModel().read(
 				"/WorkOrders", {
 					filters: combinedFilter,
-					success: function(oData) {
+					success: function (oData) {
 						that._busyDialog.close();
 						that.getView().getModel("localModel").setData(oData);
 					}

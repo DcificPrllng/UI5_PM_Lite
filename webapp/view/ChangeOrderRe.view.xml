@@ -7,12 +7,10 @@
 			<ObjectPageHeader objectTitle="{jsonModel>/WorkOrderDetail/ShortDescription}" showTitleSelector="false"
 				objectSubtitle="{jsonModel>/WorkOrderDetail/OrderNumber}">
 				<actions>
-					<ObjectPageHeaderActionButton id="release" icon="sap-icon://flag" text="{i18n>Release}" press=".ReleaseOrder"
-						visible="{jsonModel>/WorkOrderDetail/ShowReleaseButton}"/>
 					<ObjectPageHeaderActionButton type="Accept" id="save" icon="sap-icon://save" hideText="false" text="{i18n>Save}" press=".SaveOrder"/>
+					<ObjectPageHeaderActionButton id="release" icon="sap-icon://flag" text="{i18n>Release}" press=".ReleaseOrder" hideText="false"
+						visible="{jsonModel>/WorkOrderDetail/ShowReleaseButton}"/>					
 					<ObjectPageHeaderActionButton type="Reject" id="cancel" icon="sap-icon://cancel" hideText="false" text="{i18n>Cancel}" press=".GoHome"/>
-					<!--<ObjectPageHeaderActionButton icon="sap-icon://attachment"-->
-					<!--	text="{= ${jsonModel>/OrderAttachments/length} + ${jsonModel>/NotificationAttachments/length}}" press=".ShowAttachmentDialog"/>-->
 				</actions>
 			</ObjectPageHeader>
 		</headerTitle>
