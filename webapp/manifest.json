@@ -141,7 +141,7 @@
 					"viewLevel": 2
 				},
 				"changeOrder": {
-					"viewName": "ChangeOrderRe",
+					"viewName": "ChangeOrder",
 					"viewId": "changeView",
 					"viewLevel": 2
 				},

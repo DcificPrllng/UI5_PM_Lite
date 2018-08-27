@@ -7,15 +7,15 @@ sap.ui.define([
 	"sap/m/Dialog",
 	"sap/m/Text",
 	"sap/m/Button"
-], function(Controller, History, formatter, UploadCollectionItem, Filter, Dialog, Text, Button) {
+], function (Controller, History, formatter, UploadCollectionItem, Filter, Dialog, Text, Button) {
 	"use strict";
 
 	return Controller.extend("pd.pm.lite.controller.BaseController", {
 		formatter: formatter,
-		onInit: function() {
+		onInit: function () {
 			//Polyfill for IE11
 			if (!String.prototype.endsWith) {
-				String.prototype.endsWith = function(searchString, position) {
+				String.prototype.endsWith = function (searchString, position) {
 					var subjectString = this.toString();
 					if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
 						position = subjectString.length;
@@ -25,12 +25,12 @@ sap.ui.define([
 					return lastIndex !== -1 && lastIndex === position;
 				};
 			}
-		
+
 		},
-		getRouter: function() {
+		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
-		onNavBack: function(oEvent) {
+		onNavBack: function (oEvent) {
 			var oHistory, sPreviousHash;
 
 			oHistory = History.getInstance();
@@ -43,7 +43,7 @@ sap.ui.define([
 				this.getRouter().navTo("appHome", {}, true /*no history*/ );
 			}
 		},
-		ShowRightAttachments: function(evt) {
+		ShowRightAttachments: function (evt) {
 			var selectedButton = evt.getSource().getId();
 			var modelName;
 			if (selectedButton.indexOf("confirmView") > -1) {
@@ -84,7 +84,7 @@ sap.ui.define([
 			});
 			uploadCollection.bindItems(modelName + ">" + urlPart, oTemplate);
 		},
-		onBeforeUploadStarts: function(oEvent) {
+		onBeforeUploadStarts: function (oEvent) {
 			// Header Slug
 			var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
 				name: "slug",
@@ -103,10 +103,10 @@ sap.ui.define([
 			this.getView().byId("UploadCollection").setBusy(true);
 
 		},
-		onDialogClose: function(evt) {
+		onDialogClose: function (evt) {
 			evt.getSource().getParent().close();
 		},
-		onFileDeleted: function(evt) {
+		onFileDeleted: function (evt) {
 			var modelName;
 			if (evt.getSource().getId().indexOf("confirmView") > -1) {
 				modelName = "confirmModel";
@@ -132,19 +132,19 @@ sap.ui.define([
 			//Trigger Delete
 			var that = this;
 			oDataModel.remove(deletionUrl, {
-				success: function(response) {
+				success: function (response) {
 					that.reloadAttachments();
 				},
-				error: function(error) {
+				error: function (error) {
 					uploader.setBusy(false);
 				}
 			});
 		},
-		onUploadComplete: function() {
+		onUploadComplete: function () {
 			// this.getView().byId("UploadCollection").setBusy(false);
 			this.reloadAttachments();
 		},
-		reloadAttachments: function() {
+		reloadAttachments: function () {
 			var currentViewId = this.getView().getId();
 			var modelName;
 			if (currentViewId.indexOf("confirmView") > -1) {
@@ -167,7 +167,7 @@ sap.ui.define([
 			var jsonModel = uploadCollection.getModel(modelName).getData();
 			//Read attachements
 			this.getView().getModel().read(readURL, {
-				success: function(oData) {
+				success: function (oData) {
 					uploadCollection.setBusy(false);
 
 					if (orderSelected) {
@@ -205,15 +205,15 @@ sap.ui.define([
 				}
 			});
 		},
-		onUploadTerminated: function(err) {
+		onUploadTerminated: function (err) {
 			this.getView().byId("UploadCollection").setBusy(false);
 			//Show errors
 
 		},
-		ShowAttachmentDialog: function() {
+		ShowAttachmentDialog: function () {
 			this.getView().getController()._attachmentDialog.open();
 		},
-		OnComponentSearch: function(oEvent) {
+		OnComponentSearch: function (oEvent) {
 			//Get the search item
 			var searchTerm = oEvent.getParameter("value");
 
@@ -248,7 +248,7 @@ sap.ui.define([
 				]
 			});
 			var that = this;
-			var updateTitle = function(evt) {
+			var updateTitle = function (evt) {
 				var count = evt.getParameters().data.__count;
 				var formattedCount = formatter.integerWithThousandsSeparator(count, this.getModel("i18n").getResourceBundle().getText("matches"));
 				//Convert into 
@@ -266,47 +266,44 @@ sap.ui.define([
 			});
 			that._ComponentDialog.getBinding("items").attachDataReceived(updateTitle, that._ComponentDialog);
 		},
-		filterSmartTable: function() {
-			this.getView().byId("smartTable_ResponsiveTable").rebindTable();
-		},
-		onClearFilter: function() {
-			//Clear filters
-			this.getView().byId("SAPMaterialNumber").setValue("");
-			this.getView().byId("MaterialDescription").setValue("");
-			this.getView().byId("MPN").setValue("");
-			//Rebind
-			this.getView().byId("smartTable_ResponsiveTable").rebindTable();
-		},
-		onBeforeRebindTable: function(oEvent) {
-			var oBindingParams = oEvent.getParameter("bindingParams");
-			oBindingParams.filters = this.getFilterData();
-		},
-		getFilterData: function() {
-			var smartTableFilter = [];
-
+		filterTable: function () {
+			var allFilters = [];
 			var materialNumber = this.getView().byId("SAPMaterialNumber").getValue();
 			var description = this.getView().byId("MaterialDescription").getValue();
 			var MPN = this.getView().byId("MPN").getValue();
 			var oFilter;
 			if (materialNumber.length) {
 				oFilter = new Filter("MaterialNumber", sap.ui.model.FilterOperator.Contains, materialNumber.toUpperCase());
-				smartTableFilter.push(oFilter);
+				allFilters.push(oFilter);
 			}
 
 			if (description.length) {
 				oFilter = new Filter("Description", sap.ui.model.FilterOperator.Contains, description.toUpperCase());
-				smartTableFilter.push(oFilter);
+				allFilters.push(oFilter);
 			}
 			if (MPN.length) {
 				oFilter = new Filter("MPN", sap.ui.model.FilterOperator.Contains, MPN.toUpperCase());
-				smartTableFilter.push(oFilter);
+				allFilters.push(oFilter);
 			}
-			return smartTableFilter;
+			this.getView().byId("componentTable").getBinding("items").filter(allFilters);
 		},
-		updateSelectedMaterial: function(evt) {
 
+		onClearFilter: function () {
+			//Clear filters
+			this.getView().byId("SAPMaterialNumber").setValue("");
+			this.getView().byId("MaterialDescription").setValue("");
+			this.getView().byId("MPN").setValue("");
+			this.getView().byId("componentTable").getBinding("items").filter(null);
+		},
+		
+		onBeforeRebindTable: function (oEvent) {
+			var oBindingParams = oEvent.getParameter("bindingParams");
+			oBindingParams.filters = this.getFilterData();
+		},
+
+		updateSelectedMaterial: function (evt) {
 			//Get selection
-			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
+			var oTable = this.getView().byId("componentTable");
 			// var selectedIndex = oTable.getSelectedIndex();
 			if (!oTable.getSelectedItem()) { //Nothing selected
 				var dialog = new Dialog({
@@ -318,16 +315,16 @@ sap.ui.define([
 					}),
 					beginButton: new Button({
 						text: "OK",
-						press: function() {
+						press: function () {
 							dialog.close();
 						}
 					}),
-					afterClose: function() {
+					afterClose: function () {
 						dialog.destroy();
 					}
 				});
 				dialog.open();
-				return; 
+				return;
 			}
 			var selectedComponent = oTable.getSelectedContexts()[0].getObject();
 
@@ -344,24 +341,13 @@ sap.ui.define([
 			row.getCells()[2].setText(selectedComponent.Description); //Component's description
 			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM			
 		},
-		showComponentValueHelp: function(oEvent) {
+		
+		showComponentValueHelp: function (oEvent) {
 			var ComponentDialog = this.getView().getController()._ComponentDialog;
 			ComponentDialog.data("source", oEvent.getSource());
 			//Clear current entries
 			// ComponentDialog.removeAllItems();
 			this.getView().getController()._ComponentDialog.open();
-		},
-		onDataReceived: function() {
-			// var that = this;
-			// window.setTimeout(function() { //Wait for table to be rendered
-			// 	var oTable = that.getView().byId("smartTable_ResponsiveTable").getTable();
-			// 	var aColumns = oTable.getColumns();
-			// 	if (aColumns.length > 5) { //If more than 5 columns were selected to be displayed
-			// 		for (var i = 0; i < aColumns.length; i++) {
-			// 			oTable.autoResizeColumn(i);
-			// 		}
-			// 	}
-			// }, 1000);
 		}
 	});
 

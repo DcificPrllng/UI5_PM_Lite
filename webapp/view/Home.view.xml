@@ -4,9 +4,9 @@
 	<f:DynamicPage id="dynamicPageId">
 		<f:title>
 			<f:DynamicPageTitle>
-				<f:heading>
-					<vm:VariantManagement standardItemText="Service Orders/Operations"></vm:VariantManagement>
-				</f:heading>
+				<!--<f:heading>-->
+				<!--	<vm:VariantManagement standardItemText="Service Orders/Operations"></vm:VariantManagement>-->
+				<!--</f:heading>-->
 				<f:actions>
 					<ToolbarSpacer/>
 					<Button icon="sap-icon://add" press="openHierarchyPopup" text="New Order" tooltip="Create"/>

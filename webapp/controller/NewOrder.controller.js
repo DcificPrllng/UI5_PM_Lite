@@ -60,20 +60,13 @@ sap.ui.define([
 			//THis model will be used for sending all the data
 			this.createModel = new JSONModel();
 			this.getView().setModel(this.createModel, "createModel");
-			var oOperationsTable = this.getView().byId("OperationsTable");
-			
-			//Single select to componet valuehelp
-			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
-			oTable.setMode("SingleSelectLeft");		
-			oTable.setProperty("includeItemInSelection", true);
-			oTable.setProperty("growingThreshold", 30);
-			oTable.setProperty("fixedLayout",false);
-			oTable.setRememberSelections(false);	
 		},
+		
 		onExit: function() {
 			//Initialize the model before getting out
 			this.createModel.setData(this.initialData);
 		},
+		
 		onDataReceived: function(channel, event, data) {
 			// do something with the data (bind to model)
 			this.createModel.setProperty("/WorkOrderDetail/FunctionalLocation", data.FunctionalLocation);
@@ -107,6 +100,7 @@ sap.ui.define([
 			oView.setBusy(true);
 			oView.getModel().read(sPath, oParameters);
 		},
+		
 		_onObjectMatched: function(oEvent) {
 			if (oEvent.getParameter("name") !== "newOrder") {
 				return;
@@ -172,6 +166,7 @@ sap.ui.define([
 				this.createNewRowOperations();
 			}
 		},
+		
 		validateDates: function(evt) {
 			var form = evt.getSource().getParent().getParent();
 			var formContent = form.getFormElements();
@@ -193,6 +188,7 @@ sap.ui.define([
 				endDateComponent.setValueState("None");				
 			}
 		},			
+		
 		getComponentDetail: function(evt) {
 			var enteredComponent = evt.getParameter("newValue");
 			var oView = this.getView();
@@ -236,6 +232,7 @@ sap.ui.define([
 				}
 			});
 		},
+		
 		createNewRowOperations: function() {
 			var currentOperations = this.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
 
@@ -257,6 +254,7 @@ sap.ui.define([
 			});
 			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
 		},
+		
 		createNewRowComponents: function() {
 			var currentComponents = this.getView().getModel("createModel").getProperty("/WorkOrderDetail/Components");
 			//Find the larget ItemId
@@ -278,6 +276,7 @@ sap.ui.define([
 			});
 			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 		},
+		
 		getValidDamageCodes: function(oEvent) {
 			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
 			var codePath = currentPath + "/DamageCodes";
@@ -290,6 +289,7 @@ sap.ui.define([
 				additionalText: "{Name}"
 			}));
 		},
+		
 		getValidCauseCodes: function(oEvent) {
 			var currentPath = oEvent.getSource().getSelectedItem().getBindingContext().getPath();
 			var codePath = currentPath + "/CauseCodes";
@@ -302,6 +302,7 @@ sap.ui.define([
 				additionalText: "{Name}"
 			}));
 		},
+		
 		getMax: function(arr, prop) {
 			var max;
 			if (arr.length === 0) {
@@ -314,10 +315,12 @@ sap.ui.define([
 			}
 			return parseInt(max[prop]);
 		},
+		
 		pad: function(num, size) {
 			var s = "000000000" + num;
 			return s.substr(s.length - size);
 		},
+		
 		deleteSelectedComponents: function() {
 			var that = this;
 
@@ -347,6 +350,7 @@ sap.ui.define([
 			});
 			that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Components", currentComponents);
 		},
+		
 		deleteSelectedOperations: function() {
 			var that = this;
 			//Get Table reference
@@ -361,7 +365,6 @@ sap.ui.define([
 			var currentOperationsRef = that.getView().getModel("createModel").getProperty("/WorkOrderDetail/Operations");
 			var currentOperations = currentOperationsRef.slice();
 			if (currentOperations.length < 2) {
-
 				var dialog = new Dialog({
 					title: "Warning",
 					type: "Message",
@@ -396,6 +399,7 @@ sap.ui.define([
 			});
 			that.getView().getModel("createModel").setProperty("/WorkOrderDetail/Operations", currentOperations);
 		},
+		
 		findAndRemove: function(array, property, value) {
 			array.forEach(function(result, index) {
 				if (result[property] === value) {
@@ -404,6 +408,7 @@ sap.ui.define([
 				}
 			});
 		},
+		
 		GoHome: function() {
 			//var oView = this.getView();
 			//Confirm from the user
@@ -432,13 +437,16 @@ sap.ui.define([
 			});
 			dialog.open();
 		},
+		
 		goHomeNoPrompt: function() {
 			// this.getView().getModel("createModel").setData(this.initialData);
 			window.location.hash = "#";
 		},
+		
 		updateNotificationGroup: function(evt){
 			this.getView().getModel("createModel").setProperty("/WorkOrderDetail/NotificationCodeGroup", evt.getSource().getSelectedItem().getBindingContext().getObject().Group);
 		},		
+		
 		SaveOrder: function() {
 			var validator = new Validator();
 
@@ -513,6 +521,7 @@ sap.ui.define([
 			});
 
 		},
+		
 		OnWorkCenterSelected: function(evt) {
 			var selectedWorkCenter = evt.getSource().getSelectedItem().getLabel();
 			var workCenterDialog = evt.getSource().getParent();
@@ -520,12 +529,14 @@ sap.ui.define([
 			workCenterDialog.data("source").setValue(selectedWorkCenter);
 			workCenterDialog.close();
 		},
+		
 		showWorkCenterValueHelp: function(oEvent) {
 			var WorkCenterDialog = this.getView().getController()._WorkCenterDialog;
 			this.getView().getController()._workCenterDialogList.removeSelections();
 			WorkCenterDialog.data("source", oEvent.getSource());
 			WorkCenterDialog.open();
 		},
+		
 		OnComponentSelected: function(evt) {
 			var selectedComponent = evt.getParameter("selectedItem").getBindingContext().getObject();
 			//Set the value to the right column item
@@ -535,6 +546,7 @@ sap.ui.define([
 			row.getCells()[2].setText(selectedComponent.Name); //Component's description
 			row.getCells()[4].setText(selectedComponent.UoM); //Component's UoM
 		},
+		
 		showComponentValueHelp: function(oEvent) {
 			var ComponentDialog = this.getView().getController()._ComponentDialog;
 			ComponentDialog.data("source", oEvent.getSource());
@@ -544,6 +556,7 @@ sap.ui.define([
 
 			this.getView().getController()._ComponentDialog.open();
 		},
+		
 		OnComponentSearch: function(oEvent) {
 			//Get the search item
 			var searchTerm = oEvent.getParameter("value");

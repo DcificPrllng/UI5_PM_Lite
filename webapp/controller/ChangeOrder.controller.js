@@ -41,17 +41,6 @@ sap.ui.define([
 			//Error Handling
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
-
-			//Tab handling for table
-			//var oTable = this.getView().byId("OperationsTable");
-			//this.setupTabHandling(oTable);
-			//Single select to componet valuehelp
-			var oTable = this.getView().byId("smartTable_ResponsiveTable").getTable();
-			oTable.setMode("SingleSelectLeft");
-			oTable.setProperty("includeItemInSelection", true);
-			oTable.setProperty("growingThreshold", 30);
-			oTable.setProperty("fixedLayout", false);
-			oTable.setRememberSelections(false);
 		},
 		onAfterRendering: function() {},
 		_onObjectMatched: function(oEvent) {

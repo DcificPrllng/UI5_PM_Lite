@@ -1,14 +1,14 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar" xmlns:smartTable="sap.ui.comp.smarttable">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:fb="sap.ui.comp.filterbar">
 	<Dialog id="idMaterialDialog" title="{i18n>Components}" contentWidth="1000px">
 		<fb:FilterBar id="listFilterBar" showFilterConfiguration="false" useToolbar="false" searchEnabled="true" showRestoreButton="false"
-			showClearButton="true" showClearOnFB="true" search="filterSmartTable" clear="onClearFilter">
+			showClearButton="true" showClearOnFB="true" search="filterTable" clear="onClearFilter">
 			<fb:filterItems>
-				<fb:FilterItem name="SAPMaterialNumber" label="{i18n>SAPMaterialNumber}" >
+				<fb:FilterItem name="SAPMaterialNumber" label="{i18n>SAPMaterialNumber}">
 					<fb:control>
-						<Input id="SAPMaterialNumber" />
+						<Input id="SAPMaterialNumber"/>
 					</fb:control>
 				</fb:FilterItem>
-				<fb:FilterItem name="MaterialDescription" label="{i18n>MaterialDescription}" >
+				<fb:FilterItem name="MaterialDescription" label="{i18n>MaterialDescription}">
 					<fb:control>
 						<Input id="MaterialDescription"/>
 					</fb:control>
@@ -21,20 +21,38 @@
 			</fb:filterItems>
 		</fb:FilterBar>
 		<VBox fitContainer="true">
-			<smartTable:SmartTable id="smartTable_ResponsiveTable" entitySet="MaterialOutputSet" dataReceived="onDataReceived" tableType="ResponsiveTable"
-				beforeRebindTable="onBeforeRebindTable" editable="false" showFullScreenButton="false" persistencyKey="SmartTableAnalytical_Explored"
-				useVariantManagement="false" useTablePersonalisation="false" header="Items" showRowCount="false" class="sapUiResponsiveContentPadding"
-				useExportToExcel="false" enableAutoBinding="false" ignoreFromPersonalisation="Deleted,MPNMaterial,NoOfMPNs" >
-				<smartTable:layoutData>
-					<FlexItemData growFactor="1" baseSize="80%"/>
-				</smartTable:layoutData>
-			</smartTable:SmartTable>
+			<Table id="componentTable" items="{/MaterialOutputSet}" mode="SingleSelectLeft" includeItemInSelection="true" growingThreshold="30" fixedLayout="true" rememberSelections="false">
+				<columns>
+					<Column>
+						<Text text="SAP MM#"/>
+					</Column>
+					<Column>
+						<Text text="Description"/>
+					</Column>
+					<Column>
+						<Text text="MPN"/>
+					</Column>
+					<Column>
+						<Text text="Manufacturer"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{MaterialNumber}"/>
+							<Text text="{Description}"/>
+							<Text text="{MPN}"/>							
+							<Text text="{Manufacturer}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
 		</VBox>
 		<beginButton>
 			<Button text="Select" press="updateSelectedMaterial"/>
 		</beginButton>
 		<endButton>
-			<Button text="Cancel" press="onDialogClose"/>			
+			<Button text="Cancel" press="onDialogClose"/>
 		</endButton>
 	</Dialog>
 </core:FragmentDefinition>

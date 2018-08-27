@@ -1,4 +1,4 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:common="sap.ui.commons">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table">
 	<Dialog id="userStatusDialog" title="{i18n>SetUserStatus}" contentWidth="25rem" contentHeight="715px" class="cisUserStatusDialog">
 		<table:Table id="UserStatusesWithNumber" selectionMode="Single" selectionBehavior="Row" rowSelectionChange=".CalculateUserStatus"
 			visibleRowCountMode="Fixed" visibleRowCount="5" rows="{path : 'jsonModel>/UserStatusesWithNumber'}" 
@@ -7,19 +7,19 @@
 				<table:Column width="3rem">
 					<Label text="{i18n>No.}"/>
 					<table:template>
-						<common:TextView text="{jsonModel>Number}"/>
+						<Text text="{jsonModel>Number}"/>
 					</table:template>
 				</table:Column>
 				<table:Column width="4rem">
 					<Label text="{i18n>Status}"/>
 					<table:template>
-						<common:TextView text="{jsonModel>Status}"/>
+						<Text text="{jsonModel>Status}"/>
 					</table:template>
 				</table:Column>
 				<table:Column width="14rem">
 					<Label text="{i18n>StatusText}"/>
 					<table:template>
-						<common:TextView text="{jsonModel>StatusText}"/>
+						<Text text="{jsonModel>StatusText}"/>
 					</table:template>
 				</table:Column>
 			</table:columns>
@@ -31,13 +31,13 @@
 				<table:Column width="4rem">
 					<Label text="{i18n>Status}"/>
 					<table:template>
-						<common:TextView text="{jsonModel>Status}"/>
+						<Text text="{jsonModel>Status}"/>
 					</table:template>
 				</table:Column>
 				<table:Column width="17rem">
 					<Label text="{i18n>StatusText}"/>
 					<table:template>
-						<common:TextView text="{jsonModel>StatusText}"/>
+						<Text text="{jsonModel>StatusText}"/>
 					</table:template>
 				</table:Column>
 			</table:columns>
