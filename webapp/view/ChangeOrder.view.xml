@@ -52,21 +52,13 @@
 										additionalText="{localStorageModel>Name}"></core:ListItem>
 								</m:items>
 							</m:ComboBox>
-							<!--<m:Label textAlign="Right" text="{i18n>FunLoc}" design="Bold" class="cisLabels cisTopMargin"/>-->
-							<!--<m:Input width="355px" enabled="false"-->
-							<!--	value="{parts:[{path: 'jsonModel>/WorkOrderDetail/FunctionalLocation'}, {path: 'jsonModel>/WorkOrderDetail/FunctionalLocationName'}], formatter: '.formatter.commonIDFormatter'}"-->
-							<!--	class="cisDisbaledInput"/>-->
 							<m:Label textAlign="Right" text="{i18n>PMActType}" class="cisTopMargin cisLabels" required="true"/>
-							<m:ComboBox width="308px" items="{jsonModel>/ActivityTypes}"
+							<m:ComboBox width="308px" items="{localStorageModel>/ActivityTypes}"
 								selectedKey="{path:'jsonModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}">
 								<m:items>
-									<core:ListItem text="{jsonModel>Code} ({jsonModel>Name})" key="{jsonModel>Code}" additionalText="{jsonModel>Name}"/>
+									<core:ListItem text="{localStorageModel>Code} ({localStorageModel>Name})" key="{localStorageModel>Code}" additionalText="{localStorageModel>Name}"/>
 								</m:items>
 							</m:ComboBox>
-							<!--<m:Label textAlign="Right" text="{i18n>Equipment}" design="Bold" class="cisLabels cisTopMargin"/>-->
-							<!--<m:Input width="355px" enabled="false"-->
-							<!--	value="{parts:[{path:'jsonModel>/WorkOrderDetail/Equipment'}, {path: 'jsonModel>/WorkOrderDetail/EquipmentName'}], formatter:'.formatter.equipment'}"-->
-							<!--	class="cisDisbaledInput"/>-->
 							<m:Label textAlign="Right" text="{i18n>Priority}" class="cisLabels cisTopMargin" required="true"/>
 							<m:ComboBox width="308px" enabled="{path: 'jsonModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.PriorityEditable'}"
 								selectedKey="{path:'jsonModel>/WorkOrderDetail/Priority'}" class="cisDisbaledInput">

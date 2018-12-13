@@ -19,13 +19,6 @@ sap.ui.define([
 			// create the views based on the url/hash
 			this.getRouter().initialize();
 
-			// var oModel = new Omodel({
-			// 	serviceUrl: "/sap/opu/odata/sap/ZWORKORDER_SRV",
-			// 	defaultBindingMode: "OneWay",
-			// 	refreshAfterChange: false,
-			// 	defaultCountMode: sap.ui.model.odata.CountMode.Inline
-			// });
-			
 			var oModel = this.getModel();
 			oModel.setDeferredBatchGroups(["saveAll", "initialRead", "saveMeasurements"]);
 

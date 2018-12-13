@@ -44,6 +44,8 @@ sap.ui.define([
 		},
 		onAfterRendering: function() {},
 		_onObjectMatched: function(oEvent) {
+			this.getOwnerComponent().BusyDialogGlobal.close();
+			
 			if (oEvent.getParameter("name") !== "changeOrder") {
 				return;
 			}
@@ -688,6 +690,7 @@ sap.ui.define([
 			workCenterDialog.data("source").setValue(selectedWorkCenter);
 			workCenterDialog.close();
 		},
+		
 		showWorkCenterValueHelp: function(oEvent) {
 			var WorkCenterDialog = this.getView().getController()._WorkCenterDialog;
 			this.getView().getController()._workCenterDialogList.removeSelections();
@@ -706,8 +709,8 @@ sap.ui.define([
 		_handleCValueHelpClose: function(oEvent) {
 			oEvent.getSource().getParent().close();
 		},
+		
 		showUserStatusValueHelp: function() {
-
 			var oView = this.getView();
 			var sPath = "/UserStatusValueHelp('" + this.getView().getModel("jsonModel").getData("/WorkOrderDetail").WorkOrderDetail.OrderNumber +
 				"')";

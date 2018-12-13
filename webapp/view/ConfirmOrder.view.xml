@@ -32,18 +32,14 @@
 						<form:SimpleForm layout="ResponsiveGridLayout" labelSpanXL="2" labelSpanL="2" labelSpanM="2" labelSpanS="12" adjustLabelSpan="false"
 							emptySpanXL="4" emptySpanL="4" emptySpanM="6" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="1">
 							<m:Label class="cisTopMargin" textAlign="Right" text="{i18n>Description}"/>
-							<m:Input width="308px" value="{path: 'confirmModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}"
+							<m:Input width="308px" enabled="false" value="{path: 'confirmModel>/WorkOrderDetail/ShortDescription', type : 'pd.pm.lite.customTypes.Mandatory'}"
 								maxLength="40"/>
 							<m:Label class="cisTopMargin" textAlign="Right" text="{i18n>SystemStatus}"/>
 							<m:Input width="308px" enabled="false" class="cisDisbaledInput" value="{confirmModel>/WorkOrderDetail/SystemStatus}"/>
 							<m:Label class="cisTopMargin" textAlign="Right" text="{i18n>UserStatus}"/>
-							<m:HBox>
-								<m:Input width="308px" enabled="false" class="cisDisbaledInput" value="{path: 'confirmModel>/WorkOrderDetail/UserStatus'}"/>
-								<m:Button width="80px" text="Edit" type="Transparent" icon="sap-icon://user-edit" iconFirst="true" class="sapUiTinyMarginBegin"
-									press="showUserStatusValueHelp"/>
-							</m:HBox>
+							<m:Input width="308px" enabled="false" class="cisDisbaledInput" value="{path: 'confirmModel>/WorkOrderDetail/UserStatus'}"/>
 							<m:Label textAlign="Right" text="{i18n>MainWorkCenter}" class="cisLabels cisTopMargin" required="true"/>
-							<m:ComboBox width="308px" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="false"
+							<m:ComboBox width="308px" id="workCenterId" items="{localStorageModel>/WorkCenters}" showSecondaryValues="false" enabled="false"
 								selectedKey="{path:'confirmModel>/WorkOrderDetail/MainWorkCenter', type : 'pd.pm.lite.customTypes.Mandatory'}">
 								<m:items>
 									<core:ListItem text="{localStorageModel>Id} ({localStorageModel>Name})" key="{localStorageModel>Id}"
@@ -51,10 +47,10 @@
 								</m:items>
 							</m:ComboBox>
 							<m:Label textAlign="Right" text="{i18n>PMActType}" class="cisTopMargin cisLabels" required="true"/>
-							<m:ComboBox width="308px" items="{confirmModel>/ActivityTypes}"
+							<m:ComboBox width="308px" items="{localStorageModel>/ActivityTypes}" enabled="false"
 								selectedKey="{path:'confirmModel>/WorkOrderDetail/PmActivityType', type : 'pd.pm.lite.customTypes.Mandatory'}">
 								<m:items>
-									<core:ListItem text="{confirmModel>Code} ({confirmModel>Name})" key="{confirmModel>Code}" additionalText="{confirmModel>Name}"/>
+									<core:ListItem text="{localStorageModel>Code} ({localStorageModel>Name})" key="{localStorageModel>Code}" additionalText="{localStorageModel>Name}"/>
 								</m:items>
 							</m:ComboBox>
 							<m:Label textAlign="Right" text="{i18n>Priority}" class="cisLabels cisTopMargin" required="true"/>
@@ -69,10 +65,10 @@
 								</m:items>
 							</m:ComboBox>
 							<m:Label textAlign="Right" text="{i18n>BasicStart}" class="cisLabels cisTopMargin"/>
-							<m:DatePicker width="124px" enabled="{path: 'confirmModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.BasicDateEditable'}"
+							<m:DatePicker width="124px" enabled="false"
 								dateValue="{path:'confirmModel>/WorkOrderDetail/BasicStart'}" class="cisDisbaledInput"/>
 							<m:Label textAlign="Right" text="{i18n>BasicFinish}" class="cisLabels cisTopMargin"/>
-							<m:DatePicker enabled="{path: 'confirmModel>/WorkOrderDetail/SystemStatus', formatter:'.formatter.BasicDateEditable'}" width="124px"
+							<m:DatePicker enabled="false" width="124px"
 								dateValue="{path:'confirmModel>/WorkOrderDetail/BasicFinish'}" class="cisDisbaledInput"/>
 							<m:Label textAlign="Right" text="{i18n>SchStart}" class="cisLabels cisTopMargin"/>
 							<m:DatePicker width="124px" enabled="false" dateValue="{path:'confirmModel>/WorkOrderDetail/ScheduledStart'}" class="cisDisbaledInput"/>
@@ -147,16 +143,16 @@
 									</m:ComboBox>
 								</table:template>
 							</table:Column>
-							<table:Column width="3rem">
+							<table:Column width="4rem">
 								<m:Label text="{i18n>Final}"/>
 								<table:template>
 									<m:CheckBox selected="{path: 'confirmModel>Final'}"/>
 								</table:template>
 							</table:Column>
-							<table:Column width="6rem">
+							<table:Column width="8rem">
 								<m:Label text="{i18n>Pers No}"/>
 								<table:template>
-									<m:Input value="{path: 'confirmModel>PersonnelNumber'}" maxLength="40"/>
+									<m:Input value="{path: 'confirmModel>PersonnelNumber'}" maxLength="40" valueHelpOnly="true" valueHelpRequest="showPernrVH" showValueHelp="true"/>
 								</table:template>
 							</table:Column>
 							<table:Column width="10rem">
@@ -346,7 +342,7 @@
 		</sections>
 		<dependents>
 			<core:Fragment fragmentName="pd.pm.lite.view.WorkCenterDialog" type="XML"/>
-			<!--<core:Fragment fragmentName="pd.pm.lite.view.AttachmentDialogConfirmView" type="XML"/>-->
+			<core:Fragment fragmentName="pd.pm.lite.view.PernrDialog" type="XML"/>
 		</dependents>
 	</ObjectPageLayout>
 	<m:BusyDialog id="ChangeBusyDialog"/>

@@ -31,12 +31,16 @@ sap.ui.define([
 			this._workCenterDialogList = this.getView().byId("idWorkCenterDialogList");
 			//Dialog for attachment
 			this._attachmentDialog = this.getView().byId("attachmentDialog");
+			//Dialog for Pernr
+			this._pernrDialog = this.getView().byId("idPernrDialog");
 			
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 		},
 
 		_onObjectMatched: function(oEvent) {
+			this.getOwnerComponent().BusyDialogGlobal.close();
+			
 			if (oEvent.getParameter("name") !== "confirmOrder") {
 				return;
 			}
@@ -96,6 +100,57 @@ sap.ui.define([
 				window.location.hash = "#";
 			}
 		},
+		
+		showPernrVH: function(){
+			var pernrDialog = this.getView().getController()._pernrDialog;
+			// this.getView().getController()._workCenterDialogList.removeSelections();
+			// pernrDialog.data("source", oEvent.getSource());
+			pernrDialog.open();			
+		},
+		
+		OnPernrSearch:function(oEvent){
+
+			//Get the search item
+			var searchTerm = oEvent.getParameter("value");
+
+			// var model = this.getOwnerComponent().getModel();
+
+			//Bind items
+			var oTemplate = new sap.m.ColumnListItem({
+				cells: [
+					new sap.m.Text().bindText({
+						path: "Id",
+						formatter: this.formatter.removeLeadingZerosFromString
+					}),
+					new sap.m.Text({
+						text: "{Name}"
+					}),
+					new sap.m.Text({
+						text: "{MPN}"
+					}),
+					new sap.m.Text({
+						text: "{Manufacturer}"
+					})
+				]
+			});
+
+			this._ComponentDialog.bindAggregation("items", {
+				path: "/NewComponents",
+				template: oTemplate,
+				parameters: {
+					custom: {
+						search: searchTerm
+					}
+				},
+				events:{
+					dataReceived: function(data){
+						var i = 1;
+					}
+				}
+			});
+					
+		},
+		
 		UpdateShortText: function(evt){
 			var shortText = evt.getSource().getSelectedItem().getProperty("additionalText");
 			var shortTextCell = evt.getSource().getParent().getAggregation("cells")[1];

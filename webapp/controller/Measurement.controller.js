@@ -23,6 +23,8 @@ sap.ui.define([
 			this._busyDialog = this.getView().byId("MeasurementBusyDialog");
 		},
 		_onObjectMatched: function(oEvent) {
+			this.getOwnerComponent().BusyDialogGlobal.close();
+			
 			var that = this;
 			if (oEvent.getParameter("name") !== "measurement") {
 				return;

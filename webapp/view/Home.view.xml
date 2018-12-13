@@ -24,20 +24,20 @@
 			<f:DynamicPageHeader pinnable="true">
 				<f:content>
 					<SearchField placeholder="Enter Search term here" search="searchTable" maxLength="40" width="400px"/>
-					<fb:FilterBar id="toolBar" reset="onReset" search="onSearch" useToolbar="false" showGoOnFB="false">
+					<fb:FilterBar id="toolBar" reset="onReset" search="onSearch" useToolbar="false" showGoOnFB="false" filterContainerWidth="250px">
 						<fb:filterItems>
 							<fb:FilterItem name="A" label="Plant">
 								<fb:control>
-									<Select id="plantId" items="{localStorageModel>/Plants}" selectedKey="{path: 'Plant',mode: 'OneWay'}" change=".getFilteredOrders">
-										<core:Item key="{localStorageModel>Id}" text="{localStorageModel>Id}"/>
+									<Select id="plantId" items="{localStorageModel>/Plants}" selectedKey="{path: 'Plant',mode: 'OneWay'}" change=".getFilteredOrders" showSecondaryValues="true">
+										<core:ListItem key="{localStorageModel>Id}" text="{localStorageModel>Name}" additionalText="{localStorageModel>Id}"/>
 									</Select>
 								</fb:control>
 							</fb:FilterItem>
 							<fb:FilterItem name="B" label="Main Work Center">
 								<fb:control>
 									<Select id="workCenterId" items="{localStorageModel>/WorkCenters}" selectedKey="{path:'WorkCenter',mode: 'OneWay'}}"
-										change=".getFilteredOrders">
-										<core:Item key="{localStorageModel>Id}" text="{localStorageModel>Id}"/>
+										change=".getFilteredOrders" showSecondaryValues="true">
+										<core:ListItem key="{localStorageModel>Id}" text="{localStorageModel>Name}" additionalText="{localStorageModel>Id}"/>
 									</Select>
 								</fb:control>
 							</fb:FilterItem>
@@ -66,15 +66,6 @@
 						<ToolbarSpacer/>
 					</Toolbar>
 				</table:extension>
-				<!--<table:rowActionTemplate>-->
-				<!--	<table:RowAction>-->
-				<!--		<table:items>-->
-				<!--			<table:RowActionItem type="Custom" icon="sap-icon://edit" press="triggerChange"/>-->
-				<!--			<table:RowActionItem type="Custom" icon="sap-icon://complete"-->
-				<!--				visible="{path: 'localModel>Statuses/SS', formatter:'.formatter.confirmationActive'}" press="triggerConfirm"/>-->
-				<!--		</table:items>-->
-				<!--	</table:RowAction>-->
-				<!--</table:rowActionTemplate>-->
 				<table:columns>
 					<table:Column width="75px">
 						<Label text="Actions" tooltip="Choose any action"/>
@@ -113,7 +104,7 @@
 								src="{path:'localModel>Status', formatter: '.formatter.statusIcon'}"/>
 						</table:template>
 					</table:Column>
-					<table:Column sortProperty="FinishDate" width="60px">
+					<table:Column sortProperty="FinishDate" width="70px">
 						<Label text="Days"/>
 						<table:template>
 							<Text text="{path:'localModel>FinishDate', formatter:'.formatter.days'}"/>
