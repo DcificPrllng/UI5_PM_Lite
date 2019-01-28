@@ -45,8 +45,8 @@
 								<fb:control>
 									<Select id="viewTypeId" selectedKey="{path:'ViewType',mode: 'OneWay'}" change=".getFilteredOrders">
 										<items>
-											<core:ListItem text="Headers"/>
-											<core:ListItem text="Operations"/>
+											<core:ListItem text="Headers" key="Headers"/>
+											<core:ListItem text="Operations" key="Operations"/>
 										</items>
 									</Select>
 								</fb:control>

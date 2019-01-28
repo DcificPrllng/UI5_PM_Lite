@@ -66,8 +66,8 @@ sap.ui.define([
 								that._oCount.setText("Total Records: " + oBinding.getLength());
 							});
 						},
-						error: function () {
-							this._busyDialog.close();
+						error: function (error) {
+							that._busyDialog.close();
 						}
 					});
 
@@ -76,9 +76,9 @@ sap.ui.define([
 				});
 				this.getView().byId("toolBar").getElementBinding().attachDataReceived(function (evt) {
 					this._userDefaults = evt.getParameter("data");
-					var oFilter1 = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._userDefaults.Plant);
-					var oFilter2 = new sap.ui.model.Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, this._userDefaults.WorkCenter);
-					var oFilter3 = new sap.ui.model.Filter("ViewType", sap.ui.model.FilterOperator.EQ, this._userDefaults.ViewType);
+					var oFilter1 = new Filter("Plant", sap.ui.model.FilterOperator.EQ, this._userDefaults.Plant);
+					var oFilter2 = new Filter("WorkCenter", sap.ui.model.FilterOperator.EQ, this._userDefaults.WorkCenter);
+					var oFilter3 = new Filter("ViewType", sap.ui.model.FilterOperator.EQ, this._userDefaults.ViewType);
 					var combinedFilter = [oFilter1, oFilter2, oFilter3];
 					this._currentFilter = combinedFilter;
 					if (this._userDefaults.ViewType === "Headers") {
@@ -160,17 +160,17 @@ sap.ui.define([
 				var outerFilters = [];
 				var searchTerms = searchTerm.split(" "); //words separated by space are considered as separate search terms. 
 				for (var k = 0; k < searchTerms.length; k++) {
-					filters.push(new sap.ui.model.Filter("OrderNumber", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("OrderType", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("Description", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("FunctionalLocation", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("FLDescription", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("Equipment", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					filters.push(new sap.ui.model.Filter("EquipmentName", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
-					outerFilters.push(new sap.ui.model.Filter(filters));
+					filters.push(new Filter("OrderNumber", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("OrderType", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("Description", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("FunctionalLocation", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("FLDescription", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("Equipment", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					filters.push(new Filter("EquipmentName", sap.ui.model.FilterOperator.Contains, searchTerms[k]));
+					outerFilters.push(new Filter(filters));
 					filters = [];
 				}
-				oTable.getBinding("rows").filter(new sap.ui.model.Filter({
+				oTable.getBinding("rows").filter(new Filter({
 					filters: outerFilters,
 					and: true //Default is OR between filters
 				}));
@@ -179,7 +179,6 @@ sap.ui.define([
 
 		showComponentValueHelp: function (oEvent) {
 			var ComponentDialog = this.getView().getController()._ComponentDialog;
-			//ComponentDialog.data("source", oEvent.getSource());
 
 			//Clear current entries
 			ComponentDialog.removeAllItems();
@@ -232,10 +231,8 @@ sap.ui.define([
 				},
 				error: function (oError) {
 					oView.setBusy(false);
-
 				}
 			});
-
 		},
 
 		triggerMM03: function () {

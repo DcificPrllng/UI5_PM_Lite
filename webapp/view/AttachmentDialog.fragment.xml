@@ -6,7 +6,7 @@
 				fileDeleted="onFileDeleted"	uploadUrl="/sap/opu/odata/sap/ZWORKORDER_SRV/WorkOrderDetailSet('{jsonModel>/WorkOrderDetail/OrderNumber}')/OrderAttachments"
 				items="{path :'jsonModel>/OrderAttachments', templateShareable : 'true'}" numberOfAttachmentsText="Uploaded (8)" mode="SingleSelectMaster">
 				<toolbar>
-					<OverflowToolbar id="myId">
+					<OverflowToolbar id="myId" visible="false">
 						<Title id="attachmentTitle"/>
 						<ToolbarSpacer/>
 						<RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments"/>

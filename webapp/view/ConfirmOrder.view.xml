@@ -152,7 +152,7 @@
 							<table:Column width="8rem">
 								<m:Label text="{i18n>Pers No}"/>
 								<table:template>
-									<m:Input value="{path: 'confirmModel>PersonnelNumber'}" maxLength="40" valueHelpOnly="true" valueHelpRequest="showPernrVH" showValueHelp="true"/>
+									<m:Input value="{path: 'confirmModel>PersonnelNumber'}" maxLength="40" valueHelpOnly="false" valueHelpRequest="showPernrVH" showValueHelp="false"/>
 								</table:template>
 							</table:Column>
 							<table:Column width="10rem">
@@ -325,8 +325,8 @@
 							<m:OverflowToolbar id="myId">
 								<m:Title id="attachmentTitle"/>
 								<m:ToolbarSpacer/>
-								<m:RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments"/>
-								<m:RadioButton id="NotificationRB" groupName="from" text="{i18n>Notification}" select=".ShowRightAttachments"/>
+								<m:RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments" visible="false"/>
+								<m:RadioButton id="NotificationRB" groupName="from" text="{i18n>Notification}" select=".ShowRightAttachments" visible="false"/>
 								<m:UploadCollectionToolbarPlaceholder></m:UploadCollectionToolbarPlaceholder>
 							</m:OverflowToolbar>
 						</m:toolbar>

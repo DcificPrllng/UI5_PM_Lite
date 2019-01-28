@@ -32,32 +32,57 @@
 				jQuery.sap.setIcons({
 					'favicon':'icons/favicons.png'
 				});
-				
 				sap.ui.require([
 					"sap/ui/unified/Shell",
+					// "sap/m/Shell",
 					"sap/ui/core/ComponentContainer"
 				], function (oShell, ComponentContainer) {
 			    		var ComponentContainer = new ComponentContainer({
 	                                	height : "100%"
     				    });		        
+
+		function logoff(){
+    		$.ajax({
+        		type: "GET",
+        		url: "/sap/public/bc/icf/logoff",  //Clear SSO cookies: SAP Provided service to do that
+        		async: false
+        	});
+        	
+            if (!document.execCommand("ClearAuthenticationCache")) {
+                 //"ClearAuthenticationCache" will work only for IE. Below code for other browsers
+                 $.ajax({
+                               type: "GET",
+                               url: "/sap/opu/odata/sap/ZWORKORDER_SRV?saml2=disabled", //any URL to a Gateway service
+                               username: 'dummy', //dummy credentials: when request fails, will clear the authentication header
+                               password: 'dummy',
+                               statusCode: { 401: function() { //We expect 401 as we have given invalid credentials.
+                                         //This handler function will prevent authentication pop-up in chrome/firefox
+                                         location.reload();
+                               } },
+                               error: function() {
+                                    //alert('reached error of wrong username password')
+                               }
+                });
+            }
+		}
+		
+		new oShell({
+        headEndItems: [new sap.ui.unified.ShellHeadItem({
+            					tooltip:"Logoff",
+	                            icon:"sap-icon://log",
+	                            press: logoff
+	    })],
+        content: ComponentContainer
+    	}).addStyleClass("sapUiSizeCompact").placeAt("content");
 			        
-			    		new oShell({
-			            headEndItems: [new sap.ui.unified.ShellHeadItem({
-			                					tooltip:"Logoff",
-					                            icon:"sap-icon://log",
-					                            press: "performLogout"
-					    })],
-			            content: ComponentContainer
-			        	}).addStyleClass("sapUiSizeCompact").placeAt("content");
-			        
-						var component = sap.ui.component({
-	                                 	name : "pd.pm.lite",
-	                                 	manifestFirst: true,
-	                                 	handleValidation: true,
-	                                 	async: true
-    				    				}).then(function(component){
-		 									ComponentContainer.setComponent(component);
-										});
+		var component = sap.ui.component({
+                     	name : "pd.pm.lite",
+                     	manifestFirst: true,
+                     	handleValidation: true,
+                     	async: true
+	    				}).then(function(component){
+ 							ComponentContainer.setComponent(component);
+						});
 				});
 			});
 		</script>

@@ -430,7 +430,7 @@ sap.ui.define([
 						window.location.hash = "#";
 					}
 				},
-				error: function() {
+				error: function(error) {
 					that._busyDialog.close();
 					//Error Handling
 

@@ -307,8 +307,8 @@
 							<m:OverflowToolbar id="myId">
 								<m:Title id="attachmentTitle"/>
 								<m:ToolbarSpacer/>
-								<m:RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments"/>
-								<m:RadioButton id="NotificationRB" groupName="from" text="{i18n>Notification}" select=".ShowRightAttachments"/>
+								<m:RadioButton id="OrderRB" groupName="from" text="{i18n>Order}" selected="true" select=".ShowRightAttachments" visible="false"/>
+								<m:RadioButton id="NotificationRB" groupName="from" text="{i18n>Notification}" select=".ShowRightAttachments" visible="false"/>
 								<m:UploadCollectionToolbarPlaceholder></m:UploadCollectionToolbarPlaceholder>
 							</m:OverflowToolbar>
 						</m:toolbar>
