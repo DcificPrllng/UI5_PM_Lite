@@ -151,3 +151,11 @@ div#uiArea {
     border-color: #b51616;
     transform: scale(1.1);
 }
+
+.pdDynamicPage .sapFDynamicPageHeaderPinButtonArea{
+	display: none;
+}
+
+.pdDynamicPage .sapUiCompFilterBarFloatRight{
+	display: none;
+}

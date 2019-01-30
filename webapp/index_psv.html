@@ -22,38 +22,69 @@
 		</script>
 		
 		<script>
-			sap.ui.getCore().attachInit(function () {
-				jQuery.sap.setIcons({
-					'favicon':'icons/favicons.png'
-				});
-				
-				sap.ui.require([
-					"sap/ui/unified/Shell",
-					"sap/ui/core/ComponentContainer"
-				], function (oShell, ComponentContainer) {
-			    		var ComponentContainer = new ComponentContainer({
-	                                	height : "100%"
-    				    });		        
-			        
-			    		new oShell({
-			            headEndItems: [new sap.ui.unified.ShellHeadItem({
-			                					tooltip:"Logoff",
-					                            icon:"sap-icon://log",
-					                            press: "performLogout"
-					    })],
-			            content: ComponentContainer
-			        }).addStyleClass("sapUiSizeCompact").placeAt("content");
-			        
-						var component = sap.ui.component({
-	                                 	name : "pd.pm.lite",
-	                                 	manifestFirst: true,
-	                                 	handleValidation: true,
-	                                 	async: true
-    				    		}).then(function(component){
-		 									ComponentContainer.setComponent(component);
-										});
-				});
+		sap.ui.getCore().attachInit(function () {
+			jQuery.sap.setIcons({
+				'favicon':'icons/favicons.png'
 			});
+			sap.ui.require([
+				"sap/ui/unified/Shell",
+				"sap/ui/core/ComponentContainer"
+			], function (oShell, ComponentContainer) {
+		    		var ComponentContainer = new ComponentContainer({
+                                	height : "100%"
+				});		        
+
+					function logoff(){
+						//First clear SSO cookie.
+			    		$.ajax({
+			        		type: "GET",
+			        		url: "/sap/public/bc/icf/logoff",  //This is SAP Provided service to clear SSO cookies.
+			        		async: false
+			        		//Why is async: false? => The logoff service above usually has a redirect to identity provider's login screen. This redirect will fail due to CORS. 
+			        		//In such failures the below code in callback/promise will not run. 
+			        	});
+			        	
+			        	//Next, clear browser's authentication cache
+			            if (!document.execCommand("ClearAuthenticationCache")) {
+			                 //"ClearAuthenticationCache" will work only for IE. Below code for other browsers
+			                 $.ajax({
+			                               type: "GET",
+			                               url: "/sap/opu/odata/sap/ZWORKORDER_SRV?saml2=disabled", //any valid URL to a Gateway service. saml2=disabled required for saml scenarios.
+			                               username: 'dummy', //dummy credentials: when request fails, will clear the authentication header
+			                               password: 'dummy',
+			                               statusCode: { 401: function() { //We expect 401 as we have given invalid credentials.
+			                                         //Below code will take you to the logon screen. Non IE browsers.
+			                                         self.location.replace(location);
+			                               } },
+			                               error: function() {
+			                                    //alert('reached error of wrong username password')
+			                               }
+			                });
+			            } else {
+			            	 //Below code will take you to the logon screen. For IE
+			            	self.location.replace(location); 
+			            }
+					}
+		
+					new oShell({
+			        headEndItems: [new sap.ui.unified.ShellHeadItem({
+			            					tooltip:"Logoff",
+				                            icon:"sap-icon://log",
+				                            press: logoff
+				    })],
+			        content: ComponentContainer
+			    	}).addStyleClass("sapUiSizeCompact").placeAt("content");
+			        
+					var component = sap.ui.component({
+			                     	name : "pd.pm.lite",
+			                     	manifestFirst: true,
+			                     	handleValidation: true,
+			                     	async: true
+				    	}).then(function(component){
+			 				ComponentContainer.setComponent(component);
+						});
+				});
+		});
 		</script>
 	</head>
 	<body class="sapUiBody" id="content">
